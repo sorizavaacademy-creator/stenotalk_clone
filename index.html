@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02f';
+var APP_VERSION = '2026-11-02g';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5367,6 +5367,23 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 .d3-org{display:inline-flex !important;align-items:baseline;gap:8px;font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--c-ink,#1c1c1e);white-space:nowrap;}
 .d3-org .d3-x{font-style:normal;font-weight:400;color:var(--c-ink-3,#8a8a90);}
 @media(max-width:560px){ .d3-org{font-size:16px;gap:6px;} }
+/* 2026-11-02g 한림대 데모 홈: 연습형·실전형 버튼, 내 경험·데이터 확인, 보완점|최근 기록, 성장 추이 */
+.hm-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
+.hm-mode{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:18px 20px;border-radius:14px;border:1px solid #E6E6EA;background:#fff;color:var(--c-ink,#1c1c1e);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s, box-shadow .15s;}
+.hm-mode b{font-size:18px;font-weight:800;}
+.hm-mode span{font-size:13px;color:var(--c-ink-3,#6b6b72);}
+.hm-mode:hover{border-color:#c8441c;box-shadow:0 0 0 3px rgba(200,68,28,.12);}
+.hm-mode.real{background:#c8441c;border-color:#c8441c;color:#fff;}
+.hm-mode.real span{color:rgba(255,255,255,.88);}
+.hm-data{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;}
+.hm-data-txt p{margin:4px 0 0;font-size:14px;color:var(--c-ink-3,#6b6b72);}
+.hm-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+.hm-row .g4-reports{grid-template-columns:1fr !important;}
+.hm-growth-card{margin-top:16px;}
+#hm-growth svg{display:block;width:100%;max-width:720px;height:auto;max-height:240px;margin:0 auto;}
+.hm-rep-empty{display:none;}
+#g4-reports-sec[style*="none"] + .hm-rep-empty{display:block;}
+@media(max-width:720px){ .hm-row{grid-template-columns:1fr;} .hm-modes{grid-template-columns:1fr;} .hm-data{flex-direction:column;align-items:flex-start;} }
 #signup-consent-row{min-height:44px;align-items:center;} #signup-consent{width:22px;height:22px;flex:none;}
 .mp-sec-t{margin:0 0 10px;font-size:16px;font-weight:700;color:var(--c-ink,#1c1c1e);} .mp-sec-t small{display:block;margin-top:2px;font-size:13px;font-weight:500;color:var(--c-ink-3,#66666c);}
 .mp-docs{padding:16px;border:1.5px solid var(--c-accent,#e8532a);border-radius:14px;margin-bottom:22px;background:#fffaf7;}
@@ -5975,9 +5992,9 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
         <a href="javascript:void(0)" data-go="home" aria-current="page" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" class="adm-only" data-adm="notices" onclick="openAdminScreen('notices')">공지사항</a>
         <a href="javascript:void(0)" class="adm-only" data-adm="admin" onclick="openAdminScreen()">관리자 화면</a>
-        <a href="javascript:void(0)" data-go="practice" onclick="navGo('practice')">면접 연습</a>
-        <a href="javascript:void(0)" data-go="reports" onclick="navGo('reports')">리포트</a>
-        <a href="javascript:void(0)" data-go="growth" onclick="navGo('growth')">내 성장</a>
+        <a href="javascript:void(0)" data-go="practice" onclick="navGo('practice')">면접 시작</a>
+        <a href="javascript:void(0)" data-go="reports" onclick="navGo('reports')">면접 기록</a>
+        <a href="javascript:void(0)" data-go="growth" onclick="navGo('growth')">나의 성장</a>
         <a href="javascript:void(0)" data-go="coach" onclick="navGo('coach')">자기소개 코치</a>
       </nav>
       <nav style="display:none !important;"><a href="javascript:void(0)" class="kk-link kakao-show" onclick="openKakaoChannel()" style="display:none;"><svg class="kk-ic" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M10 3C5.6 3 2 5.8 2 9.2c0 2.2 1.5 4.1 3.7 5.2l-.8 2.9c-.1.3.2.5.4.3l3.4-2.3c.4 0 .9.1 1.3.1 4.4 0 8-2.8 8-6.2S14.4 3 10 3z"/></svg><span class="kk-full">카카오톡 문의</span><span class="kk-short">카톡 문의</span></a>
@@ -6012,15 +6029,20 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
         <div class="g4-top">
           <div class="g4-top-txt">
             <p class="d3-greet-meta" id="d3-greet-meta"></p>
-            <h1 id="hero-greeting">안녕하세요,<br>김속기 님.</h1>
-            <p class="d3-lead" id="hero-sub">지원 분야를 선택하고 실전처럼 면접을 연습해보세요.</p>
+            <h1 id="hero-greeting">김속기님, 오늘의 맞춤 면접을 준비했어요.</h1>
+            <p class="d3-lead" id="hero-sub">내 전공과 활동 경험을 바탕으로 연습해보세요.</p>
           </div>
           <div class="g4-week" id="g4-week" style="display:none;"></div>
+        </div>
+        <!-- 2026-11-02g 한림대 데모: 연습형·실전형 두 버튼으로 바로 시작 (면접 준비 창의 '답변 시간'을 연습/실전으로 골라 엶) -->
+        <div class="hm-modes">
+          <button type="button" class="hm-mode" onclick="startModeFromHome('practice')"><b>연습형 면접</b><span>시간 제한 없이 편하게 답해 보기</span></button>
+          <button type="button" class="hm-mode real" onclick="startModeFromHome('real')"><b>실전형 면접</b><span>자기소개 60초·답변 90초, 실제 면접처럼</span></button>
         </div>
         <div class="d3-banners"><div class="access-banner" id="access-banner" style="display:none;"></div><div class="access-banner perm-ready" id="perm-ready-chip" style="display:none;"></div><div class="access-banner quota" id="ai-quota-chip" style="display:none;" title="AI 즉석 꼬리질문·채점을 쓰는 라이브 면접 횟수예요. 한도가 차면 AI 없이 계속 연습할 수 있어요."></div></div>
         <div class="d3-today" id="d3-today" style="display:none;"></div>
         <div class="g4-reco" id="g4-reco" style="display:none;"></div>
-        <div class="d3-greet-actions">
+        <div class="d3-greet-actions" style="display:none;">
           <button class="d3-btn d3-btn-primary" id="d3-start-btn" onclick="startSelectedField()"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M7 5.5v9l7-4.5-7-4.5z" fill="currentColor"/></svg><span id="d3-start-label">면접 시작</span></button>
           <button class="d3-btn d3-btn-ghost" id="d3-coach-btn" onclick="openCoach()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>1분 자기소개 코치</button>
           <span class="d3-hint" id="d3-start-hint">분야는 아래에서 바꿀 수 있어요</span>
@@ -6028,6 +6050,27 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
       </section>
       <section class="d3-card d3-stats" id="d3-stats"></section>
     </div>
+
+    <!-- 2026-11-02g 한림대 데모 홈: 내 경험·데이터 확인 → 지난 면접의 보완점 | 최근 면접 기록 → 나의 성장 추이 -->
+    <section class="d3-card hm-data" aria-label="내 경험·데이터 확인">
+      <div class="hm-data-txt"><h2 class="d3-section-title">내 경험·데이터 확인</h2><p>이력서·자기소개서를 올려 두면 내 전공과 활동 경험을 바탕으로 맞춤 질문을 받아요.</p></div>
+      <button type="button" class="d3-btn d3-btn-ghost" onclick="openMyPage()">확인하기</button>
+    </section>
+    <div class="hm-row">
+      <section class="d3-card d3-panel">
+        <div class="d3-panel-head"><h3 class="d3-panel-title">지난 면접의 보완점</h3><button class="d3-btn-text" id="hm-review-btn" type="button" onclick="startReviewFromDashboard()" style="display:none;">이 질문들로 다시 연습</button></div>
+        <div id="hm-review"><div class="qa-empty">면접을 한 번 마치면, 점수가 낮았던 질문을 여기에 모아 드려요.</div></div>
+      </section>
+      <section class="d3-card d3-panel">
+        <div class="d3-panel-head"><h3 class="d3-panel-title">최근 면접 기록</h3><button class="d3-btn-text" type="button" onclick="openAllHistory()">전체 보기</button></div>
+        <div id="g4-reports-sec" style="display:none;"><div class="g4-reports" id="g4-reports"></div></div>
+        <div class="qa-empty hm-rep-empty">아직 면접 기록이 없어요. 연습형 면접부터 시작해 보세요.</div>
+      </section>
+    </div>
+    <section class="d3-card d3-panel hm-growth-card">
+      <div class="d3-panel-head"><h3 class="d3-panel-title">나의 성장 추이</h3><button class="d3-btn-text" type="button" onclick="navGo('growth')">자세히</button></div>
+      <div class="gw-line" id="hm-growth"><div class="d3-empty"><p class="d3-empty-desc">면접을 두 번 이상 하면 점수 흐름이 그려져요.</p></div></div>
+    </section>
 
     <section class="d3-card rr-card" id="rr-card" style="display:none;" aria-label="실제 면접 질문 남기기"></section>
 
@@ -6050,11 +6093,6 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
         <p id="m-app-desc">브라우저 메뉴에서 "홈 화면에 추가"를 누르면 앱처럼 아이콘으로 열려요.</p>
         <button type="button" class="d3-btn d3-btn-primary m-app-btn" onclick="HomeApp.open(true)">추가하는 방법 보기</button>
       </div>
-    </section>
-
-    <section class="d3-section" id="g4-reports-sec" style="display:none;">
-      <div class="d3-section-head"><h2 class="d3-section-title">최근 리포트</h2><button class="d3-btn-text" type="button" onclick="openAllHistory()">전체 보기 <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5l5 5-5 5"/></svg></button></div>
-      <div class="g4-reports" id="g4-reports"></div>
     </section>
 
     <section class="d3-section">
@@ -6838,9 +6876,9 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
       <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="practice">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
-        <a href="javascript:void(0)" aria-current="page">면접 연습</a>
-        <a href="javascript:void(0)" onclick="navGo('reports')">리포트</a>
-        <a href="javascript:void(0)" onclick="navGo('growth')">내 성장</a>
+        <a href="javascript:void(0)" aria-current="page">면접 시작</a>
+        <a href="javascript:void(0)" onclick="navGo('reports')">면접 기록</a>
+        <a href="javascript:void(0)" onclick="navGo('growth')">나의 성장</a>
         <a href="javascript:void(0)" onclick="navGo('coach')">자기소개 코치</a>
       </nav>
       <nav style="display:none !important;"><a href="javascript:void(0)" class="kk-link kakao-show" onclick="openKakaoChannel()" style="display:none;"><svg class="kk-ic" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M10 3C5.6 3 2 5.8 2 9.2c0 2.2 1.5 4.1 3.7 5.2l-.8 2.9c-.1.3.2.5.4.3l3.4-2.3c.4 0 .9.1 1.3.1 4.4 0 8-2.8 8-6.2S14.4 3 10 3z"/></svg><span class="kk-full">카카오톡 문의</span><span class="kk-short">카톡 문의</span></a>
@@ -6929,9 +6967,9 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
       <a class="d3-brand" href="javascript:void(0)" onclick="openConfirmEnd()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="interview">
         <a href="javascript:void(0)" onclick="openConfirmEnd()">홈</a>
-        <a href="javascript:void(0)" aria-current="page">면접 연습</a>
-        <a href="javascript:void(0)" onclick="openConfirmEnd()">리포트</a>
-        <a href="javascript:void(0)" onclick="openConfirmEnd()">내 성장</a>
+        <a href="javascript:void(0)" aria-current="page">면접 시작</a>
+        <a href="javascript:void(0)" onclick="openConfirmEnd()">면접 기록</a>
+        <a href="javascript:void(0)" onclick="openConfirmEnd()">나의 성장</a>
         <a href="javascript:void(0)" onclick="openConfirmEnd()">자기소개 코치</a>
       </nav>
       <nav style="display:none !important;"><a href="javascript:void(0)" class="kk-link kakao-show" onclick="openKakaoChannel()" style="display:none;"><svg class="kk-ic" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M10 3C5.6 3 2 5.8 2 9.2c0 2.2 1.5 4.1 3.7 5.2l-.8 2.9c-.1.3.2.5.4.3l3.4-2.3c.4 0 .9.1 1.3.1 4.4 0 8-2.8 8-6.2S14.4 3 10 3z"/></svg><span class="kk-full">카카오톡 문의</span><span class="kk-short">카톡 문의</span></a>
@@ -7152,9 +7190,9 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
       <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
       <nav class="d3-nav r4-nav" aria-label="주 메뉴" data-nav="result">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
-        <a href="javascript:void(0)" onclick="navGo('practice')">면접 연습</a>
-        <a href="javascript:void(0)" aria-current="page">리포트</a>
-        <a href="javascript:void(0)" onclick="navGo('growth')">내 성장</a>
+        <a href="javascript:void(0)" onclick="navGo('practice')">면접 시작</a>
+        <a href="javascript:void(0)" aria-current="page">면접 기록</a>
+        <a href="javascript:void(0)" onclick="navGo('growth')">나의 성장</a>
         <a href="javascript:void(0)" onclick="navGo('coach')">자기소개 코치</a>
       </nav>
       <div class="r3-actions">
@@ -8842,7 +8880,7 @@ async function handleLogin(){
   AiSwitch.load(); VoiceBank.load();
   state.username = state.currentUser.name;
   document.getElementById('nav-username').textContent = state.currentUser.name; { const av = document.getElementById('d3-avatar'); if(av) av.textContent = (state.currentUser.name||'?').slice(0,1); }
-  document.getElementById('hero-greeting').innerHTML = `안녕하세요,<br>${escapeHtml(state.currentUser.name)} 님.`;
+  document.getElementById('hero-greeting').innerHTML = `${escapeHtml(state.currentUser.name)}님, 오늘의 맞춤 면접을 준비했어요.`;
   await renderDashboard();
   showScreen('screen-dashboard');
   showToast('로그인했어요');
@@ -9016,7 +9054,7 @@ async function tryRestoreSession(){
   AiSwitch.load(); VoiceBank.load();
   state.username = state.currentUser.name;
   document.getElementById('nav-username').textContent = state.currentUser.name; { const av = document.getElementById('d3-avatar'); if(av) av.textContent = (state.currentUser.name||'?').slice(0,1); }
-  document.getElementById('hero-greeting').innerHTML = `안녕하세요,<br>${escapeHtml(state.currentUser.name)} 님.`;
+  document.getElementById('hero-greeting').innerHTML = `${escapeHtml(state.currentUser.name)}님, 오늘의 맞춤 면접을 준비했어요.`;
   await renderDashboard();
   showScreen('screen-dashboard');
   Activity.log('login', {restored:true}); Activity.setPresence('dashboard');
@@ -10420,7 +10458,7 @@ async function renderDashboard(){
   const isAdmin = !!(state.currentUser && state.currentUser.isAdmin);
   const allowed = (state.currentUser && state.currentUser.allowed) || [];
   const heroSub = document.getElementById('hero-sub');
-  heroSub.textContent = '지원 분야를 선택하고 실전처럼 면접을 연습해보세요.';
+  heroSub.textContent = '내 전공과 활동 경험을 바탕으로 연습해보세요.';   // 2026-11-02g 한림대 데모 홈 문구
 
   let history = [];
   const scope = recordFieldScope();
@@ -10815,6 +10853,7 @@ function navGo(where){
   try{ closeUserMenu(); }catch(_){}
   if(where === 'home'){ setDashView('home'); goDashboard(); return; }
   if(where === 'practice'){
+    if(state.dashField && !(state.currentUser && state.currentUser.isAdmin)){ openPractice(state.dashField); return; }   // 2026-11-02g '면접 시작' = 지금 분야의 질문 미리보기
     const act = document.querySelector('.screen.active');
     if(!act || act.id !== 'screen-dashboard'){ setDashView('home'); goDashboard(); }
     setDashView('home');
@@ -10881,6 +10920,9 @@ function renderHomeExtras(history, isAdmin, expired){
   const wk = document.getElementById('g4-week'), reco = document.getElementById('g4-reco'), repSec = document.getElementById('g4-reports-sec'), rep = document.getElementById('g4-reports');
   if(!wk || !reco || !repSec) return;
   if(isAdmin){ wk.style.display = 'none'; reco.style.display = 'none'; repSec.style.display = 'none'; return; }
+  // 2026-11-02g 한림대 데모 홈: 나의 성장 추이 (내 성장 페이지의 점수 흐름 그래프와 같은 그림, 최근 12회)
+  { const hg = document.getElementById('hm-growth'); if(hg){ const pts = history.slice().sort((a,b)=>a.timestamp-b.timestamp).slice(-12);
+    hg.innerHTML = pts.length >= 2 ? gwLineSvg(pts) : `<div class="d3-empty"><p class="d3-empty-desc">${pts.length ? '한 번 더 연습하면 점수 흐름이 그려져요.' : '면접을 두 번 이상 하면 점수 흐름이 그려져요.'}</p></div>`; } }
   // 이번 주(월~일) 연습 횟수 · 연속 일수
   const now = new Date(); const dow = (now.getDay()+6)%7; const mon = new Date(now.getFullYear(), now.getMonth(), now.getDate()-dow);
   const weekN = history.filter(r=>r.timestamp >= mon.getTime()).length; const GOAL = 5;
@@ -10934,7 +10976,7 @@ function renderHomeExtras(history, isAdmin, expired){
       '태도·언어':['말투·표현 집중', '"음·어" 군말을 줄이고 존댓말·정중한 표현을 지키는 연습이에요.', ['자기소개','가치관','마지막 한마디']],
       '전달력':['전달력 집중', '말 속도와 머뭇거림을 줄이는 연습이에요. 질문이 끝나면 바로 "네, 말씀드리겠습니다"로 시작해 보세요.', ['자기소개','지원 동기','경험']] }[weak] || ['기본 세트', '질문 5개 · 난이도 중.', []];
     reco.innerHTML = base(`${escapeHtml(tip[0])} · 5문항`, `지난 ${list.length}회에서 ${escapeHtml(josa('"'+weak+'"', '이/가'))} 평균 ${wv}점으로 가장 낮았어요. ${escapeHtml(tip[1])} 꼬리질문 2개 포함.`, tip[2], 12);
-    if(sub) sub.textContent = `오늘은 ${josa('"'+weak+'"', '을/를')} 올려 볼 차례예요.`;
+    // 2026-11-02g 한림대 데모: 홈 안내 문구는 '내 전공과 활동 경험을 바탕으로…'로 고정 (약한 항목 안내는 추천 세트 카드에만)
   }).catch(()=>{});
 }
 function startRecommendedSet(){
@@ -10955,6 +10997,23 @@ function startTrialInterview(){
   try{ Activity.log('trial_open', { field: state.dashField }); }catch(_){}
   openSetup(state.dashField);
 }
+/** 2026-11-02g 한림대 데모 홈의 [연습형 면접]·[실전형 면접]: 면접 준비 창을 열고 '답변 시간'을 연습(제한 없음)/실전(시간 제한)으로 맞춤 */
+function startModeFromHome(kind){
+  if(!state.dashField){ showToast('연습할 분야가 아직 없어요.'); return; }
+  if(IosSafariGate.check(()=>startModeFromHome(kind))) return;
+  openSetup(state.dashField);
+  setTimeout(()=>{ try{
+    const rs = document.getElementById('chip-realset'); const normal = rs && rs.querySelector('.chip[data-val="normal"]'); if(normal && !normal.classList.contains('sel')) selectChip(normal, 'realset');
+    const tm = document.getElementById('chip-timed'); const chip = tm && tm.querySelector(`.chip[data-val="${kind === 'real' ? 'real' : 'free'}"]`); if(chip && !chip.classList.contains('sel')) selectChip(chip, 'timed');
+  }catch(_){} }, 450);
+}
+/* 2026-11-02g 한림대 데모 홈의 '지난 면접의 보완점': 내 성장 페이지의 '보완이 필요한 질문' 목록을 그대로 비춰 보여 줌 */
+(function(){
+  const src = document.getElementById('review-list'), dst = document.getElementById('hm-review'), sBtn = document.getElementById('review-start-btn'), dBtn = document.getElementById('hm-review-btn');
+  if(!src || !dst) return;
+  const sync = ()=>{ if(src.innerHTML.trim()) dst.innerHTML = src.innerHTML; if(sBtn && dBtn) dBtn.style.display = sBtn.style.display; };
+  try{ new MutationObserver(sync).observe(src, { childList:true, subtree:true, characterData:true }); if(sBtn) new MutationObserver(sync).observe(sBtn, { attributes:true, attributeFilter:['style'] }); }catch(_){}
+})();
 function startRealSetFromHome(){
   if(!state.dashField){ showToast('연습할 분야가 아직 없어요.'); return; }
   if(IosSafariGate.check(()=>startRealSetFromHome())) return;   // 2026-10-28b 사파리 안내를 먼저 (계속을 누르면 고른 세트 그대로)
@@ -22931,7 +22990,7 @@ async function submitSignup(){
     state.currentUser ={ id:userId, email, name, phone, note: note || '서류 결과 확인 중', isAdmin:false, allowed:[], status:'준비 중' };
     state.username = name;
     document.getElementById('nav-username').textContent = name; { const av = document.getElementById('d3-avatar'); if(av) av.textContent = (name||'?').slice(0,1); }
-    document.getElementById('hero-greeting').innerHTML = `안녕하세요,<br>${escapeHtml(name)} 님.`;
+    document.getElementById('hero-greeting').innerHTML = `${escapeHtml(name)}님, 오늘의 맞춤 면접을 준비했어요.`;
     await renderDashboard();
     showScreen('screen-dashboard');
     showToast('회원가입을 마쳤어요. 담당자가 이용 권한을 열어 드리면 바로 연습할 수 있어요.');
