@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02d';
+var APP_VERSION = '2026-11-02e';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5865,7 +5865,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
             <ol>
               <li><b>한림대학교 재학생</b>을 위한 AI 모의면접 서비스예요.</li>
               <li>회원가입할 때 <b>소속 학과와 학번</b>을 입력해 주세요.</li>
-              <li>학생 확인이 끝나면 면접 연습이 열려요. 그 전에는 ‘승인 대기’ 화면이 보여요.</li>
+              <li>가입하면 바로 면접 연습을 시작할 수 있어요.</li>
             </ol>
             <p class="lg-help">로그인이 안 되거나 비밀번호를 잊었다면 한림대학교 취업진로지원센터로 문의해 주세요.</p>
           </div>
@@ -7893,7 +7893,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
       </div>
       <div>
         <h2>회원가입</h2>
-        <p><b>한림대학교 재학생</b>을 위한 AI 모의면접이에요. 소속 학과와 학번을 입력하면 학생 확인 뒤 면접 연습을 열어 드려요.</p>
+        <p><b>한림대학교 재학생</b>을 위한 AI 모의면접이에요. 소속 학과와 학번을 입력하고 가입하면 바로 면접 연습을 시작할 수 있어요.</p>
       </div>
     </div>
     <div class="modal-body">
@@ -22821,6 +22821,9 @@ function validateSignupField(which, force){
 function openPrivacyNotice(){ document.getElementById('modal-privacy').classList.add('active'); }
 function closePrivacyNotice(){ document.getElementById('modal-privacy').classList.remove('active'); }
 function agreePrivacy(){ const c=document.getElementById('signup-consent'); if(c){ c.checked=true; validateSignupField('consent'); } closePrivacyNotice(); }
+/* 2026-11-02e 한림대 데모: 가입하면 관리자 승인 없이 바로 모든 연습 분야를 열어 줌 (원래는 '승인 대기' 뒤 관리자가 분야를 엶).
+   승인 절차로 되돌리려면 false */
+const DEMO_AUTO_APPROVE = true;
 async function submitSignup(){
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-id').value.trim();
@@ -22893,7 +22896,7 @@ async function submitSignup(){
     showToast('가입 요청은 보냈지만 계정 정보를 받지 못했어요. 잠시 후 다시 시도해 주세요.');
     return;
   }
-  const profileRow = { id: userId, name, phone, note: note || '서류 결과 확인 중', is_admin:false, allowed_fields: [], privacy_agreed_at: new Date().toISOString(), report_pledge_at: new Date().toISOString() };
+  const profileRow = { id: userId, name, phone, note: note || '서류 결과 확인 중', is_admin:false, allowed_fields: DEMO_AUTO_APPROVE ? FIELDS.map(f => f.id) : [], privacy_agreed_at: new Date().toISOString(), report_pledge_at: new Date().toISOString() };
   let { error: insertErr } = await sb.from('profiles').insert(profileRow);
   // profiles.report_pledge_at 컬럼이 아직 없으면(SQL step38 미적용) 빼고 저장
   if(insertErr && /report_pledge_at/i.test(insertErr.message||'')){ console.warn('[profiles.report_pledge_at 컬럼 없음] sql/step38_report_pledge_2026-10-27.sql'); delete profileRow.report_pledge_at; ({ error: insertErr } = await sb.from('profiles').insert(profileRow)); }
@@ -22916,9 +22919,13 @@ async function submitSignup(){
   }
   closeSignup();
 
-  if(data.session){
+  if(data.session && DEMO_AUTO_APPROVE){
+    // 바로 쓰는 데모: 로그인할 때와 같은 준비(문항·AI 설정·기기 등록)를 거쳐 홈으로
+    await tryRestoreSession();
+    showToast('회원가입을 마쳤어요. 바로 면접 연습을 시작할 수 있어요.');
+  }else if(data.session){
     // 이메일 확인이 꺼져 있는 프로젝트라면 가입과 동시에 로그인 세션이 생깁니다.
-    state.currentUser = { id:userId, email, name, phone, note: note || '서류 결과 확인 중', isAdmin:false, allowed:[], status:'준비 중' };
+    state.currentUser ={ id:userId, email, name, phone, note: note || '서류 결과 확인 중', isAdmin:false, allowed:[], status:'준비 중' };
     state.username = name;
     document.getElementById('nav-username').textContent = name; { const av = document.getElementById('d3-avatar'); if(av) av.textContent = (name||'?').slice(0,1); }
     document.getElementById('hero-greeting').innerHTML = `안녕하세요,<br>${escapeHtml(name)} 님.`;
