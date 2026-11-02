@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02w';
+var APP_VERSION = '2026-11-02x';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5485,6 +5485,19 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 @media (prefers-reduced-motion: reduce){ .hm-mode,.fl-pick{transition:none;} .hm-mode:active,.fl-pick:active,.fl-field:active,.fl-person:active{transform:none;} }
 @media(max-width:640px){ .fl-exp{grid-template-columns:auto minmax(0,1fr) auto;} .fl-exp .ty,.fl-exp .src{display:none;} .fl-add{grid-template-columns:1fr;} .hm-sum{grid-template-columns:1fr;} }
 @media(max-width:640px){ .fl-picks,.fl-grid{grid-template-columns:1fr;} .fl-people{grid-template-columns:repeat(2,minmax(0,1fr));} .fl-steps b span{display:none;} .fl-steps b.on span{display:inline;} .fl-steps{gap:4px;} .fl-steps .sep{width:6px;} .fl-h{font-size:19px;} .fl-body{padding:16px;} .fl-top,.fl-acts{padding-left:16px;padding-right:16px;} .fl-sum{grid-template-columns:88px minmax(0,1fr);} }
+/* 2026-11-02x 지원 분야별 회사·기관 목록 */
+.cb{border:1px solid #E3E1DB;border-radius:12px;padding:12px;background:#FAFAF8;display:flex;flex-direction:column;gap:10px;}
+.cb-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;} .cb-n{font-size:12.5px;color:#8a8a90;}
+.cb-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.cb-tab{padding:5px 11px;border-radius:999px;border:1px solid #E3E1DB;background:#fff;font:inherit;font-size:13px;cursor:pointer;color:#1c1c1e;}
+.cb-tab em{font-style:normal;color:#8a8a90;font-size:12px;margin-left:2px;}
+.cb-tab[aria-pressed="true"]{background:#1c1c1e;border-color:#1c1c1e;color:#fff;font-weight:700;} .cb-tab[aria-pressed="true"] em{color:#d8d8dc;}
+.cb-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;max-height:232px;overflow:auto;padding:2px;}
+.cb-item{text-align:left;padding:8px 10px;border-radius:8px;border:1px solid #E3E1DB;background:#fff;font:inherit;font-size:13.5px;color:#1c1c1e;cursor:pointer;line-height:1.35;}
+.cb-item:hover{border-color:#c8441c;}
+.cb-item[aria-pressed="true"]{border-color:#c8441c;background:#FBEDE7;color:#c8441c;font-weight:700;}
+.cb-none{margin:0;font-size:13.5px;color:#77767D;padding:10px 12px;border-radius:10px;background:#FAFAF8;border:1px dashed #E3E1DB;}
+@media(max-width:640px){ .cb-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:260px;} }
 /* 2026-11-02r 질문 미리 연습 (2026-11-02s 정리: 글은 짧게, 참고 내용은 한 칸 표로) */
 #modal-flow .pr-body{display:flex;flex-direction:column;gap:18px;padding:0;overflow:visible;}
 .pr-top{align-items:flex-start;justify-content:space-between;} .pr-title{margin:0;font-size:20px;font-weight:800;} .pr-sub{margin:3px 0 0;font-size:13.5px;color:#77767D;}
@@ -11400,6 +11413,15 @@ const CompanyCard = {
       <p class="cc-note">기업 맞춤 질문은 이 인재상을 바탕으로 만든 연습용 질문이에요. 실제 기출 질문이 아니에요.</p></section>`;
   },
 };
+/** 2026-11-02x 지원 분야별로 보여 줄 회사·기관 목록 (회사 DB의 구분). 교육·복지·비영리는 공공기관 중 교육·복지·보건 기관 */
+const FIELD_COS = {
+  pubcorp: { tabs:[['공기업','공기업'],['준정부기관','준정부기관'],['기타공공기관','기타공공기관']] },
+  corp: { tabs:[['대기업 그룹','대기업 그룹'],['재계 그룹(31~102위)','재계 31~102위'],['시가총액 상위 기업','시가총액 상위'],['금융권','금융권'],['시총 101~200위·코스닥','중견·코스닥']] },
+  startup: { tabs:[['IT·플랫폼·유니콘','IT·플랫폼·유니콘'],['시총 101~200위·코스닥','중견·코스닥']] },
+  welfare: { tabs:[['공기업','공기업'],['준정부기관','준정부기관'],['기타공공기관','기타공공기관']], only:/복지|사회보장|장애|노인|아동|청소년|보육|교육|학교|장학|인권|여성|가족|건강|보건|의료|병원|상담/, label:'교육·복지·보건 공공기관' },
+  gov: { none:'공무원은 기관별 인재상 자료가 아직 없어요. 목표 기관(예: ○○시청)을 직접 적거나 비워 두면 공직가치·직무 질문으로 연습해요.' },
+};
+function fieldCompanies(fid, list){ const f = FIELD_COS[fid]; if(!f || !f.tabs) return []; const cats = f.tabs.map(t=>t[0]); return list.filter(r=>cats.includes(r.category) && (!f.only || f.only.test(r.name))); }
 /** 난이도별 설명과 면접 전체 꼬리질문 최대 개수 (면접 준비 창 '꼬리질문' 칩 값과 같음) */
 const FLOW_DIFFS = { '하':{ t:'기본 질문 위주', d:'쉬운 직무 질문 · 꼬리질문 최대 3개', fu:'3' }, '중':{ t:'실제 면접 수준', d:'꼬리질문 최대 5개 · 역할·결과를 구체적으로 확인', fu:'5' }, '상':{ t:'깊게 파고들기', d:'어려운 직무 질문 · 꼬리질문 최대 5개 · 판단 근거까지 확인', fu:'5' } };
 /* 2026-11-02r 질문 미리 연습: 본 면접 전에 나올 수 있는 질문을 모아 보고, 질문마다 '이 질문이 보는 것·답변 구성·내 경험·피할 말'을 참고해
@@ -11632,7 +11654,8 @@ const StartFlow = {
     const on = (sel, fn)=>body.querySelectorAll(sel).forEach(b=>b.onclick = ()=>{ fn(b); this.render(); });
     on('[data-kind]', b=>{ s.kind = b.dataset.kind; this.markHome(s.kind); });
     on('[data-mode]', b=>{ s.mode = b.dataset.mode; });
-    on('[data-field]', b=>{ s.job.field = b.dataset.field; s.job.role = ''; });
+    on('[data-field]', b=>{ s.job.field = b.dataset.field; s.job.role = ''; s.job.cat = '';
+      if(s.job.companyId && !fieldCompanies(s.job.field, CompanyData._list || []).some(x=>x.id === s.job.companyId)){ s.job.companyId = ''; s.job.company = ''; } });
     on('[data-use]', b=>{ const a = s.use, i = a.indexOf(b.dataset.use); i < 0 ? a.push(b.dataset.use) : a.splice(i,1); });
     on('[data-del]', b=>{ this.exps = this.exps.filter(e=>e.id !== b.dataset.del); s.use = s.use.filter(x=>x !== b.dataset.del); });
     on('[data-count]', b=>{ const n = +b.dataset.count; s.count = n;   // 늘리면 추천 순서(인사팀장 → 현업 팀장 → 임원)로 채우고, 줄이면 뒤에서부터 뺌
@@ -11657,16 +11680,44 @@ const StartFlow = {
     bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade', true); bind('fl-role', s.job, 'role'); bind('fl-post', s.job, 'post');
     this.bindCompany();
   },
+  /** 2026-11-02x 지원 분야의 회사·기관 목록: 구분 탭 + 이름 버튼. 검색칸에 글자를 적으면 목록도 좁혀짐 */
+  async renderBrowse(){
+    const s = this.s, box = document.getElementById('fl-co-browse'); if(!box) return;
+    const f = FIELD_COS[s.job.field];
+    if(!f){ box.innerHTML = ''; return; }
+    if(f.none){ box.innerHTML = `<p class="cb-none">${escapeHtml(f.none)}</p>`; return; }
+    if(!CompanyData._list) box.innerHTML = '<p class="cc-load">목록을 불러오는 중…</p>';
+    const all = fieldCompanies(s.job.field, await CompanyData.list());
+    if(!document.getElementById('fl-co-browse') || this.s !== s) return;
+    if(!all.length){ box.innerHTML = '<p class="cb-none">목록을 불러오지 못했어요. 위 칸에 이름으로 검색해 주세요.</p>'; return; }
+    const tabs = f.tabs.map(([k,l])=>[k, l, all.filter(r=>r.category === k).length]).filter(t=>t[2]);
+    const cat = tabs.some(t=>t[0] === s.job.cat) ? s.job.cat : '';
+    const q = s.job.companyId ? '' : CompanyData.norm(s.job.company);
+    const L = all.filter(r=>(!cat || r.category === cat) && (!q || r.k.includes(q)));
+    box.innerHTML = `<div class="cb">
+      <div class="cb-head"><span class="fl-lbl">목록에서 고르기</span><span class="cb-n">${escapeHtml(f.label || this.field(s.job.field).name)} ${all.length}곳${q ? ` · '${escapeHtml(s.job.company)}' ${L.length}곳` : ''}</span></div>
+      ${tabs.length > 1 ? `<div class="cb-tabs" role="group" aria-label="구분">${[['', '전체', all.length]].concat(tabs).map(([k,l,n])=>`<button type="button" class="cb-tab" data-cb-cat="${escapeHtml(k)}" aria-pressed="${k === cat}">${escapeHtml(l)} <em>${n}</em></button>`).join('')}</div>` : ''}
+      <div class="cb-list">${L.length ? L.map(r=>`<button type="button" class="cb-item" data-cb-id="${r.id}" aria-pressed="${r.id === s.job.companyId}" title="${escapeHtml(r.category)}">${escapeHtml(r.name)}</button>`).join('') : '<p class="cb-none">이 구분에는 맞는 곳이 없어요.</p>'}</div>
+    </div>`;
+    box.querySelectorAll('[data-cb-cat]').forEach(b=>b.onclick = ()=>{ s.job.cat = b.dataset.cbCat; this.renderBrowse(); });
+    box.querySelectorAll('[data-cb-id]').forEach(b=>b.onclick = ()=>{ const r = all.find(x=>x.id === b.dataset.cbId); if(r && this._pickCompany) this._pickCompany(r); });
+    const sel = box.querySelector('.cb-item[aria-pressed="true"]'); if(sel){ const l = box.querySelector('.cb-list'); l.scrollTop = sel.offsetTop - l.offsetTop - 60; }
+  },
   /** 2026-11-02q 목표 기업 검색: 이름 일부로 찾아 고르면 회사 ID를 담고 회사 카드를 보여 줌. 목록에 없는 이름은 직무 일반 질문으로 */
   bindCompany(){
     const s = this.s, inp = document.getElementById('fl-company'), ul = document.getElementById('fl-co-list'), box = document.getElementById('fl-co-card');
     if(!inp || !ul) return;
     let hits = [], act = -1, tm = 0;
     const close = ()=>{ ul.hidden = true; inp.setAttribute('aria-expanded','false'); act = -1; };
-    const pick = r=>{ s.job.companyId = r.id; s.job.company = r.name; const fid = CompanyData.fieldFor(r.category); if(FIELDS.some(x=>x.id === fid) && s.job.field !== fid){ s.job.field = fid; } this.render(); };
+    const pick = r=>{ s.job.companyId = r.id; s.job.company = r.name;
+      const inField = (CompanyData._list ? fieldCompanies(s.job.field, CompanyData._list) : []).some(x=>x.id === r.id);
+      const fid = CompanyData.fieldFor(r.category); if(!inField && FIELDS.some(x=>x.id === fid) && s.job.field !== fid){ s.job.field = fid; s.job.cat = ''; }
+      this.render(); };
+    this._pickCompany = pick;
+    this.renderBrowse();
     inp.addEventListener('input', ()=>{ s.job.company = inp.value; if(s.job.companyId){ s.job.companyId = ''; if(box) box.innerHTML = '<p class="cc-load">목록에 없으면 이름만 적어도 돼요. 그때는 직무 일반 질문으로 연습해요.</p>'; }
       const h = document.getElementById('fl-need'); if(h) h.textContent = '';
-      clearTimeout(tm); tm = setTimeout(async ()=>{ hits = await CompanyData.search(inp.value);
+      clearTimeout(tm); tm = setTimeout(async ()=>{ this.renderBrowse(); hits = await CompanyData.search(inp.value);
         if(!String(inp.value).trim()){ close(); return; }
         ul.innerHTML = hits.length ? hits.map((r,i)=>`<li role="option" id="fl-co-op-${i}" data-i="${i}" aria-selected="false"><b>${escapeHtml(r.name)}</b><span>${escapeHtml(r.category)}${r.verify_status === '미확인' ? ' · 인재상 미확인' : ''}</span></li>`).join('')
           : `<li class="empty" role="option" aria-disabled="true">목록에 없어요. 이대로 두면 직무 일반 질문으로 연습해요.</li>`;
@@ -11697,8 +11748,9 @@ const StartFlow = {
     const j = s.job, f = this.field(j.field);
     return `<h2 class="fl-h">기업·직무 맞춤 면접 준비</h2><p class="fl-lead">기업 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vProfile()}
     <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}</span><span class="d">${escapeHtml((x.roles||[]).slice(0,3).join('·'))}</span></button>`).join('')}</div></div>
-    <div class="fl-grid"><div class="fl-f"><label for="fl-company">목표 기업·기관 <span class="fl-opt">(선택)</span></label><div class="fl-co"><input id="fl-company" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fl-co-list" autocomplete="off" value="${escapeHtml(j.company)}" placeholder="회사 이름으로 검색 (예: 삼성, 한국전력)"><ul id="fl-co-list" class="fl-co-list" role="listbox" hidden></ul></div></div>
+    <div class="fl-grid"><div class="fl-f"><label for="fl-company">목표 기업·기관 <span class="fl-opt">(선택)</span></label><div class="fl-co"><input id="fl-company" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fl-co-list" autocomplete="off" value="${escapeHtml(j.company)}" placeholder="이름으로 검색하거나 아래 목록에서 고르세요"><ul id="fl-co-list" class="fl-co-list" role="listbox" hidden></ul></div></div>
     <div class="fl-f"><label for="fl-role">목표 직무 <span class="req">*</span></label><input id="fl-role" list="fl-role-list" value="${escapeHtml(j.role)}" placeholder="예: ${escapeHtml((f.roles||['영업'])[0])}"><datalist id="fl-role-list">${(f.roles||[]).map(r=>`<option value="${escapeHtml(r)}">`).join('')}</datalist></div>
+    <div class="fl-f wide" id="fl-co-browse"></div>
     <div class="fl-f wide" id="fl-co-card">${j.companyId ? '<p class="cc-load">회사 정보를 불러오는 중…</p>' : '<p class="cc-load">회사를 고르면 인재상과 면접 전형이 보여요. 목록에 없으면 이름만 적어도 돼요.</p>'}</div>
     <div class="fl-f wide"><label for="fl-post">채용공고 <span class="fl-opt">(선택)</span></label><textarea id="fl-post" placeholder="자격 요건·우대 사항을 붙여 넣으면 관련 경험을 확인하는 질문이 나와요.">${escapeHtml(j.post)}</textarea></div></div>
     ${this.vExps('활용할 내 경험')}${this.vSummary()}`; },
