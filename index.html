@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02x';
+var APP_VERSION = '2026-11-02y';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5486,6 +5486,9 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 @media(max-width:640px){ .fl-exp{grid-template-columns:auto minmax(0,1fr) auto;} .fl-exp .ty,.fl-exp .src{display:none;} .fl-add{grid-template-columns:1fr;} .hm-sum{grid-template-columns:1fr;} }
 @media(max-width:640px){ .fl-picks,.fl-grid{grid-template-columns:1fr;} .fl-people{grid-template-columns:repeat(2,minmax(0,1fr));} .fl-steps b span{display:none;} .fl-steps b.on span{display:inline;} .fl-steps{gap:4px;} .fl-steps .sep{width:6px;} .fl-h{font-size:19px;} .fl-body{padding:16px;} .fl-top,.fl-acts{padding-left:16px;padding-right:16px;} .fl-sum{grid-template-columns:88px minmax(0,1fr);} }
 /* 2026-11-02x 지원 분야별 회사·기관 목록 */
+.rl-list{display:flex;flex-wrap:wrap;gap:6px;}
+.rl-item{padding:7px 12px;border-radius:999px;border:1px solid #E3E1DB;background:#fff;font:inherit;font-size:13.5px;color:#1c1c1e;cursor:pointer;}
+.rl-item:hover{border-color:#c8441c;} .rl-item[aria-pressed="true"]{border-color:#c8441c;background:#FBEDE7;color:#c8441c;font-weight:700;}
 .cb{border:1px solid #E3E1DB;border-radius:12px;padding:12px;background:#FAFAF8;display:flex;flex-direction:column;gap:10px;}
 .cb-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;} .cb-n{font-size:12.5px;color:#8a8a90;}
 .cb-tabs{display:flex;gap:6px;flex-wrap:wrap;}
@@ -11413,6 +11416,9 @@ const CompanyCard = {
       <p class="cc-note">기업 맞춤 질문은 이 인재상을 바탕으로 만든 연습용 질문이에요. 실제 기출 질문이 아니에요.</p></section>`;
   },
 };
+/** 2026-11-02y 지원 분야별 목표 직무 (직군 → 직무). 직접 입력도 됨 */
+const HALLYM_ROLES = {"gov":[["행정",["일반행정","지방행정","교육행정","세무","관세","고용노동","출입국관리","통계","사서","우정"]],["사법·안전",["법원사무","등기","검찰","교정","보호","경찰","소방","해양경찰"]],["복지·보건",["사회복지","보건","간호","식품위생","보건진료"]],["기술",["전산","정보보호","토목","건축","전기","기계","환경","농업","임업","공업","화공","해양수산"]]],"pubcorp":[["경영·사무",["행정·경영지원","기획·전략","인사·노무","총무","재무·회계","법무·감사","구매·계약","홍보·대외협력"]],["사업·고객",["사업 운영","고객지원·민원","상담","현장 관리","국제협력"]],["기술",["전기","기계","토목","건축","화학","환경","원자력","통신","안전관리"]],["IT·데이터",["전산·IT","정보보안","데이터 분석","디지털 전환"]],["연구·전문",["연구·조사","정책 연구","간호·보건","의료기사","약무"]]],"corp":[["경영지원",["기획·전략","인사(HR)","총무","재무·회계","법무","IR·공시","구매·SCM"]],["영업·마케팅",["국내영업","해외영업","기술영업","영업관리","마케팅","브랜드·광고","상품기획(MD)","CRM·고객관리","유통·물류"]],["생산·기술",["연구개발(R&D)","생산관리","품질관리","공정·설비","안전·환경","설계","시공·현장관리"]],["IT·데이터",["IT·개발","데이터 분석","정보보안","디지털 마케팅"]],["금융",["은행 영업점","기업금융","자산운용","리스크관리","보험 영업·언더라이팅","증권 리서치","디지털 금융"]],["서비스·디자인",["고객서비스(CS)","교육·HRD","디자인","콘텐츠 기획","홍보(PR)"]]],"startup":[["기획·디자인",["서비스 기획(PM)","프로덕트 오너(PO)","UX/UI 디자인","브랜드 디자인"]],["개발·데이터",["프론트엔드 개발","백엔드 개발","앱 개발","QA","데이터 분석","AI·머신러닝"]],["마케팅·성장",["퍼포먼스 마케팅","콘텐츠 마케팅","그로스 마케팅","브랜드 마케팅","커뮤니티 매니저","SNS 운영"]],["사업·운영",["사업개발(BD)","B2B 영업","운영(오퍼레이션)","CX·고객경험","MD","파트너십"]],["경영지원",["인사·피플팀","재무·경영지원","총무·오피스 매니저"]]],"welfare":[["사회복지",["사회복지사","의료사회복지사","정신건강 사회복지","장애인복지","노인복지","지역사회복지","사례관리"]],["상담·심리",["청소년 상담","가족 상담","직업상담사","학교 상담(위클래스)","심리지원"]],["교육",["보육교사","유아교육","평생교육사","청소년 지도사","방과후 강사","교직원(교육행정)","학습 지원·튜터"]],["비영리·공익",["사업 기획·운영","모금·후원 관리","NGO 홍보","국제개발협력","자원봉사 관리","공익 캠페인"]]]};
+const hallymRoles = fid => (HALLYM_ROLES[fid] || []).flatMap(g=>g[1]);
 /** 2026-11-02x 지원 분야별로 보여 줄 회사·기관 목록 (회사 DB의 구분). 교육·복지·비영리는 공공기관 중 교육·복지·보건 기관 */
 const FIELD_COS = {
   pubcorp: { tabs:[['공기업','공기업'],['준정부기관','준정부기관'],['기타공공기관','기타공공기관']] },
@@ -11654,7 +11660,7 @@ const StartFlow = {
     const on = (sel, fn)=>body.querySelectorAll(sel).forEach(b=>b.onclick = ()=>{ fn(b); this.render(); });
     on('[data-kind]', b=>{ s.kind = b.dataset.kind; this.markHome(s.kind); });
     on('[data-mode]', b=>{ s.mode = b.dataset.mode; });
-    on('[data-field]', b=>{ s.job.field = b.dataset.field; s.job.role = ''; s.job.cat = '';
+    on('[data-field]', b=>{ s.job.field = b.dataset.field; s.job.role = ''; s.job.cat = ''; s.job.roleGroup = '';
       if(s.job.companyId && !fieldCompanies(s.job.field, CompanyData._list || []).some(x=>x.id === s.job.companyId)){ s.job.companyId = ''; s.job.company = ''; } });
     on('[data-use]', b=>{ const a = s.use, i = a.indexOf(b.dataset.use); i < 0 ? a.push(b.dataset.use) : a.splice(i,1); });
     on('[data-del]', b=>{ this.exps = this.exps.filter(e=>e.id !== b.dataset.del); s.use = s.use.filter(x=>x !== b.dataset.del); });
@@ -11677,8 +11683,22 @@ const StartFlow = {
       const id = 'e' + Date.now().toString(36); this.exps.push({ id, type: ty.value, text: v.slice(0, 120) }); s.use.push(id); this.render(); setTimeout(()=>{ const n = document.getElementById('fl-exp-text'); if(n) n.focus(); }, 0); };
     const et = document.getElementById('fl-exp-text'); if(et) et.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); add && add.click(); } });
     const bind = (id, obj, key, re)=>{ const el = document.getElementById(id); if(!el) return; el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', ()=>{ obj[key] = el.value; if(re) this.render(); const h = document.getElementById('fl-need'); if(h) h.textContent = ''; }); };
-    bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade', true); bind('fl-role', s.job, 'role'); bind('fl-post', s.job, 'post');
-    this.bindCompany();
+    bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade', true); bind('fl-role', s.job, 'role'); { const ri = document.getElementById('fl-role'); if(ri) ri.addEventListener('input', ()=>{ s.job.roleGroup = ''; clearTimeout(this._rt); this._rt = setTimeout(()=>this.renderRoles(), 250); }); } bind('fl-post', s.job, 'post');
+    this.bindCompany(); this.renderRoles();
+  },
+  /** 2026-11-02y 목표 직무 고르기: 직군 탭 + 직무 버튼. 누르면 목표 직무 칸에 들어가고, 칸에 직접 적어도 됨 */
+  renderRoles(){
+    const s = this.s, box = document.getElementById('fl-role-pick'); if(!box || s.kind !== 'job') return;
+    const groups = HALLYM_ROLES[s.job.field] || []; if(!groups.length){ box.innerHTML = ''; return; }
+    const cur = String(s.job.role || '').trim();
+    const gi = Math.max(0, groups.findIndex(g=>g[0] === s.job.roleGroup));
+    const g = s.job.roleGroup ? groups[gi] : (groups.find(x=>x[1].includes(cur)) || groups[0]);
+    box.innerHTML = `<div class="cb">
+      <div class="cb-head"><span class="fl-lbl">목표 직무 고르기</span><span class="cb-n">${escapeHtml(this.field(s.job.field).name)} 직무 ${hallymRoles(s.job.field).length}개 · 목록에 없으면 위 칸에 직접 적어요</span></div>
+      <div class="cb-tabs" role="group" aria-label="직군">${groups.map(x=>`<button type="button" class="cb-tab" data-rg="${escapeHtml(x[0])}" aria-pressed="${x === g}">${escapeHtml(x[0])} <em>${x[1].length}</em></button>`).join('')}</div>
+      <div class="rl-list">${g[1].map(r=>`<button type="button" class="rl-item" data-role="${escapeHtml(r)}" aria-pressed="${r === cur}">${escapeHtml(r)}</button>`).join('')}</div></div>`;
+    box.querySelectorAll('[data-rg]').forEach(b=>b.onclick = ()=>{ s.job.roleGroup = b.dataset.rg; this.renderRoles(); });
+    box.querySelectorAll('[data-role]').forEach(b=>b.onclick = ()=>{ s.job.role = b.dataset.role; s.job.roleGroup = g[0]; const inp = document.getElementById('fl-role'); if(inp) inp.value = s.job.role; const h = document.getElementById('fl-need'); if(h) h.textContent = ''; this.renderRoles(); });
   },
   /** 2026-11-02x 지원 분야의 회사·기관 목록: 구분 탭 + 이름 버튼. 검색칸에 글자를 적으면 목록도 좁혀짐 */
   async renderBrowse(){
@@ -11747,11 +11767,12 @@ const StartFlow = {
     if(s.kind === 'major') return `<h2 class="fl-h">전공·경험 면접 준비</h2><p class="fl-lead">전공 시험이 아니라, 내 경험을 얼마나 깊이 이해하고 설명하는지 확인하는 면접이에요.</p>${this.vProfile()}${this.vExps('수강 과목·프로젝트·활동')}${this.vSummary()}`;
     const j = s.job, f = this.field(j.field);
     return `<h2 class="fl-h">기업·직무 맞춤 면접 준비</h2><p class="fl-lead">기업 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vProfile()}
-    <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}</span><span class="d">${escapeHtml((x.roles||[]).slice(0,3).join('·'))}</span></button>`).join('')}</div></div>
+    <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}</span><span class="d">${escapeHtml((hallymRoles(x.id).length ? hallymRoles(x.id) : (x.roles||[])).slice(0,3).join('·'))} 외</span></button>`).join('')}</div></div>
     <div class="fl-grid"><div class="fl-f"><label for="fl-company">목표 기업·기관 <span class="fl-opt">(선택)</span></label><div class="fl-co"><input id="fl-company" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fl-co-list" autocomplete="off" value="${escapeHtml(j.company)}" placeholder="이름으로 검색하거나 아래 목록에서 고르세요"><ul id="fl-co-list" class="fl-co-list" role="listbox" hidden></ul></div></div>
-    <div class="fl-f"><label for="fl-role">목표 직무 <span class="req">*</span></label><input id="fl-role" list="fl-role-list" value="${escapeHtml(j.role)}" placeholder="예: ${escapeHtml((f.roles||['영업'])[0])}"><datalist id="fl-role-list">${(f.roles||[]).map(r=>`<option value="${escapeHtml(r)}">`).join('')}</datalist></div>
+    <div class="fl-f"><label for="fl-role">목표 직무 <span class="req">*</span></label><input id="fl-role" list="fl-role-list" value="${escapeHtml(j.role)}" placeholder="아래에서 고르거나 직접 입력 (예: ${escapeHtml(hallymRoles(j.field)[0] || '영업')})"><datalist id="fl-role-list">${hallymRoles(j.field).map(r=>`<option value="${escapeHtml(r)}">`).join('')}</datalist></div>
     <div class="fl-f wide" id="fl-co-browse"></div>
     <div class="fl-f wide" id="fl-co-card">${j.companyId ? '<p class="cc-load">회사 정보를 불러오는 중…</p>' : '<p class="cc-load">회사를 고르면 인재상과 면접 전형이 보여요. 목록에 없으면 이름만 적어도 돼요.</p>'}</div>
+    <div class="fl-f wide" id="fl-role-pick"></div>
     <div class="fl-f wide"><label for="fl-post">채용공고 <span class="fl-opt">(선택)</span></label><textarea id="fl-post" placeholder="자격 요건·우대 사항을 붙여 넣으면 관련 경험을 확인하는 질문이 나와요.">${escapeHtml(j.post)}</textarea></div></div>
     ${this.vExps('활용할 내 경험')}${this.vSummary()}`; },
   vPrepQ(){ return '<div class="pr-body" id="pr-body"><p class="cc-load">질문을 불러오는 중…</p></div>'; },
