@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-10-30a';
+var APP_VERSION = '2026-11-02a';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -131,6 +131,9 @@ var APP_VERSION = '2026-10-30a';
 <script src="supabase-js-2.118.0.js" integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK"></script>
 <script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js" integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK" crossorigin="anonymous"><\/script>');</script>
 <script>window.supabase || document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.118.0/dist/umd/supabase.js" integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK" crossorigin="anonymous"><\/script>');</script>
+<!-- 2026-11-02a 클론: DB 연결 정보(VITE_SUPABASE_URL·VITE_SUPABASE_ANON_KEY)는 config.js에서 읽음.
+     Vercel 배포 때는 scripts/build.mjs가 환경 변수로 config.js를 새로 만듦 -->
+<script src="config.js"></script>
 <style>
   :root{
     --navy-950:#0A0F1C;
@@ -8058,10 +8061,25 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 
 <script>
 /* ---------------- Supabase 백엔드 연결 ---------------- */
-const SUPABASE_URL = 'https://aqkukxcjcbfxqfesmuva.supabase.co';
+/* 2026-11-02a 클론: 주소·키를 코드에 박지 않고 config.js(window.ZAVAPASS_ENV)에서 읽음.
+   운영 DB(ZAVAPASS) 주소나 키가 들어오면 연결하지 않고 멈춤 → 클론에서 무엇을 해도 운영 DB는 건드리지 않음 */
+const ZAVAPASS_ENV = window.ZAVAPASS_ENV || {};
+const SUPABASE_URL = String(ZAVAPASS_ENV.VITE_SUPABASE_URL || '').trim();
 /* 문의 창구: 카카오톡 채널 주소 (예: https://pf.kakao.com/_xxxxx/chat). 비워 두면 문의 버튼이 숨겨짐 */
 const KAKAO_CHANNEL_URL = 'https://pf.kakao.com/_gFdLxb';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxa3VreGNqY2JmeHFmZXNtdXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NjQxNzYsImV4cCI6MjEwNTE0MDE3Nn0.KxsTHhUn8ofMNiGd5iTNgCAjcwBkresyUA7OlAmkc5A';
+const SUPABASE_ANON_KEY = String(ZAVAPASS_ENV.VITE_SUPABASE_ANON_KEY || '').trim();
+const PROD_SUPABASE_REFS = ['aqkukxcjcbfxqfesmuva'];   // 운영 ZAVAPASS 프로젝트: 클론에서는 절대 연결 금지
+(function(){
+  let keyRef = '';
+  try{ keyRef = JSON.parse(atob(SUPABASE_ANON_KEY.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).ref || ''; }catch(_){}
+  const why = !SUPABASE_URL || !SUPABASE_ANON_KEY ? 'DB 연결 정보(config.js)가 없어요.'
+    : PROD_SUPABASE_REFS.some(r => SUPABASE_URL.includes(r) || keyRef === r) ? '운영 DB 주소가 들어 있어 연결을 막았어요.' : '';
+  if(!why) return;
+  try{ const d = document.createElement('div'); d.setAttribute('role','alert'); d.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:16px/1.6 system-ui,sans-serif;color:#1c1c1e';
+    d.innerHTML = '<div><b>클론 사이트를 시작하지 않았어요.</b><br>' + why + '<br>VITE_SUPABASE_URL·VITE_SUPABASE_ANON_KEY를 클론 프로젝트 값으로 맞춰 주세요.</div>';
+    (document.documentElement).appendChild(d); }catch(_){}
+  throw new Error('[clone] ' + why);
+})();
 if(typeof window.supabase === 'undefined'){   // 2026-10-22v 부품을 세 곳 모두에서 못 받은 경우: 멈춘 화면 대신 안내
   try{ const d = document.createElement('div'); d.setAttribute('role','alert'); d.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:16px/1.6 system-ui,sans-serif;color:#1c1c1e';
     d.innerHTML = '<div><b>화면에 필요한 파일을 받지 못했어요.</b><br>인터넷 연결을 확인한 뒤 새로고침해 주세요. 회사·학교 와이파이라면 휴대폰 데이터로 바꿔 보세요.<br><br><button type="button" onclick="location.reload()" style="padding:10px 20px;border-radius:10px;border:0;background:#2F6FE0;color:#fff;font-size:15px">새로고침</button></div>';
