@@ -9,7 +9,9 @@
 3. 운영 Supabase 프로젝트 **ZAVAPASS (`aqkukxcjcbfxqfesmuva`)** 에는 쓰기를 하지 않습니다. SQL 실행, 마이그레이션, Edge Function 배포, 시크릿 변경, 데이터 수정 모두 금지입니다.
 4. DB 작업과 테스트는 클론 Supabase 프로젝트 **ZAVAPASS-clone (`yiuraowvnadqdrnysdce`)** 에서만 합니다.
 5. 수정한 뒤에는 캡처나 변경 내용을 먼저 사용자에게 보여 주고, 사용자가 커밋·푸시하라고 할 때만 커밋·푸시합니다.
-6. `main` 브랜치 합치기(PR)는 묻지 않습니다. 작업 브랜치에만 푸시합니다.
+6. 커밋하면 작업 브랜치(`claude/fervent-wright-3qv6u1`)와 `main` **두 곳에 함께** 푸시합니다. `main`은 작업 브랜치를 그대로 앞으로 당기는 방식(`git push origin <작업 브랜치>:main`)으로만 올리고, 강제 푸시는 하지 않습니다. PR은 만들지 않습니다.
+   - 작업 브랜치 → Vercel `stenotalkclone.vercel.app` (Production 브랜치)
+   - `main` → GitHub 저장소 첫 화면과 GitHub Pages
 
 ## 연결 정보
 
