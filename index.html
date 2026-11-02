@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02i';
+var APP_VERSION = '2026-11-02j';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -23183,6 +23183,9 @@ const IconNotice = {
    나중에 다시 만들 때 false로 바꾸면 원래대로 */
 const DEMO_HIDE_APP_PROMO = true;
 if(DEMO_HIDE_APP_PROMO){ try{ document.body.classList.add('no-app-promo'); HomeApp.maybeOffer = ()=>{}; HomeApp.open = ()=>{}; IconNotice.should = ()=>false; }catch(_){} }
+/* 2026-11-02j 한림대 데모: '면접에서 받은 질문을 남겨 주세요' 안내 창 끔 (속기사 실제 면접 후기용). 다시 켜려면 false */
+const DEMO_HIDE_REPORT_NUDGE = true;
+if(DEMO_HIDE_REPORT_NUDGE){ try{ RealReport.maybeNudge = ()=>{}; RealReport.maybeNudgeClosed = ()=>{}; }catch(_){} }
 try{ HomeApp.init(); }catch(e){ console.warn('HomeApp', e); }
 
 loadRememberedEmail();
