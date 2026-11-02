@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02p';
+var APP_VERSION = '2026-11-02q';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5485,6 +5485,56 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 @media (prefers-reduced-motion: reduce){ .hm-mode,.fl-pick{transition:none;} .hm-mode:active,.fl-pick:active,.fl-field:active,.fl-person:active{transform:none;} }
 @media(max-width:640px){ .fl-exp{grid-template-columns:auto minmax(0,1fr) auto;} .fl-exp .ty,.fl-exp .src{display:none;} .fl-add{grid-template-columns:1fr;} .hm-sum{grid-template-columns:1fr;} }
 @media(max-width:640px){ .fl-picks,.fl-grid{grid-template-columns:1fr;} .fl-people{grid-template-columns:repeat(2,minmax(0,1fr));} .fl-steps b span{display:none;} .fl-steps b.on span{display:inline;} .fl-steps{gap:4px;} .fl-steps .sep{width:6px;} .fl-h{font-size:19px;} .fl-body{padding:16px;} .fl-top,.fl-acts{padding-left:16px;padding-right:16px;} .fl-sum{grid-template-columns:88px minmax(0,1fr);} }
+/* 2026-11-02q 기업 맞춤 면접: 회사 검색·회사 카드·면접관 10가지·난이도 카드·면접실 면접관 명단·결과 인재상 */
+.fl-co{position:relative;}
+.fl-co-list{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;list-style:none;margin:0;padding:6px;background:#fff;border:1px solid #E3E1DB;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.14);max-height:300px;overflow:auto;}
+.fl-co-list li{display:flex;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:14px;}
+.fl-co-list li[aria-selected="true"],.fl-co-list li:hover{background:#F3F1EC;}
+.fl-co-list li span{color:#8a8a90;font-size:12.5px;white-space:nowrap;} .fl-co-list .empty{color:#8a8a90;cursor:default;}
+.cc{border:1px solid #E3E1DB;border-radius:12px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:9px;text-align:left;}
+.cc header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;} .cc header b{font-size:16px;font-weight:800;} .cc header span{font-size:12.5px;color:#8a8a90;}
+.cc-row{display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;align-items:start;}
+.cc-lbl{font-size:12px;font-weight:700;color:#8a8a90;padding-top:3px;}
+.cc-kws{display:flex;flex-wrap:wrap;gap:5px;} .cc-kw{background:#FBEDE7;color:#c8441c;border-radius:6px;padding:2px 8px;font-size:13px;font-weight:600;}
+.cc p{margin:0;} .cc-stage{font-size:14px;} .cc-stage i{font-style:normal;color:#8a8a90;padding:0 3px;}
+.cc-meta{font-size:12.5px;color:#8a8a90;} .cc-none{color:#8a8a90;font-size:13.5px;}
+.cc-soft{font-size:12.5px;border-radius:8px;padding:6px 10px;background:#FBF1DC;color:#8a5a00;}
+.cc-note{font-size:12px;color:#8a8a90;border-top:1px dashed #E3E1DB;padding-top:8px;}
+.cc-load{font-size:13px;color:#8a8a90;margin:0;}
+.fl-diffs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.fl-diff{display:flex;flex-direction:column;gap:2px;text-align:left;padding:11px 13px;border:1.5px solid #E3E1DB;border-radius:12px;background:#fff;color:#1c1c1e;font:inherit;cursor:pointer;}
+.fl-diff b{font-size:14.5px;} .fl-diff span{font-size:12.5px;color:#4a4a52;}
+.fl-diff[aria-pressed="true"]{border-color:#c8441c;background:#FDF5F1;box-shadow:0 0 0 3px rgba(200,68,28,.13);}
+@media(min-width:700px){ #modal-flow .fl-box{max-width:880px;} .fl-people{grid-template-columns:repeat(5,minmax(0,1fr));} .fl-people .fl-person{padding:12px;} }
+@media(max-width:640px){ .fl-diffs{grid-template-columns:1fr;} .cc-row{grid-template-columns:1fr;gap:3px;} }
+.iv-co{margin:0 0 10px;border:1px solid #E3E1DB;border-radius:12px;background:#FAFAF8;color:#1c1c1e;}
+.iv-co summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:13.5px;font-weight:700;}
+.iv-co summary::-webkit-details-marker{display:none;}
+.iv-co summary::after{content:'회사 정보 펼치기';margin-left:auto;font-size:12px;color:#8a8a90;font-weight:500;} .iv-co[open] summary::after{content:'접기';}
+.iv-co .cc{margin:0 10px 10px;}
+.iv-co-hint{order:9;margin:10px 0 0;padding:9px 12px;border-radius:10px;background:#FBEDE7;color:#4a4a52;font-size:13.5px;line-height:1.55;} .iv-co-hint b{color:#c8441c;}
+#screen-interview .avatar-panel > .iv-roster, #screen-interview .avatar-panel > .iv-co{grid-column:1/-1;}
+.iv-roster{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px;}
+.iv-roster{justify-content:center;position:relative;z-index:2;}
+.iv-rp{display:inline-flex;align-items:center;gap:6px;border:1px solid #E3E1DB;border-radius:999px;padding:4px 10px 4px 6px;font-size:12.5px;background:#fff;color:#1c1c1e;}
+.iv-rp i{width:16px;height:16px;border-radius:50%;display:inline-block;} .iv-rp em{font-style:normal;color:#8a8a90;}
+.iv-rp.on{border-color:#c8441c;background:#FBEDE7;font-weight:700;} .iv-rp.on em{color:#c8441c;}
+.live-interviewer.spk-in{animation:ivSpkIn .35s ease;}
+@keyframes ivSpkIn{from{transform:translateX(16px);opacity:.25;}to{transform:none;opacity:1;}}
+@media (prefers-reduced-motion: reduce){ .live-interviewer.spk-in{animation:none;} }
+.q-co{background:#FBEDE7;border-radius:10px;padding:9px 12px;font-size:13.5px;margin:0 0 10px;} .q-co p{margin:3px 0 0;color:#4a4a52;}
+.co-vd{font-size:12px;font-weight:800;border-radius:999px;padding:2px 9px;white-space:nowrap;margin-left:4px;}
+.co-vd.ok{background:#E6F2EA;color:#2E7D4F;} .co-vd.mid{background:#FBF1DC;color:#8a5a00;} .co-vd.no{background:#EFEDE7;color:#77767D;}
+.q-co-chip{font-size:11px;font-weight:800;color:#c8441c;border:1px solid #c8441c;border-radius:5px;padding:0 5px;margin-right:6px;white-space:nowrap;}
+.co-res{display:flex;flex-direction:column;gap:12px;}
+.co-res h3{margin:0;font-size:16px;font-weight:800;}
+.co-tal{display:grid;grid-template-columns:minmax(0,auto) auto minmax(0,1fr);gap:8px;align-items:center;font-size:13.5px;}
+.co-ops{display:flex;flex-direction:column;gap:10px;}
+.co-op{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start;}
+.co-op .av{width:34px;height:34px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;}
+.co-op p{margin:2px 0 0;font-size:14px;color:#4a4a52;}
+.co-muted{font-size:12.5px;color:#8a8a90;margin:0;}
+@media(max-width:640px){ .co-tal{grid-template-columns:minmax(0,1fr) auto;} .co-tal .co-muted{grid-column:1/-1;} }
 #signup-consent-row{min-height:44px;align-items:center;} #signup-consent{width:22px;height:22px;flex:none;}
 .mp-sec-t{margin:0 0 10px;font-size:16px;font-weight:700;color:var(--c-ink,#1c1c1e);} .mp-sec-t small{display:block;margin-top:2px;font-size:13px;font-weight:500;color:var(--c-ink-3,#66666c);}
 .mp-docs{padding:16px;border:1.5px solid var(--c-accent,#e8532a);border-radius:14px;margin-bottom:22px;background:#fffaf7;}
@@ -7128,6 +7178,8 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
         <div class="dialog-phase" id="dialog-phase" style="display:none;"><span class="dot"></span><span id="dialog-phase-text">준비 중</span></div>
         <!-- 라이브(밝은 테마) 전용: 진행 칩 + 면접관 타일 -->
         <span class="live-chip live-only"><i></i>면접 진행 중</span>
+        <div class="iv-roster" id="iv-roster" role="list" aria-label="면접관" hidden></div>
+        <details class="iv-co" id="iv-co" hidden><summary id="iv-co-sum">회사 정보</summary><div id="iv-co-card"></div></details>
         <div class="live-interviewer live-only" id="live-interviewer">
           <span class="li-tag"><i></i>면접관</span>
           <div class="li-waiting" id="li-waiting" aria-hidden="true">
@@ -7219,6 +7271,7 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
             <span class="example-label">질문</span>
             <span id="iv-example-q">국회 상임위원회 회의 중 발언자가 겹칠 경우, 어떤 방식으로 속기 순서를 정리하시겠습니까?</span>
           </div>
+          <p class="iv-co-hint" id="iv-co-hint" hidden></p>
           <div class="rh-qchips rh-only"><span class="rh-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>권장 시간<b>00:30</b></span></div>
           <div class="rh3-startgate" id="rh3-startgate" hidden>
             <p><b>준비되면 시작을 눌러 주세요</b>카메라 속 내 모습과 마이크 소리를 먼저 확인해 보세요. 시작을 누르면 면접관이 첫 질문을 읽어 드려요.</p>
@@ -7336,6 +7389,7 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 
 
     <p class="result-print-foot">ZAVAPASS AI · 한국AI속기사협회 AI 모의면접 리포트 — 질문 유형별 면접 기준과 모범답안 요점으로 채점한 참고 결과예요. 실제 면접에서는 내 경험과 생각을 진솔하게 전하는 것이 가장 중요해요.</p>
+    <div class="panel co-res" id="co-result" hidden></div>
     <div class="panel set-review-panel" id="set-review-panel" hidden>
       <div class="section-title"><span>면접관 종합 의견 <small class="sr-tag" id="sr-tag">실전 세트</small></span><span class="sr-src" id="sr-src"></span></div>
       <p class="sr-headline" id="sr-headline"></p>
@@ -11146,6 +11200,54 @@ function startTrialInterview(){
 }
 /** 2026-11-02g 한림대 데모 홈의 [연습형 면접]·[실전형 면접] → 2026-11-02k 면접 준비 흐름을 고른 방식으로 엶 */
 function startModeFromHome(kind){ StartFlow.open(kind === 'real' ? 'real' : 'practice'); }
+/* 2026-11-02q 기업 맞춤 면접: 회사 검색·자료 (키는 회사 ID). 면접자는 list_companies·get_company_pack 함수로만 읽음 (supabase/clone/004)
+   예상 질문은 인재상을 바탕으로 자체 작성한 연습용 질문이라 '기출'이라고 보여 주지 않음 */
+const CompanyData = {
+  _list:null, _packs:{}, cur:null,
+  norm(s){ return String(s||'').toLowerCase().replace(/\(주\)|㈜|주식회사|\s+/g,'').replace(/[()·\-]/g,''); },
+  async list(){
+    if(this._list) return this._list;
+    try{ const { data, error } = await sb.rpc('list_companies'); if(error) throw new Error(error.message);
+      this._list = (data||[]).map(r=>Object.assign(r, { k: this.norm(r.name) })); }
+    catch(e){ console.warn('[회사 목록 불러오기 실패]', e.message || e); return []; }
+    return this._list;
+  },
+  async search(q, n){
+    const k = this.norm(q); if(!k) return [];
+    const L = await this.list();
+    return L.filter(r=>r.k.includes(k)).sort((a,b)=>(a.k.startsWith(k)?0:1)-(b.k.startsWith(k)?0:1) || ((a.reference_only?1:0)-(b.reference_only?1:0)) || a.category_order-b.category_order).slice(0, n || 8);
+  },
+  async pack(id){
+    if(!id) return null; if(this._packs[id]) return this._packs[id];
+    try{ const { data, error } = await sb.rpc('get_company_pack', { p_id: id }); if(error) throw new Error(error.message); if(!data || !data.talent) return null; return (this._packs[id] = data); }
+    catch(e){ console.warn('[회사 자료 불러오기 실패]', e.message || e); return null; }
+  },
+  fieldFor(category){ return /공기업|준정부|기타공공/.test(category||'') ? 'pubcorp' : /IT·플랫폼/.test(category||'') ? 'startup' : 'corp'; },
+  /** 면접 질문으로 넣을 예상 질문 n개 (2·3번 자리에 들어감) */
+  questions(pack, n){
+    if(!pack || !pack.questions) return [];
+    return pack.questions.slice(0, n).map(q=>({ q: q.question, ref: null, hint: q.eval_point || '', id: `cq-${pack.talent.id}-${q.seq}`, diff: '중',
+      co: { id: pack.talent.id, name: pack.talent.name, seq: q.seq, lk: q.linked_talent || '', ev: q.eval_point || '' } }));
+  },
+  /** 지금 면접에 쓸 회사 자료 (기업·직무 맞춤으로 회사를 고른 경우만) */
+  active(){ const fc = state.flowCtx, p = this.cur; return (fc && fc.purpose === 'job' && fc.job && fc.job.companyId && p && p.talent && p.talent.id === fc.job.companyId) ? p : null; },
+};
+const CompanyCard = {
+  flat(s){ return String(s == null ? '' : s).replace(/\s+/g,' ').trim(); },
+  html(p, compact){
+    const t = p.talent, pr = p.process || {}, f = this.flat;
+    const kw = (t.keywords||[]).length && t.verify_status !== '미확인' ? `<div class="cc-kws">${t.keywords.slice(0,6).map(k=>`<span class="cc-kw">${escapeHtml(f(k))}</span>`).join('')}</div>` : '<span class="cc-none">공식 인재상 정보가 없어서, 직무 이해·협업·문제 해결 같은 일반 역량 질문으로 연습해요.</span>';
+    const st = pr.provide_level === '미제공' || !pr.stages ? '<span class="cc-none">공식 면접 전형 정보가 없어요. 일반적인 인성·직무 면접으로 진행해요.</span>'
+      : `<div><p class="cc-stage">${escapeHtml(f(pr.stages)).split(/\s*→\s*/).join('<i>→</i>')}</p>${(pr.interview_types||[]).length ? `<p class="cc-meta">면접 유형 · ${escapeHtml(pr.interview_types.join(', '))}</p>` : ''}<p class="cc-meta">${escapeHtml(pr.base_posting||'')} 기준${pr.posted_month ? ' · ' + escapeHtml(pr.posted_month) + ' 공고' : ''} · 공고·직무·연도마다 달라질 수 있어요</p></div>`;
+    return `<section class="cc" aria-label="${escapeHtml(t.name)} 면접 정보"><header><b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.category||'')}</span></header>
+      <div class="cc-row"><span class="cc-lbl">인재상</span><div>${kw}${!compact && t.summary && t.verify_status !== '미확인' ? `<p class="cc-meta" style="margin-top:6px">${escapeHtml(t.summary)}</p>` : ''}</div></div>
+      ${t.verify_status === '부분확인' ? '<p class="cc-soft">그룹 공통이거나 대표 계열사 기준 인재상일 수 있어요.</p>' : ''}
+      <div class="cc-row"><span class="cc-lbl">면접 전형</span>${st}</div>
+      <p class="cc-note">기업 맞춤 질문은 이 인재상을 바탕으로 만든 연습용 질문이에요. 실제 기출 질문이 아니에요.</p></section>`;
+  },
+};
+/** 난이도별 설명과 면접 전체 꼬리질문 최대 개수 (면접 준비 창 '꼬리질문' 칩 값과 같음) */
+const FLOW_DIFFS = { '하':{ t:'기본 질문 위주', d:'쉬운 직무 질문 · 꼬리질문 최대 3개', fu:'3' }, '중':{ t:'실제 면접 수준', d:'꼬리질문 최대 5개 · 역할·결과를 구체적으로 확인', fu:'5' }, '상':{ t:'깊게 파고들기', d:'어려운 직무 질문 · 꼬리질문 최대 5개 · 판단 근거까지 확인', fu:'5' } };
 /* 2026-11-02k 한림대 데모: 면접 준비 흐름. 끝나면 고른 분야로 기존 면접 준비 창(openSetup)을 열고 답변 시간·면접관 진행 방식을 맞춰 둠.
    학년·경험·기업·채용공고는 아직 질문 생성에 쓰이지 않고 state.flowCtx에만 담김 (커리어 인바디·채용공고 연동 전 화면 틀) */
 const StartFlow = {
@@ -11156,7 +11258,12 @@ const StartFlow = {
     { id:'exec', n:'임원', m:'짧고 무게감 있는 질문', q:'가치관과 장기 목표를 봐요', c:'#7A5A3A', p:'normal' },
     { id:'senior', n:'입사 선배', m:'친근하고 편한 말투', q:'긴장을 풀어 주며 기본을 물어요', c:'#B0703A', p:'soft' },
     { id:'press', n:'압박형 면접관', m:'단호하고 반박이 잦음', q:'답변의 허점을 파고들어요', c:'#A23B2A', p:'hard' },
-    { id:'data', n:'데이터형 면접관', m:'숫자와 근거를 요구', q:'성과를 수치로 확인해요', c:'#4F5DA8', p:'normal' } ],
+    { id:'data', n:'데이터형 면접관', m:'숫자와 근거를 요구', q:'성과를 수치로 확인해요', c:'#4F5DA8', p:'normal' },
+    { id:'value', a:'가', n:'인재상 검증형', m:'회사 이야기를 자주 꺼냄', q:'인재상·핵심가치에 맞는지 봐요', c:'#8A4F7D', p:'normal' },
+    { id:'logic', n:'논리 검증형', m:'"왜요?"를 차분히 반복', q:'판단의 이유와 앞뒤 논리를 봐요', c:'#2F6F86', p:'normal' },
+    { id:'quiet', n:'무반응형 면접관', m:'맞장구 없이 짧게 들음', q:'반응이 없어도 흔들리지 않는지 봐요', c:'#5E5E66', p:'hard' },
+    { id:'ethics', n:'공공·청렴형', m:'원칙을 중시하는 말투', q:'공정성·청렴·공공성 판단을 봐요', c:'#6B7A3A', p:'normal' } ],
+  ini(x){ return x.a || x.n.slice(0,1); },
   exps:[],      // 학생이 직접 입력한 경험 {id,type,text} — 학교 데이터 미연동이라 이 창을 쓰는 동안만 보관 (DB 저장은 다음 단계)
   s:null,
   field(id){ return FIELDS.find(f=>f.id===id) || FIELDS[0]; },
@@ -11167,9 +11274,9 @@ const StartFlow = {
     const note = String((state.currentUser && state.currentUser.note) || ''); const dept = (note.match(/(\S+(학과|학부|스쿨|과))\s*$/) || [])[1] || '';
     const f = this.field(state.dashField); const first = !((state.historyRecords || []).length);
     const prev = this.s || {};
-    this.s = { step: kind ? 1 : 0, kind: kind || null, mode: mode || null, count:1, people:['hr'], spk:0, diff: first ? '하' : '중', showSet:false,
+    this.s = { step: kind ? 1 : 0, kind: kind || null, mode: mode || null, count:2, people:['hr','lead'], spk:0, diff: first ? '하' : '중', showSet:true,
       major:{ dept: (prev.major && prev.major.dept) || dept, grade: (prev.major && prev.major.grade) || '' }, use: (prev.use || this.exps.map(e=>e.id)),
-      job:{ field:f.id, company:'', role:'', post:'' } };
+      job:{ field:f.id, company:'', companyId:'', role:'', post:'' } };
     document.getElementById('modal-flow').classList.add('active'); this.render();
   },
   close(){ document.getElementById('modal-flow').classList.remove('active'); },
@@ -11190,13 +11297,15 @@ const StartFlow = {
     // 질문 생성에 넘길 맥락: 이름·학번 같은 식별정보는 넣지 않음
     state.flowCtx = { purpose: s.kind, mode: s.mode, interviewers: s.people.slice(), interviewerCount: s.count, pressure, diff: s.diff, major: { dept: s.major.dept, grade: s.major.grade },
       experiences: this.usedExps().map(e=>({ type: e.type, text: e.text, source: '직접 입력' })),
-      job: s.kind === 'job' ? { field: fid, company: s.job.company || null, role: s.job.role, post: s.job.post || null } : null };
+      job: s.kind === 'job' ? { field: fid, company: s.job.company || null, companyId: s.job.companyId || null, role: s.job.role, post: s.job.post || null } : null };
+    CompanyData.cur = null; state.companyPackP = null;
+    if(s.kind === 'job' && s.job.companyId){ state.companyPackP = CompanyData.pack(s.job.companyId).then(p=>{ CompanyData.cur = p; return p; }); }
     this.close();
     if(state.dashField !== fid){ state.dashField = fid; try{ renderDashboard(); }catch(_){} }
     openSetup(fid);
     setTimeout(()=>{ try{
       const pick = (row, val, type)=>{ const r = document.getElementById(row); const c = r && r.querySelector(`.chip[data-val="${val}"]`); if(c && !c.classList.contains('sel')) selectChip(c, type); };
-      pick('chip-realset', 'normal', 'realset'); pick('chip-timed', s.mode === 'real' ? 'real' : 'free', 'timed'); pick('chip-pressure', pressure, 'pressure'); pick('chip-diff', s.diff, 'diff');
+      pick('chip-realset', 'normal', 'realset'); pick('chip-timed', s.mode === 'real' ? 'real' : 'free', 'timed'); pick('chip-pressure', pressure, 'pressure'); pick('chip-diff', s.diff, 'diff'); pick('chip-followups', (FLOW_DIFFS[s.diff] || FLOW_DIFFS['중']).fu, 'followups');
     }catch(_){} }, 450);
   },
   render(){
@@ -11230,7 +11339,29 @@ const StartFlow = {
       const id = 'e' + Date.now().toString(36); this.exps.push({ id, type: ty.value, text: v.slice(0, 120) }); s.use.push(id); this.render(); setTimeout(()=>{ const n = document.getElementById('fl-exp-text'); if(n) n.focus(); }, 0); };
     const et = document.getElementById('fl-exp-text'); if(et) et.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); add && add.click(); } });
     const bind = (id, obj, key, re)=>{ const el = document.getElementById(id); if(!el) return; el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', ()=>{ obj[key] = el.value; if(re) this.render(); const h = document.getElementById('fl-need'); if(h) h.textContent = ''; }); };
-    bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade', true); bind('fl-company', s.job, 'company'); bind('fl-role', s.job, 'role'); bind('fl-post', s.job, 'post');
+    bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade', true); bind('fl-role', s.job, 'role'); bind('fl-post', s.job, 'post');
+    this.bindCompany();
+  },
+  /** 2026-11-02q 목표 기업 검색: 이름 일부로 찾아 고르면 회사 ID를 담고 회사 카드를 보여 줌. 목록에 없는 이름은 직무 일반 질문으로 */
+  bindCompany(){
+    const s = this.s, inp = document.getElementById('fl-company'), ul = document.getElementById('fl-co-list'), box = document.getElementById('fl-co-card');
+    if(!inp || !ul) return;
+    let hits = [], act = -1, tm = 0;
+    const close = ()=>{ ul.hidden = true; inp.setAttribute('aria-expanded','false'); act = -1; };
+    const pick = r=>{ s.job.companyId = r.id; s.job.company = r.name; const fid = CompanyData.fieldFor(r.category); if(FIELDS.some(x=>x.id === fid) && s.job.field !== fid){ s.job.field = fid; } this.render(); };
+    inp.addEventListener('input', ()=>{ s.job.company = inp.value; if(s.job.companyId){ s.job.companyId = ''; if(box) box.innerHTML = '<p class="cc-load">목록에 없으면 이름만 적어도 돼요. 그때는 직무 일반 질문으로 연습해요.</p>'; }
+      const h = document.getElementById('fl-need'); if(h) h.textContent = '';
+      clearTimeout(tm); tm = setTimeout(async ()=>{ hits = await CompanyData.search(inp.value);
+        if(!String(inp.value).trim()){ close(); return; }
+        ul.innerHTML = hits.length ? hits.map((r,i)=>`<li role="option" id="fl-co-op-${i}" data-i="${i}" aria-selected="false"><b>${escapeHtml(r.name)}</b><span>${escapeHtml(r.category)}${r.verify_status === '미확인' ? ' · 인재상 미확인' : ''}</span></li>`).join('')
+          : `<li class="empty" role="option" aria-disabled="true">목록에 없어요. 이대로 두면 직무 일반 질문으로 연습해요.</li>`;
+        ul.hidden = false; inp.setAttribute('aria-expanded','true'); act = -1; }, 150); });
+    inp.addEventListener('keydown', e=>{ if(ul.hidden || !hits.length) return;
+      if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); act = (act + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; ul.querySelectorAll('li').forEach((li,i)=>li.setAttribute('aria-selected', String(i === act))); inp.setAttribute('aria-activedescendant', 'fl-co-op-' + act); }
+      else if(e.key === 'Enter'){ e.preventDefault(); pick(hits[Math.max(0, act)]); } else if(e.key === 'Escape') close(); });
+    ul.addEventListener('mousedown', e=>{ const li = e.target.closest('[data-i]'); if(li){ e.preventDefault(); pick(hits[+li.dataset.i]); } });
+    inp.addEventListener('blur', ()=>setTimeout(close, 150));
+    if(s.job.companyId && box) CompanyData.pack(s.job.companyId).then(p=>{ const b = document.getElementById('fl-co-card'); if(b && this.s && this.s.job.companyId === s.job.companyId) b.innerHTML = p ? CompanyCard.html(p, true) : '<p class="cc-load">회사 정보를 불러오지 못했어요. 직무 일반 질문으로 진행할 수 있어요.</p>'; });
   },
   vKind(){ const s = this.s; return `<h2 class="fl-h">어떤 면접을 준비할까요?</h2><p class="fl-lead">면접 목적을 고르면, 다음 단계에서 그에 맞는 정보를 확인해요. 진행 방식(연습형·실전형)은 그다음에 골라요.</p>
     <div class="fl-picks"><button type="button" class="fl-pick" data-kind="major" aria-pressed="${s.kind==='major'}"><span class="t">전공·경험 면접</span><span class="d">수강 과목·프로젝트·활동 경험을 얼마나 깊이 이해하고 설명하는지 연습해요.</span><span class="n">다음: 전공·학년 확인 → 경험 입력·선택</span></button>
@@ -11251,19 +11382,21 @@ const StartFlow = {
     const j = s.job, f = this.field(j.field);
     return `<h2 class="fl-h">기업·직무 맞춤 면접 준비</h2><p class="fl-lead">기업 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vProfile()}
     <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}</span><span class="d">${escapeHtml((x.roles||[]).slice(0,3).join('·'))}</span></button>`).join('')}</div></div>
-    <div class="fl-grid"><div class="fl-f"><label for="fl-company">${f.org || '목표 기관·기업'} <span class="fl-opt">(선택)</span></label><input id="fl-company" value="${escapeHtml(j.company)}" placeholder="직접 입력"></div>
+    <div class="fl-grid"><div class="fl-f"><label for="fl-company">목표 기업·기관 <span class="fl-opt">(선택)</span></label><div class="fl-co"><input id="fl-company" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fl-co-list" autocomplete="off" value="${escapeHtml(j.company)}" placeholder="회사 이름으로 검색 (예: 삼성, 한국전력)"><ul id="fl-co-list" class="fl-co-list" role="listbox" hidden></ul></div></div>
     <div class="fl-f"><label for="fl-role">목표 직무 <span class="req">*</span></label><input id="fl-role" list="fl-role-list" value="${escapeHtml(j.role)}" placeholder="예: ${escapeHtml((f.roles||['영업'])[0])}"><datalist id="fl-role-list">${(f.roles||[]).map(r=>`<option value="${escapeHtml(r)}">`).join('')}</datalist></div>
+    <div class="fl-f wide" id="fl-co-card">${j.companyId ? '<p class="cc-load">회사 정보를 불러오는 중…</p>' : '<p class="cc-load">회사를 고르면 인재상과 면접 전형이 보여요. 목록에 없으면 이름만 적어도 돼요.</p>'}</div>
     <div class="fl-f wide"><label for="fl-post">채용공고 <span class="fl-opt">(선택)</span></label><textarea id="fl-post" placeholder="자격 요건·우대 사항을 붙여 넣으면 관련 경험을 확인하는 질문이 나와요.">${escapeHtml(j.post)}</textarea></div></div>
     ${this.vExps('활용할 내 경험')}${this.vSummary()}`; },
   vMode(){ const s = this.s; return `<h2 class="fl-h">진행 방식을 골라 주세요</h2><p class="fl-lead">어느 목적이든 연습형과 실전형 모두 할 수 있어요.</p>
     <div class="fl-picks"><button type="button" class="fl-pick" data-mode="practice" aria-pressed="${s.mode==='practice'}"><span class="t">연습형</span><span class="d">편하게 익히기</span><ul class="fl-ul"><li>질문 힌트</li><li>답변 후 바로 피드백</li><li>중간에 멈추고 이어 하기</li></ul></button>
     <button type="button" class="fl-pick" data-mode="real" aria-pressed="${s.mode==='real'}"><span class="t">실전형</span><span class="d">실제 면접처럼</span><ul class="fl-ul"><li>자기소개 60초·답변 90초 제한</li><li>힌트·중간 피드백 없음</li><li>마친 뒤 종합 리포트</li></ul></button></div>`; },
   names(){ return this.s.people.map(id=>(this.PEOPLE.find(x=>x.id===id) || {}).n).filter(Boolean); },
+  pressureName(){ const ps = this.s.people.map(id=>(this.PEOPLE.find(x=>x.id===id) || {}).p || 'normal'); return ps.includes('hard') ? '압박' : ps.every(x=>x === 'soft') ? '부드러운' : '보통'; },
   vRoom(){ const s = this.s; const ppl = s.people.map(id=>this.PEOPLE.find(x=>x.id===id)).filter(Boolean); if(!ppl.length) return '';
     const k = Math.min(s.spk, ppl.length-1), cur = ppl[k];
     const prev = (s.prevSpk != null && s.prevSpk !== k) ? ppl[s.prevSpk] : null; const fwd = prev ? (k > s.prevSpk || (s.prevSpk === ppl.length-1 && k === 0)) : true;
     s.prevSpk = null;   // 움직임은 발언자가 바뀐 그 한 번만
-    const layer = (x, cls)=>`<div class="fl-layer ${cls}"><span class="av" style="background:${x.c}">${x.n.slice(0,1)}</span><span class="nm">${x.n}</span></div>`;
+    const layer = (x, cls)=>`<div class="fl-layer ${cls}"><span class="av" style="background:${x.c}">${this.ini(x)}</span><span class="nm">${x.n}</span></div>`;
     return `<div class="fl-room2" aria-label="면접실 배치 미리보기">
       <div class="fl-roster" role="list">${ppl.map((x,i)=>`<button type="button" class="fl-rp${i===k?' on':''}${prev && i===k?' moved':''}" data-spk="${i}" role="listitem" aria-current="${i===k}"><i style="background:${x.c}"></i>${x.n}${i===0?' · 진행':''}<em>${i===k?'말하는 중':'대기'}</em></button>`).join('')}</div>
       <div class="fl-stage2">
@@ -11274,22 +11407,25 @@ const StartFlow = {
     </div>`; },
   vSet(){ const s = this.s; const nm = this.names();
     return `<h2 class="fl-h">면접관과 설정</h2><p class="fl-lead">추천 설정으로 바로 시작하거나, '설정 변경'에서 바꿀 수 있어요.</p>
-    <div class="fl-reco"><div><b>추천 설정</b><p>면접관 ${nm.join(' · ')} (${s.count}명) · 난이도 ${s.diff} · 인성·직무 질문</p></div><button type="button" class="btn btn-outline" id="fl-set-toggle" aria-expanded="${s.showSet}">${s.showSet?'설정 닫기':'설정 변경'}</button></div>
+    <div class="fl-reco"><div><b>추천 설정</b><p>면접관 ${nm.join(' · ')} (${s.count}명) · ${this.pressureName()} 면접 · 난이도 ${s.diff}</p></div><button type="button" class="btn btn-outline" id="fl-set-toggle" aria-expanded="${s.showSet}">${s.showSet?'설정 닫기':'설정 변경'}</button></div>
     ${s.showSet ? `<div class="fl-grid"><div class="fl-f"><span class="fl-lbl">면접관 인원</span><div class="fl-chips">${[1,2,3].map(n=>`<button type="button" class="fl-chip" data-count="${n}" aria-pressed="${n===s.count}">${n}명</button>`).join('')}</div></div>
-    <div class="fl-f"><span class="fl-lbl">난이도</span><div class="fl-chips">${['하','중','상'].map(d=>`<button type="button" class="fl-chip" data-diff="${d}" aria-pressed="${d===s.diff}">${d}</button>`).join('')}</div></div></div>
+    </div>
     <div class="fl-f"><div class="fl-row"><span class="fl-lbl">면접관 ${s.count}명 고르기 (${s.people.length}/${s.count})</span>${s.count>1?'<span class="fl-sub">처음 고른 면접관이 진행을 맡아요</span>':''}</div>
-    <div class="fl-people">${this.PEOPLE.map(x=>{ const k = s.people.indexOf(x.id); return `<button type="button" class="fl-person" data-person="${x.id}" aria-pressed="${k>=0}">${k>=0&&s.count>1?`<span class="ord">${k+1}</span>`:''}<span class="av" style="background:${x.c}">${x.n.slice(0,1)}</span><span class="n">${x.n}</span><span class="m">${x.m}</span><span class="q">${x.q}</span></button>`; }).join('')}</div></div>
+    <div class="fl-people">${this.PEOPLE.map(x=>{ const k = s.people.indexOf(x.id); return `<button type="button" class="fl-person" data-person="${x.id}" aria-pressed="${k>=0}">${k>=0&&s.count>1?`<span class="ord">${k+1}</span>`:''}<span class="av" style="background:${x.c}">${this.ini(x)}</span><span class="n">${x.n}</span><span class="m">${x.m}</span><span class="q">${x.q}</span></button>`; }).join('')}</div></div>
+    <div class="fl-f wide"><span class="fl-lbl">난이도</span><div class="fl-diffs">${Object.entries(FLOW_DIFFS).map(([k,v])=>`<button type="button" class="fl-diff" data-diff="${k}" aria-pressed="${k===s.diff}"><b>${k} · ${v.t}</b><span>${v.d}</span></button>`).join('')}</div>
+      <p class="fl-sub">직무 질문은 난이도에 맞춰 뽑혀요. 기업 맞춤 질문은 난이도와 상관없이 같은 질문이 나와요.</p></div>
     <div class="fl-f wide"><span class="fl-lbl">면접 유형</span><p class="fl-sub">인성·직무 질문이 기본이에요. 서류 기반 질문은 다음 장치 점검 창에서 이력서·자기소개서를 첨부하면 함께 나와요.</p></div>` : ''}
     <div class="fl-f"><div class="fl-row"><span class="fl-lbl">면접실 배치</span><span class="fl-badge">데모</span></div>${this.vRoom()}
-    ${s.count>1?'<p class="fl-sub">화면에는 지금 말하는 면접관 한 명과 나만 보여요. 다른 면접관이 질문하면 화면이 그 면접관으로 바뀌어요. 여러 면접관이 실제로 번갈아 질문하는 기능은 준비 중이에요. 지금은 진행 면접관이 질문하고, 면접관 구성은 면접 방식(부드럽게·보통·압박)에 반영돼요.</p>':''}</div>`; },
+    ${s.count>1?'<p class="fl-sub">화면에는 지금 말하는 면접관 한 명과 나만 보여요. 본 질문은 진행 면접관이, 꼬리질문은 다른 면접관이 이어서 하고 화면이 그 면접관으로 바뀌어요. 면접관 구성은 면접 분위기(부드럽게·보통·압박)에도 반영돼요.</p>':''}</div>`; },
   vStart(){ const s = this.s, u = this.usedExps();
-    const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${s.major.grade}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.company || '기업 미입력(직무 일반 질문)')} · ${escapeHtml(s.job.role)}${s.job.post ? ' · 채용공고 반영' : ''}`;
+    const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${s.major.grade}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.role)}${s.job.post ? ' · 채용공고 반영' : ''}`;
+    const co = s.kind === 'job' ? (s.job.companyId ? `<b>${escapeHtml(s.job.company)}</b> · 기업 맞춤 질문 2개 포함 (2·3번)` : escapeHtml(s.job.company ? s.job.company + ' (목록에 없어 직무 일반 질문)' : '선택 안 함 (직무 일반 질문)')) : '';
     return `<h2 class="fl-h">이렇게 면접을 준비했어요</h2><p class="fl-lead">'다음'을 누르면 카메라·마이크를 점검하는 창으로 넘어가요.</p>
-    <dl class="fl-sum"><dt>면접 목적</dt><dd>${s.kind === 'major' ? '전공·경험 면접' : '기업·직무 맞춤 면접'}</dd><dt>내 정보</dt><dd>${info}</dd>
+    <dl class="fl-sum"><dt>면접 목적</dt><dd>${s.kind === 'major' ? '전공·경험 면접' : '기업·직무 맞춤 면접'}</dd>${co ? `<dt>목표 기업</dt><dd>${co}</dd>` : ''}<dt>내 정보</dt><dd>${info}</dd>
     <dt>활용할 경험</dt><dd>${u.length ? u.map(e=>escapeHtml(e.text)).join(', ') : '선택 안 함 (일반 질문)'}</dd>
     <dt>진행 방식</dt><dd>${s.mode === 'real' ? '실전형 · 힌트·중간 피드백 없음, 마친 뒤 종합 리포트' : '연습형 · 힌트·즉시 피드백, 멈추고 이어 하기'}</dd>
     <dt>시간</dt><dd>${s.mode === 'real' ? '자기소개 60초 · 답변 90초' : '시간 제한 없음'}</dd>
-    <dt>면접관</dt><dd>${this.names().join(' · ')} (${s.count}명${s.count>1?' · 다중 진행은 준비 중':''}) · 난이도 ${s.diff}</dd></dl>`; },
+    <dt>면접관</dt><dd>${this.names().join(' · ')} (${s.count}명) · ${this.pressureName()} 면접</dd><dt>난이도</dt><dd>${s.diff} · ${escapeHtml((FLOW_DIFFS[s.diff] || FLOW_DIFFS['중']).d)}</dd></dl>`; },
 };
 /* 2026-11-02g 한림대 데모 홈의 '지난 면접의 보완점': 내 성장 페이지의 '보완이 필요한 질문' 목록을 그대로 비춰 보여 줌 */
 (function(){
@@ -17345,6 +17481,12 @@ async function runDialogInterview(){
   if(state.selectedField.id === 'review' && state.reviewQuestions){ opt.questions = state.reviewQuestions.map(x=>Object.assign({}, x)); try{ await ReviewAudio.enrich(opt.questions, 3000); }catch(_){} }   // 2026-10-26a 문항표의 녹음본·말할 문장 붙이기
   else if(realSet){ if(state.customQuestions && state.customQuestions.length) opt.docQuestion = Object.assign({}, state.customQuestions[0]); }
   else if(state.customQuestions && state.customQuestions.length){ opt.extraQuestions = state.customQuestions.map(x=>Object.assign({}, x)); }
+  // 2026-11-02q 기업·직무 맞춤으로 회사를 골랐으면 그 회사 예상 질문 2개(6문항 이상이면 3개)를 2·3번 자리에
+  if(!resume && !realSet && !opt.questions && state.flowCtx && state.flowCtx.purpose === 'job'){
+    try{ if(state.companyPackP) await Promise.race([state.companyPackP, new Promise(r=>setTimeout(r, 4000))]); }catch(_){}
+    const cp = CompanyData.active();
+    if(cp){ const cq = CompanyData.questions(cp, (opt.count || 5) >= 6 ? 3 : 2); opt.extraQuestions = cq.concat(opt.extraQuestions || []); }
+  }
   if(resume){
     opt.questions = resume.questions.map(x=>Object.assign({}, x)); delete opt.extraQuestions; delete opt.docQuestion;
     opt.resume = { startIndex: doneQ, setLeftMs: resume.setLeftMs != null ? resume.setLeftMs : null };
@@ -17352,16 +17494,18 @@ async function runDialogInterview(){
   FirstQWait.start();   // 2026-10-26c 첫 질문이 나올 때까지 몇 초째인지 보여 줌
   const saveDraft = ()=>{ try{ InterviewDraft.save({ asks, questions: planned, doneQ, setLeftMs: (StenoLoop.setEndsAt != null && typeof StenoLoop.setLeftMs === 'function') ? StenoLoop.setLeftMs() : null }); }catch(_){} };
   await StenoLoop.run(opt, (type, d)=>{
-    if(type==='questions'){ planned = d.list.map(x=>{ const o = Object.assign({}, x); delete o.audioBlob; return o; }); document.getElementById('iv-progress').textContent = `질문 ${doneQ} / ${d.list.length}`; saveDraft(); }
+    if(type==='questions'){ planned = d.list.map(x=>{ const o = Object.assign({}, x); delete o.audioBlob; return o; }); document.getElementById('iv-progress').textContent = `질문 ${doneQ} / ${d.list.length}`; saveDraft(); try{ IvPanel.setup(); }catch(_){} }
     else if(type==='question'){
       curQIndex = d.index;
       state.currentQ = d.index; document.getElementById('iv-progress').textContent = `질문 ${d.index} / ${d.total}`;
       Activity.setPresence('interview', { field: state.selectedField.name, mode:'dialog', q:d.index });
-      pendingAsk = { q: d.q.q, ref: d.q.ref, hint: d.q.hint || '', qid: (d.q.id != null ? d.q.id : d.q.dbId), kind:'question', custom: !!d.q.custom, spoken: spokenOf(d.q), slot: d.q.slot || null, slotName: d.q.slotName || '', doc: d.q.doc || '', src: d.q.src || '' };
+      pendingAsk = { q: d.q.q, ref: d.q.ref, hint: d.q.hint || '', qid: (d.q.id != null ? d.q.id : d.q.dbId), kind:'question', custom: !!d.q.custom, spoken: spokenOf(d.q), slot: d.q.slot || null, slotName: d.q.slotName || '', doc: d.q.doc || '', src: d.q.src || '', co: d.q.co || null, speaker: 0 };
       curSlotName = d.q.slotName || '';
       qEl.textContent = d.q.q; { const qn=document.getElementById('rh-qnum'); if(qn) qn.textContent = String(d.index).padStart(2,'0'); }
       if(d.q.custom){ const dn = d.q.doc === 'cv' ? '이력서' : '자기소개서'; badge.textContent = d.q.slotName ? `실전 세트 · ${dn} 기반` : `${dn} 기반`; badge.className='qcard-source-badge resume'; }
+      else if(d.q.co){ badge.textContent = '기업 맞춤 질문'; badge.className='qcard-source-badge resume'; }
       else { badge.textContent = d.q.slotName ? `실전 세트 · ${d.q.slotName}` : state.selectedField.id==='review' ? '복습 문항' : '문제은행 출제'; badge.className='qcard-source-badge bank'; }
+      try{ IvPanel.onQuestion(d.q); }catch(_){}
       ta.value=''; updateCharCount();
     }
     else if(type==='speaking'){ FirstQWait.stop(); try{ SelfCam.stopSeg(); }catch(_){} dialogPhase('speaking', '면접관이 말하는 중'); document.getElementById('wave-state').textContent='면접관 발화 중'; stopBtn.disabled = true; if(!stopBtn.classList.contains('typed')) stopBtn.textContent = '면접관이 말하는 중…'; stopWaveAnim(); }
@@ -17397,7 +17541,8 @@ async function runDialogInterview(){
     }
     else if(type==='thinking'){ dialogPhase('thinking', '면접관이 답변을 듣고 생각하는 중…'); document.getElementById('wave-state').textContent='꼬리질문 준비 중'; stopBtn.disabled = true; stopBtn.textContent = '면접관이 생각하는 중…'; }
     else if(type==='followup'){
-      pendingAsk = { q: d.followup, ref: null, kind:'followup', followup:true, source:d.source, evaluation:d.evaluation||'', slotName: curSlotName };
+      try{ IvPanel.onFollowup(); }catch(_){}
+      pendingAsk = { q: d.followup, ref: null, kind:'followup', followup:true, source:d.source, evaluation:d.evaluation||'', slotName: curSlotName, speaker: IvPanel.cur };
       qEl.textContent = d.followup; badge.textContent = d.source==='llm' ? 'AI 꼬리질문' : 'AI 꼬리질문 (템플릿)'; badge.className='qcard-source-badge followup';
       ta.value=''; updateCharCount();
     }
@@ -17465,7 +17610,7 @@ function maybeOpenDemoFromUrl(){
 async function finishDialogInterview(asks, transcript){
   // 결과 화면·저장 코드가 기대하는 형태로 옮겨 담기 (기존 채점·전달력 측정 재사용)
   state.dialogTranscript = transcript || [];
-  state.interviewQuestions = asks.map(a=>({ q: a.q, ref: a.ref, hint: a.hint || '', qid: a.qid, followup: !!a.followup, custom: !!a.custom, evaluation: a.evaluation||'', slotName: a.slotName||'', doc: a.doc||'', src: a.src||'' }));
+  state.interviewQuestions = asks.map(a=>({ q: a.q, ref: a.ref, hint: a.hint || '', qid: a.qid, followup: !!a.followup, custom: !!a.custom, evaluation: a.evaluation||'', slotName: a.slotName||'', doc: a.doc||'', src: a.src||'', co: a.co || null, speaker: a.speaker != null ? a.speaker : null }));
   state.setOvertime = !!(state.dialogRealSet && StenoLoop.stats && StenoLoop.stats.setTimeUp);
   state.answerTexts = asks.map(a=>a.answer || '');
   state.answerScores = []; state.answerFeedback = []; state.answerDelivery = [];
@@ -18469,7 +18614,7 @@ async function endInterview(){
   const durationLabel = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
   document.getElementById('rs-time').textContent = durText(durationLabel);
   document.getElementById('rs-count').textContent = `${state.currentQ}문항`;
-  document.getElementById('result-title').textContent = state.selectedField.name + (state.interviewMode==='dialog' ? ' AI 대화 면접 결과' : ' 모의면접 결과');
+  { const cp = CompanyData.active(); document.getElementById('result-title').textContent = cp ? `${cp.talent.name} 맞춤 모의면접 결과` : state.selectedField.name + (state.interviewMode==='dialog' ? ' AI 대화 면접 결과' : ' 모의면접 결과'); }
   try{
     const modeChip = document.getElementById('result-mode-chip'); if(modeChip) modeChip.textContent = (state.demoResult ? '시연용 샘플 · ' : '') + (state.interviewMode==='dialog' ? 'AI 대화 면접' : '모의면접') + (state.interviewMode==='dialog' && state.dialogRealSet && !state.demoResult ? ' · ' + curRealSetName() + (StenoLoop.stats && StenoLoop.stats.setTimeUp ? ' (15분 초과)' : '') : '');
     const modeEl = document.getElementById('rs-mode'); if(modeEl) modeEl.textContent = `${state.difficulty||'중'} · ${(typeof AI_GRADING_ENABLED!=='undefined' && AI_GRADING_ENABLED && AiSwitch.on('ai_grading')) ? 'AI 채점' : '규칙 평가'}`;
@@ -18485,6 +18630,7 @@ async function endInterview(){
   renderResultBars();
   renderResultSummary();
   try{ renderResultFocus(); }catch(e){ console.warn('[결과 요약]', e); }
+  try{ CoResult.render(); }catch(e){ console.warn('[기업 맞춤 결과]', e); }
   try{ ResultFold.reset(); ResultFold.apply(); }catch(e){ console.warn('[결과 접기]', e); }
   try{ renderNonverbalPanel(); }catch(e){ console.warn('[표정·시선]', e); }
   try{ renderResultTop(); }catch(e){ console.warn('[결과 상단]', e); }
@@ -18760,7 +18906,7 @@ function renderResultBars(){
     }
     if(analysis && analysis.docNotes && analysis.docNotes.length) extraHtml += `<p class="q-docnote"><strong>서류와 맞춰 보세요</strong> · ${analysis.docNotes.map(escapeHtml).join(' ')}</p>`;
     const item = state.interviewQuestions[i-1];
-    const qLabel = item ? ((item.followup ? '<span class="qcard-source-badge followup" style="margin-right:6px;">꼬리질문</span>' : '') + escapeHtml(item.q)) : `질문 ${i}`;
+    const qLabel = item ? ((item.followup ? '<span class="qcard-source-badge followup" style="margin-right:6px;">꼬리질문</span>' : '') + (item.co && !item.followup ? '<span class="q-co-chip">기업 맞춤</span>' : '') + escapeHtml(item.q)) : `질문 ${i}`;
     const answerText = texts[i-1] ? escapeHtml(texts[i-1]) : '<span style="color:var(--slate-400);">기록된 답변이 없습니다.</span>';
     let rubricHtml = '';
     if(rb && !rb.empty){
@@ -18773,14 +18919,14 @@ function renderResultBars(){
           ${axisChipsHtml(rb)}
           <div class="q-checklist">${checks}</div>
           ${missing}${model}
-          ${rb.real ? `<p class="q-real-note"><b>실제 면접 후기에도 나온 질문이에요</b>${rb.real.y ? ` (${escapeHtml(rb.real.y)}년 후기)` : ''}${rb.real.n > 1 ? ` · 후기 ${rb.real.n}건` : ''}</p>` : ''}
+          ${rb.real && !DEMO_HALLYM_FIELDS ? `<p class="q-real-note"><b>실제 면접 후기에도 나온 질문이에요</b>${rb.real.y ? ` (${escapeHtml(rb.real.y)}년 후기)` : ''}${rb.real.n > 1 ? ` · 후기 ${rb.real.n}건` : ''}</p>` : ''}
         </div>`;
     }
     const gradeTxt = rb && !rb.empty ? rb.grade : '–';
     const gradeCls = rb && !rb.empty ? rb.grade.replace('+','p') : '';
     const scoreTxt = rb && !rb.empty ? rb.total+'점' : (texts[i-1] ? content+'점' : '답변 없음');
     const typeTxt = rb && !rb.empty ? rb.typeLabel : '';
-    const realChip = rb && rb.real ? `<span class="q-real-chip" title="실제 면접 후기에 나온 질문: ${escapeHtml(rb.real.q)}">실제 기출</span>` : '';
+    const realChip = rb && rb.real && !DEMO_HALLYM_FIELDS ? `<span class="q-real-chip" title="실제 면접 후기에 나온 질문: ${escapeHtml(rb.real.q)}">실제 기출</span>` : '';
     rows += `
       <div class="q-result-group" data-qi="${i-1}">
         <button type="button" class="q-head" onclick="this.parentElement.classList.toggle('open'); this.setAttribute('aria-expanded', this.parentElement.classList.contains('open'))" aria-expanded="false">
@@ -18790,6 +18936,7 @@ function renderResultBars(){
         </button>
         <div class="q-body">
         ${timeLimitHtml(i-1)}
+        ${item && item.co && !item.followup ? CoResult.html(item, texts[i-1]) : ''}
         ${rubricHtml}
         ${d && d.measured ? `<div class="bar-row">
           <div class="bar-top"><span>전달력</span><span>${d.score}점</span></div>
@@ -18954,6 +19101,11 @@ function renderResultReport(){
 }
 /** 결과 리포트: 실제 면접 후기로 본 이 분야 면접 (형식 2줄 + 면접관이 본 것 2줄) */
 function realIvCardHtml(){
+  if(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS){
+    const cp = CompanyData.active(); if(!cp) return '';
+    const pr = cp.process || {};
+    return `<div class="rp-real"><b>${escapeHtml(cp.talent.name)} 공식 면접 전형</b><p>${pr.provide_level === '미제공' || !pr.stages ? '공식 면접 전형 정보가 없어요.' : escapeHtml(CompanyCard.flat(pr.stages))}${(pr.interview_types||[]).length ? ' · ' + escapeHtml(pr.interview_types.join(', ')) : ''}</p><p class="rp-real-src">회사 공식 채용사이트·공고 기준이에요. 공고·직무·연도마다 달라질 수 있어요.</p></div>`;
+  }
   try{
     const fid = state.selectedField && state.selectedField.id !== 'review' ? state.selectedField.id : '';
     const d = REAL_IV.field[fid] || REAL_IV.field.public; if(!d) return '';
@@ -19101,6 +19253,71 @@ const ResultFold = {
   reset(){ this.ITEMS.forEach(([id])=>{ const p = document.getElementById(id); if(p){ delete p.dataset.rfInit; p.classList.remove('rf-open'); } }); },
 };
 try{ const _rnp26c = renderNonverbalPanel; renderNonverbalPanel = function(){ const r = _rnp26c.apply(this, arguments); try{ ResultFold.apply(); }catch(_){} return r; }; }catch(_){}
+/* 2026-11-02q 결과: 기업 맞춤 면접이면 '인재상과 내 답변', 면접 준비 창에서 면접관을 골랐으면 '면접관 종합 의견'
+   AI 채점이 연결되기 전에는 답변 점수·체크리스트로 정리한 기본 의견이고, 인재상은 행동과 결과가 둘 다 있어야 '잘 드러남' */
+const CoResult = {
+  verdict(text){
+    const t = String(text || '');
+    if(!t.trim()) return ['no','답변 없음'];
+    const act = /(제가|저는|직접)/.test(t) && /(만들|정리|분석|제안|설득|바꾸|줄이|시도|진행했|맡았|맡아|찾아|모았|홍보|정했|공개했|해결|개선|기획|운영|설계)/.test(t);
+    const res = /\d/.test(t) && /(결과|모았|늘|줄|달성|향상|개선|완료|받았|%|명|건)/.test(t);
+    return act && res ? ['ok','잘 드러남'] : (act || res) ? ['mid','일부 드러남'] : ['no','드러나지 않음'];
+  },
+  html(item, text){
+    if(!item || !item.co) return '';
+    const v = this.verdict(text);
+    return `<div class="q-co"><b>이 질문이 확인한 인재상</b> · ${escapeHtml(CompanyCard.flat(item.co.lk))}<span class="co-vd ${v[0]}">${v[1]}</span><p>평가포인트 · ${escapeHtml(item.co.ev)}</p></div>`;
+  },
+  render(){
+    const box = document.getElementById('co-result'); if(!box) return;
+    const p = CompanyData.active(), ppl = (typeof IvPanel !== 'undefined') ? IvPanel.people() : [];
+    if(!p && !ppl.length){ box.hidden = true; box.innerHTML = ''; return; }
+    const qs = state.interviewQuestions || [], texts = state.answerTexts || [], n = state.currentQ || qs.length;
+    const items = qs.slice(0, n).map((x,i)=>({ x, i, a: texts[i] || '' }));
+    const coItems = items.filter(o=>o.x.co && !o.x.followup);
+    const sum = state.lastReport || { avg:{} }, avg = sum.avg || {};
+    const weak = (typeof weakResultItems === 'function') ? weakResultItems() : [];
+    const nums = items.filter(o=>!o.x.followup && /\d/.test(o.a)).length;
+    const cliche = items.filter(o=>/(최선을 다하|열심히 하|열심히 배우)/.test(o.a)).length;
+    const okCo = coItems.filter(o=>this.verdict(o.a)[0] === 'ok').length;
+    const name = p ? p.talent.name : '';
+    let html = '';
+    if(p){
+      const asked = new Set(coItems.map(o=>o.x.co.seq));
+      const left = (p.questions || []).filter(q=>!asked.has(q.seq));
+      this._left = left;
+      html += `<h3>${escapeHtml(name)} 인재상과 내 답변</h3>
+        ${coItems.length ? coItems.map(o=>{ const v = this.verdict(o.a); return `<div class="co-tal"><span class="cc-kw">${escapeHtml(CompanyCard.flat(o.x.co.lk).slice(0, 28))}</span><span class="co-vd ${v[0]}">${v[1]}</span><span class="co-muted">Q${o.i+1} · ${escapeHtml(o.x.co.ev)}</span></div>`; }).join('') : '<p class="co-muted">이번 면접에는 기업 맞춤 질문에 답한 기록이 없어요.</p>'}
+        ${left.length ? `<p class="co-muted">이번 면접에서 확인하지 않은 인재상 · ${escapeHtml([...new Set(left.map(q=>CompanyCard.flat(q.linked_talent)))].slice(0,4).join(', '))}</p>` : ''}
+        <p class="co-muted">행동과 결과가 둘 다 있으면 '잘 드러남', 하나만 있으면 '일부 드러남'으로 봐요. 인재상 키워드를 말했다는 것만으로는 인정하지 않아요.</p>
+        ${left.length ? `<div><button type="button" class="btn btn-solid btn-sm" onclick="CoResult.practiceLeft()">${escapeHtml(name)} 남은 예상 질문 ${left.length}개로 연습</button></div>` : ''}`;
+    }
+    if(ppl.length){
+      const op = id => ({
+        hr: (avg.attitude == null || avg.attitude >= 80 ? '답변 태도는 안정적이었어요.' : '"~습니다"로 맺고 군말을 줄이면 더 단정해 보여요.') + (weak[0] ? ` '${weak[0].q.slice(0, 24)}…' 답변은 마음가짐보다 실제 행동으로 바꿔 보세요.` : ''),
+        lead: avg.detail == null ? '경험 질문에서는 팀이 한 일과 내가 한 일을 나눠 말해 주세요.' : avg.detail >= 70 ? '경험 답변에서 내가 한 행동이 잘 보였어요. 결과 숫자까지 붙인 답이 좋았어요.' : "경험 답변에서 '내가 한 행동'이 흐려요. 팀이 한 일과 내가 한 일을 나눠 말해 주세요.",
+        exec: name ? `왜 ${name}인지가 더 분명해야 해요. 인재상 중 하나를 골라 내 경험과 이어서 지원 이유를 말해 보세요.` : '지원 분야를 고른 이유와 장기 목표를 첫 문장에 분명하게 말해 주세요.',
+        senior: weak.length ? `처음치고 흐름이 좋아요. 점수가 낮았던 ${weak.length}문항만 다시 답해 보면 훨씬 단단해져요.` : '전체적으로 흐름이 좋아요. 같은 내용을 조금 더 짧고 또렷하게 말해 보세요.',
+        press: cliche ? `"최선을 다한다", "열심히 하겠다"는 말이 ${cliche}번 나왔어요. 그 말을 증명할 경험이 없으면 면접관은 믿지 않아요.` : '막연한 다짐 대신 경험으로 답한 점은 좋았어요. 다만 결과를 더 단정하게 말해 주세요.',
+        data: `숫자가 들어간 답은 ${nums}개였어요. 결과를 말할 때 전·후 비교 숫자를 붙여 주세요.`,
+        value: name ? `기업 맞춤 질문 ${coItems.length}개 중 인재상이 잘 드러난 답은 ${okCo}개예요. 키워드를 말하기보다 그 키워드가 보이는 행동을 말해 주세요.` : '지원하는 곳의 인재상을 하나 정해 두고, 그 가치가 드러난 경험으로 답해 보세요.',
+        logic: avg.structure == null || avg.structure >= 75 ? '결론부터 말하는 구조가 좋았어요. 판단 근거를 한 문장씩 더하면 더 설득력 있어요.' : '결론이 뒤에 나오는 답이 있었어요. 첫 문장에 결론, 이어서 이유와 근거 순서로 말해 주세요.',
+        quiet: avg.length == null || avg.length >= 70 ? '반응이 없어도 답변 길이가 크게 흔들리지 않았어요.' : '짧게 끝난 답이 있었어요. 면접관 반응이 없어도 준비한 내용을 끝까지 말해 보세요.',
+        ethics: '원칙을 묻는 질문에서는 "규정 확인 → 보고 → 사후 점검" 순서로 말하면 공정성이 잘 드러나요.',
+      }[id] || '');
+      html += `<h3>면접관 종합 의견</h3><div class="co-ops">${ppl.map(x=>`<div class="co-op"><span class="av" style="background:${x.c}">${escapeHtml(StartFlow.ini(x))}</span><div><b>${escapeHtml(x.n)}</b><p>${escapeHtml(op(x.id))}</p></div></div>`).join('')}</div>
+        <p class="co-muted">답변 점수와 체크리스트로 정리한 의견이에요. AI 면접관이 연결되면 면접 전체 답변을 읽고 고른 면접관의 시선으로 다시 써 줘요.</p>`;
+    }
+    if(p) html += CompanyCard.html(p, true);
+    box.innerHTML = html; box.hidden = false;
+  },
+  practiceLeft(){
+    const left = this._left || []; if(!left.length) return;
+    const p = CompanyData.active();
+    state.recoQuestions = left.map(q=>({ q: q.question, ref: null, hint: q.eval_point || '', diff: '중', co: p ? { id: p.talent.id, name: p.talent.name, seq: q.seq, lk: q.linked_talent || '', ev: q.eval_point || '' } : null }));
+    startRecommendedReview();
+  },
+};
 function renderResultFocus(){
   const box = document.getElementById('result-focus'); if(!box) return;
   const sum = state.lastReport;
@@ -19714,6 +19931,37 @@ const AiQuota = {
     const st = this.status; if(!st || st.admin) return '';
     return '';   // 2026-10-22l 남은 횟수는 면접자에게 보여 주지 않음
   },
+};
+/* 2026-11-02q 면접실: 면접 준비 창에서 고른 면접관 명단과 회사 카드. 본 질문은 진행 면접관, 꼬리질문은 다른 면접관이 차례로 이어서 함 */
+const IvPanel = {
+  fu:0, cur:-1, defNotice:null,
+  people(){ const fc = state.flowCtx; const ids = fc && Array.isArray(fc.interviewers) ? fc.interviewers : []; return ids.map(id=>StartFlow.PEOPLE.find(x=>x.id === id)).filter(Boolean); },
+  setup(){
+    const ppl = this.people(), r = document.getElementById('iv-roster'); this.fu = 0; this.cur = -1;
+    if(r){ r.hidden = !ppl.length; r.innerHTML = ppl.map((x,i)=>`<span class="iv-rp" role="listitem" data-k="${i}"><i style="background:${x.c}"></i>${escapeHtml(x.n)}${i === 0 ? ' · 진행' : ''}<em>대기</em></span>`).join(''); }
+    const p = CompanyData.active(), box = document.getElementById('iv-co');
+    if(box){ box.hidden = !p; box.open = false;
+      if(p){ const t = p.talent; document.getElementById('iv-co-sum').textContent = `${t.name} · 인재상 ${(t.keywords||[]).length && t.verify_status !== '미확인' ? t.keywords.slice(0,3).map(k=>CompanyCard.flat(k)).join(' · ') : '정보 없음'}`; document.getElementById('iv-co-card').innerHTML = CompanyCard.html(p, false); } }
+  },
+  speak(k){
+    const ppl = this.people(); if(!ppl.length) return; k = Math.max(0, Math.min(k, ppl.length - 1));
+    document.querySelectorAll('#iv-roster .iv-rp').forEach((el,i)=>{ el.classList.toggle('on', i === k); const em = el.querySelector('em'); if(em) em.textContent = i === k ? '말하는 중' : '대기'; });
+    const x = ppl[k], nm = document.querySelector('#live-interviewer .lv3-li-name'); if(nm) nm.textContent = `AI 면접관 · ${x.n}`;
+    if(k !== this.cur){ const tile = document.getElementById('live-interviewer'); if(tile && this.cur >= 0){ tile.classList.remove('spk-in'); void tile.offsetWidth; tile.classList.add('spk-in'); } }
+    this.cur = k;
+  },
+  onQuestion(q){
+    this.fu = 0; this.speak(0);
+    const n = document.getElementById('iv-question-notice'); if(!n) return;
+    if(this.defNotice == null) this.defNotice = n.textContent;
+    const h = document.getElementById('iv-co-hint');
+    if(q && q.co){ const real = state.timedMode === 'real';
+      n.textContent = real ? `${q.co.name} 기업 맞춤 질문이에요. 인재상을 바탕으로 만든 연습용 질문이에요(실제 기출 아님).` : `${q.co.name} 기업 맞춤 질문 · 이 질문은 '${CompanyCard.flat(q.co.lk)}'을(를) 확인해요. 평가포인트: ${q.co.ev} (연습용 질문, 실제 기출 아님)`;
+      if(h){ h.hidden = false; h.innerHTML = real ? `<b>${escapeHtml(q.co.name)} 기업 맞춤 질문</b> · 인재상을 바탕으로 만든 연습용 질문이에요(실제 기출 아님).`
+        : `<b>힌트</b> · 이 질문은 <b>${escapeHtml(CompanyCard.flat(q.co.lk))}</b>을(를) 확인해요. ${escapeHtml(q.co.ev)} <span style="color:#8a8a90">(연습용 질문 · 실제 기출 아님)</span>`; } }
+    else { n.textContent = this.defNotice; if(h){ h.hidden = true; h.textContent = ''; } }
+  },
+  onFollowup(){ const n = this.people().length; this.speak(n > 1 ? 1 + (this.fu++ % (n - 1)) : 0); },
 };
 const STEP1 = {
   useDbQuestions: true,      // false면 DB를 건너뛰고 HTML 안의 문제은행만 사용
