@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02g';
+var APP_VERSION = '2026-11-02h';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5384,6 +5384,8 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 .hm-rep-empty{display:none;}
 #g4-reports-sec[style*="none"] + .hm-rep-empty{display:block;}
 @media(max-width:720px){ .hm-row{grid-template-columns:1fr;} .hm-modes{grid-template-columns:1fr;} .hm-data{flex-direction:column;align-items:flex-start;} }
+/* 2026-11-02h 앱(홈 화면에 추가)·QR 안내 숨김 — DEMO_HIDE_APP_PROMO */
+body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo #screen-login .hs-link-row, body.no-app-promo #home-bar, body.no-app-promo #mp-home, body.no-app-promo #home-sheet, body.no-app-promo #modal-icon-new{display:none !important;}
 #signup-consent-row{min-height:44px;align-items:center;} #signup-consent{width:22px;height:22px;flex:none;}
 .mp-sec-t{margin:0 0 10px;font-size:16px;font-weight:700;color:var(--c-ink,#1c1c1e);} .mp-sec-t small{display:block;margin-top:2px;font-size:13px;font-weight:500;color:var(--c-ink-3,#66666c);}
 .mp-docs{padding:16px;border:1.5px solid var(--c-accent,#e8532a);border-radius:14px;margin-bottom:22px;background:#fffaf7;}
@@ -23186,6 +23188,10 @@ const IconNotice = {
     try{ HomeApp.open(true); }catch(_){}
   }
 };
+/* 2026-11-02h 한림대 데모: ZAVAPASS 앱(홈 화면에 추가)·QR 안내를 모두 끔 (홈 카드·로그인 링크·마이페이지·자동 안내 창·아이콘 변경 알림).
+   나중에 다시 만들 때 false로 바꾸면 원래대로 */
+const DEMO_HIDE_APP_PROMO = true;
+if(DEMO_HIDE_APP_PROMO){ try{ document.body.classList.add('no-app-promo'); HomeApp.maybeOffer = ()=>{}; HomeApp.open = ()=>{}; IconNotice.should = ()=>false; }catch(_){} }
 try{ HomeApp.init(); }catch(e){ console.warn('HomeApp', e); }
 
 loadRememberedEmail();
