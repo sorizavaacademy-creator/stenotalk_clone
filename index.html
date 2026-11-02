@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02e';
+var APP_VERSION = '2026-11-02f';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -8100,7 +8100,10 @@ const PROD_SUPABASE_REFS = ['aqkukxcjcbfxqfesmuva'];   // 운영 ZAVAPASS 프로
   let keyRef = '';
   try{ keyRef = JSON.parse(atob(SUPABASE_ANON_KEY.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).ref || ''; }catch(_){}
   const why = !SUPABASE_URL || !SUPABASE_ANON_KEY ? 'DB 연결 정보(config.js)가 없어요.'
-    : PROD_SUPABASE_REFS.some(r => SUPABASE_URL.includes(r) || keyRef === r) ? '운영 DB 주소가 들어 있어 연결을 막았어요.' : '';
+    : PROD_SUPABASE_REFS.some(r => SUPABASE_URL.includes(r) || keyRef === r) ? '운영 DB 주소가 들어 있어 연결을 막았어요.'
+    : !/^https:\/\/[a-z0-9]{20}\.supabase\.co\/?$/.test(SUPABASE_URL) ? 'DB 주소(VITE_SUPABASE_URL) 형식이 달라요.'
+    : !/^[A-Za-z0-9._-]+$/.test(SUPABASE_ANON_KEY) ? 'DB 키(VITE_SUPABASE_ANON_KEY) 안에 쓸 수 없는 글자가 섞여 있어요.'   // 2026-11-02f 잘못된 값이면 '인터넷 연결' 오류 대신 바로 알림
+    : !/^sb_publishable_/.test(SUPABASE_ANON_KEY) && (!keyRef || !SUPABASE_URL.includes(keyRef)) ? 'DB 키(VITE_SUPABASE_ANON_KEY)가 주소와 같은 프로젝트 것이 아니에요.' : '';
   if(!why) return;
   try{ const d = document.createElement('div'); d.setAttribute('role','alert'); d.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:16px/1.6 system-ui,sans-serif;color:#1c1c1e';
     d.innerHTML = '<div><b>클론 사이트를 시작하지 않았어요.</b><br>' + why + '<br>VITE_SUPABASE_URL·VITE_SUPABASE_ANON_KEY를 클론 프로젝트 값으로 맞춰 주세요.</div>';

@@ -19,6 +19,14 @@ let keyRef = '';
 try{ keyRef = JSON.parse(Buffer.from(key.split('.')[1], 'base64url').toString()).ref || ''; }catch(_){}
 const hit = PROD_SUPABASE_REFS.find(r => url.includes(r) || keyRef === r);
 if(hit) fail(`운영 DB(${hit}) 값이 들어 있어 빌드를 멈춥니다. 클론 프로젝트 값으로 바꾸세요.`);
+// 형식 검사: 주소는 https://<20자>.supabase.co, 키는 같은 프로젝트의 anon 키여야 함 (따옴표·https:// 빠짐·주소와 키 뒤바뀜 등)
+const urlRef = (url.match(/^https:\/\/([a-z0-9]{20})\.supabase\.co\/?$/) || [])[1];
+if(!urlRef) fail('VITE_SUPABASE_URL 형식이 달라요. https://<프로젝트ID>.supabase.co 형태로, 따옴표·공백 없이 넣어 주세요.');
+// 새 방식 publishable 키(sb_publishable_…)는 프로젝트를 키에서 알 수 없어 형식만 봄
+// 키에 영문·숫자·. _ - 말고 다른 글자(줄바꿈·눈에 안 보이는 공백 등)가 섞이면 브라우저가 요청을 못 만들어 '인터넷 연결' 오류처럼 보임
+if(!/^[A-Za-z0-9._-]+$/.test(key)) fail(`VITE_SUPABASE_ANON_KEY 안에 쓸 수 없는 글자가 섞여 있어요(줄바꿈·보이지 않는 공백 등). 키를 다시 복사해 넣어 주세요. (길이 ${key.length}자)`);
+if(/^sb_secret_/.test(key)) fail('VITE_SUPABASE_ANON_KEY에 secret 키가 들어 있어요. 화면에 공개되므로 anon(또는 publishable) 키를 넣어 주세요.');
+if(!/^sb_publishable_[A-Za-z0-9_-]+$/.test(key) && keyRef !== urlRef) fail(`VITE_SUPABASE_ANON_KEY가 주소(${urlRef})와 같은 프로젝트의 anon 키가 아니에요${keyRef ? ` (키의 프로젝트: ${keyRef})` : ''}.`);
 
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT);
