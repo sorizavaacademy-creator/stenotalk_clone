@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02q';
+var APP_VERSION = '2026-11-02s';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5485,6 +5485,54 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 @media (prefers-reduced-motion: reduce){ .hm-mode,.fl-pick{transition:none;} .hm-mode:active,.fl-pick:active,.fl-field:active,.fl-person:active{transform:none;} }
 @media(max-width:640px){ .fl-exp{grid-template-columns:auto minmax(0,1fr) auto;} .fl-exp .ty,.fl-exp .src{display:none;} .fl-add{grid-template-columns:1fr;} .hm-sum{grid-template-columns:1fr;} }
 @media(max-width:640px){ .fl-picks,.fl-grid{grid-template-columns:1fr;} .fl-people{grid-template-columns:repeat(2,minmax(0,1fr));} .fl-steps b span{display:none;} .fl-steps b.on span{display:inline;} .fl-steps{gap:4px;} .fl-steps .sep{width:6px;} .fl-h{font-size:19px;} .fl-body{padding:16px;} .fl-top,.fl-acts{padding-left:16px;padding-right:16px;} .fl-sum{grid-template-columns:88px minmax(0,1fr);} }
+/* 2026-11-02r 질문 미리 연습 (2026-11-02s 정리: 글은 짧게, 참고 내용은 한 칸 표로) */
+#modal-prep .pr-box{max-width:820px;width:calc(100% - 24px);display:flex;flex-direction:column;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);}
+.pr-top{align-items:flex-start;justify-content:space-between;} .pr-title{margin:0;font-size:20px;font-weight:800;} .pr-sub{margin:3px 0 0;font-size:13.5px;color:#77767D;}
+.pr-body{gap:18px;}
+.pr-how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none;}
+.pr-how li{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:#F5F4F0;font-size:13.5px;font-weight:600;color:#1c1c1e;}
+.pr-how li b{width:22px;height:22px;flex:0 0 22px;border-radius:50%;background:#1c1c1e;color:#fff;display:grid;place-items:center;font-size:12px;}
+.pr-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.pr-tabs{display:flex;gap:4px;flex-wrap:wrap;}
+.pr-tab{padding:6px 12px;border-radius:999px;border:0;background:transparent;font:inherit;font-size:13.5px;cursor:pointer;color:#77767D;}
+.pr-tab[aria-pressed="true"]{background:#1c1c1e;color:#fff;font-weight:700;}
+.pr-bar{display:flex;align-items:center;gap:8px;min-width:180px;}
+.pr-prog{width:120px;height:6px;border-radius:3px;background:#EFEDE7;overflow:hidden;} .pr-prog i{display:block;height:100%;background:#2E7D4F;border-radius:3px;transition:width .3s;}
+.pr-cnt{font-size:13px;font-weight:700;color:#4a4a52;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.pr-co{font-size:13px;}
+.pr-co summary{cursor:pointer;color:#c8441c;font-weight:700;list-style:none;} .pr-co summary::-webkit-details-marker{display:none;}
+.pr-co summary::after{content:' 보기';font-weight:500;} .pr-co[open] summary::after{content:' 접기';}
+.pr-co .cc{margin-top:8px;}
+.pr-sec{display:flex;flex-direction:column;gap:8px;}
+.pr-sec h3{margin:0;font-size:15px;font-weight:800;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;} .pr-sec h3 small{font-size:12.5px;font-weight:500;color:#8a8a90;}
+.pr-list{border:1px solid #E3E1DB;border-radius:12px;background:#fff;overflow:hidden;}
+.pr-q + .pr-q{border-top:1px solid #EFEDE7;}
+.pr-q summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;padding:13px 14px;}
+.pr-q summary::-webkit-details-marker{display:none;}
+.pr-q summary:hover{background:#FAFAF8;}
+.pr-q[open] summary{background:#FAFAF8;}
+.pr-q .no{font-size:13px;font-weight:700;color:#A3A2A8;font-variant-numeric:tabular-nums;}
+.pr-q .qt{font-size:15px;font-weight:600;line-height:1.5;color:#1c1c1e;}
+.pr-q .st{font-size:12px;color:#8a8a90;white-space:nowrap;}
+.pr-q .st.ok{color:#2E7D4F;font-weight:700;}
+.pr-in{padding:4px 14px 16px 46px;display:flex;flex-direction:column;gap:12px;background:#FAFAF8;}
+.pr-ref{display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px 12px;margin:0;font-size:14px;line-height:1.55;}
+.pr-ref dt{font-size:12.5px;font-weight:700;color:#8a8a90;padding-top:1px;}
+.pr-ref dd{margin:0;color:#1c1c1e;}
+.pr-ref dd small{color:#77767D;font-size:13px;}
+.pr-flow{display:flex;flex-wrap:wrap;gap:4px 6px;margin:0;padding:0;list-style:none;counter-reset:f;}
+.pr-flow li{counter-increment:f;font-size:13px;} .pr-flow li::before{content:counter(f);display:inline-grid;place-items:center;width:17px;height:17px;margin-right:4px;border-radius:50%;background:#E3E1DB;font-size:11px;font-weight:800;color:#4a4a52;vertical-align:1px;}
+.pr-flow li + li::after{content:none;}
+.pr-memo textarea{width:100%;min-height:52px;padding:9px 11px;border:1px solid #E3E1DB;border-radius:10px;background:#fff;font:inherit;font-size:14px;resize:vertical;box-sizing:border-box;}
+.pr-memo textarea:focus{outline:none;border-color:#c8441c;}
+.pr-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;} .pr-acts .btn{flex:0 0 auto;width:auto;min-width:0;padding:8px 14px;}
+.pr-timer{font-variant-numeric:tabular-nums;font-weight:800;font-size:15px;min-width:44px;margin-left:4px;}
+.pr-timer.over{color:#c8441c;} .pr-timer.ok{color:#2E7D4F;}
+.pr-band{font-size:12.5px;color:#8a8a90;}
+.pr-foot{margin:0;font-size:12.5px;color:#8a8a90;}
+.pr-cta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;border:1px solid #E3E1DB;border-radius:12px;background:#FAFAF8;}
+.pr-cta p{margin:2px 0 0;font-size:13px;color:#77767D;} .pr-cta .btn{white-space:nowrap;flex:0 0 auto;width:auto;} .pr-cta > div{flex:1;min-width:200px;}
+@media(max-width:640px){ .pr-how{grid-template-columns:1fr;} .pr-how li{padding:8px 10px;} .pr-in{padding-left:14px;} .pr-ref{grid-template-columns:1fr;gap:2px;} .pr-ref dd{margin-bottom:6px;} .pr-q summary{grid-template-columns:20px minmax(0,1fr);} .pr-q .st{grid-column:2;} .pr-prog{width:80px;} }
 /* 2026-11-02q 기업 맞춤 면접: 회사 검색·회사 카드·면접관 10가지·난이도 카드·면접실 면접관 명단·결과 인재상 */
 .fl-co{position:relative;}
 .fl-co-list{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;list-style:none;margin:0;padding:6px;background:#fff;border:1px solid #E3E1DB;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.14);max-height:300px;overflow:auto;}
@@ -8087,6 +8135,13 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
     <div class="fl-acts"><button type="button" class="btn btn-outline" id="fl-back" onclick="StartFlow.back()">이전</button><button type="button" class="btn btn-solid" id="fl-next" onclick="StartFlow.next()">다음</button></div>
   </div>
 </div>
+<div class="modal-overlay" id="modal-prep" role="dialog" aria-modal="true" aria-labelledby="pr-title">
+  <div class="modal-box pr-box">
+    <div class="fl-top pr-top"><div><h2 class="pr-title" id="pr-title">질문 미리 연습</h2><p class="pr-sub" id="pr-sub"></p></div><button type="button" class="fl-x" onclick="PrepRoom.close(true)" aria-label="닫기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="fl-body pr-body" id="pr-body"></div>
+    <div class="fl-acts"><button type="button" class="btn btn-outline" onclick="PrepRoom.close(true)">이전</button><button type="button" class="btn btn-solid" id="pr-go" onclick="PrepRoom.start()">본 면접 시작하기</button></div>
+  </div>
+</div>
 <div class="modal-overlay" id="modal-signup">
   <div class="modal-box signup-box">
     <div class="modal-head signup-head">
@@ -8428,6 +8483,34 @@ function qaCategory(category, diff, items){
 const COMMON_QA = {};
 const PUBLIC_COMMON_QA = [];
 const EXAM_QA = {};
+/* 2026-11-02r 한림대 데모 기본 질문 은행: 클론에는 직무 질문 DB가 없어서, 문제은행이 비면 이 질문들로 면접을 진행함.
+   '질문 미리 연습' 화면에도 같은 질문을 보여 줘서 미리 연습한 질문이 본 면접에 나오게 함 (모범답안 없음 → 답변 구성 기준으로 평가) */
+const HALLYM_QA = {
+  common: [
+    { q:'1분 동안 자기소개를 해 주세요.', diff:'하' },
+    { q:'이 분야에 지원한 이유는 무엇인가요?', diff:'하' },
+    { q:'본인의 강점과 그 강점이 드러난 경험을 말씀해 주세요.', diff:'중' },
+    { q:'팀 프로젝트에서 의견이 맞지 않았던 경험과 어떻게 해결했는지 말씀해 주세요.', diff:'중' },
+    { q:'계획대로 되지 않았던 경험과 그 뒤에 무엇을 했는지 말씀해 주세요.', diff:'중' },
+    { q:'입사 후 5년 뒤 자신의 모습은 어떨 것 같나요?', diff:'하' },
+    { q:'함께 일하는 동료가 규칙을 어기는 것을 봤다면 어떻게 하겠습니까?', diff:'상' },
+    { q:'마지막으로 하고 싶은 말이 있나요?', diff:'하' } ],
+  gov: [ { q:'공무원으로서 가장 중요하다고 생각하는 공직가치와 그 이유를 말씀해 주세요.', diff:'중' },
+    { q:'민원인이 규정에 맞지 않는 요구를 계속할 때 어떻게 대응하겠습니까?', diff:'상' },
+    { q:'우리 지역의 현안 하나를 고르고 해결 방안을 말씀해 주세요.', diff:'상' } ],
+  pubcorp: [ { q:'공공기관 직원에게 필요한 공공성이란 무엇이라고 생각하나요?', diff:'중' },
+    { q:'정해진 원칙을 지키기 위해 손해를 감수했던 경험이 있나요?', diff:'중' },
+    { q:'지원한 기관의 주요 사업 하나를 설명하고 개선 아이디어를 말씀해 주세요.', diff:'상' } ],
+  corp: [ { q:'우리 회사에 지원한 이유와 입사 후 이루고 싶은 목표를 말씀해 주세요.', diff:'하' },
+    { q:'고객의 입장에서 문제를 해결해 본 경험이 있나요?', diff:'중' },
+    { q:'지원 직무에서 가장 중요한 역량은 무엇이고, 그 역량을 어떻게 준비했나요?', diff:'중' } ],
+  startup: [ { q:'정해진 답이 없는 일을 스스로 찾아서 해결해 본 경험을 말씀해 주세요.', diff:'중' },
+    { q:'짧은 시간 안에 새로운 도구나 지식을 익혀 성과를 낸 경험이 있나요?', diff:'중' },
+    { q:'자주 쓰는 서비스 하나를 골라 개선하고 싶은 점을 말씀해 주세요.', diff:'상' } ],
+  welfare: [ { q:'도움이 필요한 사람을 대할 때 가장 중요하게 생각하는 태도는 무엇인가요?', diff:'중' },
+    { q:'감정적으로 힘든 상황에서 자신을 돌본 방법은 무엇인가요?', diff:'중' },
+    { q:'이용자의 요구와 기관의 원칙이 부딪칠 때 어떻게 하겠습니까?', diff:'상' } ],
+};
 
 /* ---------------- state ---------------- */
 let state = {
@@ -11224,9 +11307,11 @@ const CompanyData = {
   },
   fieldFor(category){ return /공기업|준정부|기타공공/.test(category||'') ? 'pubcorp' : /IT·플랫폼/.test(category||'') ? 'startup' : 'corp'; },
   /** 면접 질문으로 넣을 예상 질문 n개 (2·3번 자리에 들어감) */
-  questions(pack, n){
+  questions(pack, n, shuffle){
     if(!pack || !pack.questions) return [];
-    return pack.questions.slice(0, n).map(q=>({ q: q.question, ref: null, hint: q.eval_point || '', id: `cq-${pack.talent.id}-${q.seq}`, diff: '중',
+    let list = pack.questions.slice();
+    if(shuffle){ for(let i=list.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [list[i],list[j]] = [list[j],list[i]]; } list = list.slice(0, n).sort((a,b)=>a.seq-b.seq); }
+    return list.slice(0, n).map(q=>({ q: q.question, ref: null, hint: q.eval_point || '', id: `cq-${pack.talent.id}-${q.seq}`, diff: '중',
       co: { id: pack.talent.id, name: pack.talent.name, seq: q.seq, lk: q.linked_talent || '', ev: q.eval_point || '' } }));
   },
   /** 지금 면접에 쓸 회사 자료 (기업·직무 맞춤으로 회사를 고른 경우만) */
@@ -11248,6 +11333,113 @@ const CompanyCard = {
 };
 /** 난이도별 설명과 면접 전체 꼬리질문 최대 개수 (면접 준비 창 '꼬리질문' 칩 값과 같음) */
 const FLOW_DIFFS = { '하':{ t:'기본 질문 위주', d:'쉬운 직무 질문 · 꼬리질문 최대 3개', fu:'3' }, '중':{ t:'실제 면접 수준', d:'꼬리질문 최대 5개 · 역할·결과를 구체적으로 확인', fu:'5' }, '상':{ t:'깊게 파고들기', d:'어려운 직무 질문 · 꼬리질문 최대 5개 · 판단 근거까지 확인', fu:'5' } };
+/* 2026-11-02r 질문 미리 연습: 본 면접 전에 나올 수 있는 질문을 모아 보고, 질문마다 '이 질문이 보는 것·답변 구성·내 경험·피할 말'을 참고해
+   키워드 메모를 남기고 소리 내어 연습함 (모범답안은 주지 않음). 메모·연습 표시는 이 기기에만 저장 */
+const PrepRoom = {
+  items:[], tab:'all', timer:null, tq:-1, t0:0, key:'',
+  ctx(){ const s = StartFlow.s || {}; const job = s.kind === 'job';
+    const fid = job ? s.job.field : (state.dashField || (FIELDS[0] && FIELDS[0].id));
+    return { kind: s.kind || 'major', fid, field: StartFlow.field(fid), companyId: job ? (s.job.companyId || '') : '', company: job ? (s.job.company || '') : '', role: job ? (s.job.role || '') : '', mode: s.mode, exps: StartFlow.usedExps ? StartFlow.usedExps() : [] }; },
+  tx(t){ return String(t || '').replace(/속기 업무/g, '지원 업무').replace(/기관 기여/g, '회사·기관 기여'); },
+  load(){ try{ return JSON.parse(localStorage.getItem(this.key) || '{}'); }catch(_){ return {}; } },
+  save(d){ try{ localStorage.setItem(this.key, JSON.stringify(d)); }catch(_){} },
+  hash(t){ let h = 0; for(const ch of String(t)) h = (h * 31 + ch.charCodeAt(0)) | 0; return 'q' + (h >>> 0).toString(36); },
+  async open(){
+    const c = this.ctx(); this._c = c;
+    const uid = (state.currentUser && state.currentUser.id) || 'me';
+    this.key = `zp_prep_${uid}_${c.companyId || c.fid}`;
+    let pack = null; if(c.companyId) pack = await CompanyData.pack(c.companyId);
+    this.pack = pack;
+    const items = [];
+    if(pack) (pack.questions || []).forEach(q=>items.push({ grp:'co', q:q.question, co:{ lk:q.linked_talent || '', ev:q.eval_point || '' } }));
+    const common = HALLYM_QA.common, fieldQ = HALLYM_QA[c.fid] || [];
+    items.push({ grp:'base', q:common[0].q }); items.push({ grp:'base', q:common[7].q });
+    fieldQ.forEach(x=>items.push({ grp:'field', q:x.q }));
+    common.slice(1, 7).forEach(x=>items.push({ grp:'field', q:x.q }));
+    items.forEach(it=>{ it.id = this.hash(it.q); try{ it.type = Rubric.detectType(it.q); }catch(_){ it.type = 'general'; } });
+    this.items = items; this.tab = 'all';
+    document.getElementById('modal-flow').classList.remove('active');
+    document.getElementById('modal-prep').classList.add('active');
+    document.getElementById('pr-sub').textContent = pack ? `${pack.talent.name} · ${c.field.name}${c.role ? ' · ' + c.role : ''}` : `${c.field.name}${c.role ? ' · ' + c.role : ''}${c.company ? ' · ' + c.company : ''}`;
+    try{ Activity.log('prep_open', { company: c.companyId || null, field: c.fid }); }catch(_){}
+    this.render();
+  },
+  close(back){ this.stop(); document.getElementById('modal-prep').classList.remove('active'); if(back){ document.getElementById('modal-flow').classList.add('active'); } },
+  start(){ this.stop(); document.getElementById('modal-prep').classList.remove('active'); StartFlow.finish(); },
+  LOOK: { intro:'나를 한 줄로 기억하게 만드는지', motive:'왜 여기인지, 무엇을 준비했는지', experience:'내가 한 행동과 그 결과가 보이는지', situation:'먼저 할 일과 판단 기준이 분명한지',
+    method:'실제로 해 본 방법인지', knowledge:'정확히 알고 설명하는지', value:'입장이 분명하고 실천한 사례가 있는지', personality:'성격을 보여 주는 일화가 있는지',
+    plan:'목표와 구체적인 방법이 있는지', closing:'마지막에 강점 하나를 남기는지', general:'결론이 먼저 나오는지' },
+  AVOID: { intro:'이력을 나열만 하기', motive:'"안정적이라서", "1위 기업이라서" 같은 이유', experience:'"팀이 함께 했습니다"처럼 내 역할이 안 보이는 말', situation:'"상황에 따라 다르겠지만"으로 시작하기',
+    personality:'단점을 장점처럼 포장하기', plan:'"열심히 배우겠습니다"처럼 방법이 없는 계획', value:'입장 없이 양쪽 다 맞다는 답', closing:'감사 인사만 하고 끝내기', general:'배경 설명부터 길게 하기' },
+  secs(info){ return `${Math.round(info.range[0] / 5.2)}~${Math.round(info.range[1] / 5.2)}초`; },
+  refs(it){
+    const info = QTYPE_INFO[it.type] || QTYPE_INFO.general, c = this._c || {};
+    let tal = '';
+    if(it.co){ const lk = CompanyCard.flat(it.co.lk), t = this.pack && this.pack.talent; let m = '';
+      if(t){ const i = (t.keywords || []).findIndex(k=>CompanyCard.flat(k) && lk.includes(CompanyCard.flat(k).split(' ')[0]));
+        if(i >= 0 && t.keyword_meanings && t.keyword_meanings[i]){ const k = CompanyCard.flat(t.keywords[i]); m = CompanyCard.flat(t.keyword_meanings[i]); if(m.startsWith(k)) m = m.slice(k.length).replace(/^\s*[:：\-–]\s*/, ''); } }
+      tal = escapeHtml(lk) + (m ? ` <small>· ${escapeHtml(m)}</small>` : ''); }
+    const exps = (c.exps || []).slice(0, 2);
+    return `<dl class="pr-ref">
+      <dt>보는 것</dt><dd>${escapeHtml(it.co ? it.co.ev : (this.LOOK[it.type] || this.LOOK.general))}</dd>
+      ${it.co ? `<dt>인재상</dt><dd>${tal}</dd>` : ''}
+      <dt>구성</dt><dd><ol class="pr-flow">${info.check.map(k=>`<li>${escapeHtml(this.tx(k.label).replace(/\(.*?\)/g, ''))}</li>`).join('')}</ol></dd>
+      <dt>피할 말</dt><dd>${escapeHtml(this.AVOID[it.type] || this.AVOID.general)}</dd>
+      ${exps.length ? `<dt>내 경험</dt><dd>${exps.map(e=>escapeHtml(e.text)).join(' · ')}</dd>` : ''}
+    </dl>`;
+  },
+  render(){
+    const d = this.load(), all = this.items, done = all.filter(it=>d[it.id] && d[it.id].done).length;
+    const show = all.filter(it=>this.tab === 'all' || (this.tab === 'co' && it.grp === 'co') || (this.tab === 'gen' && it.grp !== 'co') || (this.tab === 'todo' && !(d[it.id] && d[it.id].done)));
+    const pack = this.pack, c = this._c;
+    const group = (g, title, note)=>{ const L = show.filter(it=>it.grp === g); if(!L.length) return '';
+      return `<section class="pr-sec"><h3>${title}<small>${note}</small></h3><div class="pr-list">${L.map(it=>this.card(it, all.indexOf(it) + 1, d[it.id] || {})).join('')}</div></section>`; };
+    document.getElementById('pr-body').innerHTML = `
+      <ol class="pr-how"><li><b>1</b>질문을 눌러 참고 보기</li><li><b>2</b>말할 거리 키워드 메모</li><li><b>3</b>소리 내어 시간 재기</li></ol>
+      <div class="pr-tools">
+        <div class="pr-tabs" role="group" aria-label="질문 보기">${[['all','전체'],['co','기업 맞춤'],['gen','공통·직무'],['todo','남은 질문']].filter(([k])=>k !== 'co' || pack).map(([k,l])=>`<button type="button" class="pr-tab" data-tab="${k}" aria-pressed="${this.tab === k}">${l}</button>`).join('')}</div>
+        <div class="pr-bar"><span class="pr-cnt">연습 ${done}/${all.length}</span><div class="pr-prog"><i style="width:${all.length ? Math.round(done / all.length * 100) : 0}%"></i></div></div>
+      </div>
+      ${group('co', pack ? `${escapeHtml(pack.talent.name)} 예상 질문` : '', '6개 중 2개 출제')}
+      ${pack && show.some(it=>it.grp === 'co') ? `<details class="pr-co"><summary>${escapeHtml(pack.talent.name)} 인재상·면접 전형</summary>${CompanyCard.html(pack, false)}</details>` : ''}
+      ${group('base', '꼭 나오는 질문', '첫 질문과 마지막 질문')}
+      ${group('field', '직무·공통 질문', '난이도에 맞춰 일부 출제')}
+      ${!show.length ? '<p class="cc-load">남은 질문이 없어요. 모두 연습했어요!</p>' : ''}
+      <p class="pr-foot">${pack ? '예상 질문은 인재상을 바탕으로 만든 연습용 질문이에요(실제 기출 아님). ' : ''}메모와 연습 기록은 이 기기에만 저장돼요.</p>`;
+    this.bind();
+  },
+  card(it, no, rec){
+    const info = QTYPE_INFO[it.type] || QTYPE_INFO.general;
+    return `<details class="pr-q" data-id="${it.id}"><summary><span class="no">${no}</span><span class="qt">${escapeHtml(it.q)}</span><span class="st${rec.done ? ' ok' : ''}">${rec.done ? '✓ 연습함' : escapeHtml(info.label)}</span></summary>
+      <div class="pr-in">${this.refs(it)}
+        <div class="pr-memo"><label class="sr" for="pr-m-${it.id}">말할 거리 메모</label><textarea id="pr-m-${it.id}" data-memo="${it.id}" maxlength="200" placeholder="말할 거리를 키워드로만 적어 보세요 (예: 설문 300명 목표 → 2주 만에 326명)">${escapeHtml(rec.memo || '')}</textarea></div>
+        <div class="pr-acts"><button type="button" class="btn btn-outline btn-sm" data-say="${it.id}">질문 듣기</button><button type="button" class="btn btn-solid btn-sm" data-time="${it.id}">연습 시작</button><span class="pr-timer" id="pr-t-${it.id}">0:00</span><span class="pr-band">권장 ${this.secs(info)}${rec.best ? ` · 지난번 ${Math.floor(rec.best / 60)}:${String(rec.best % 60).padStart(2, '0')}` : ''}</span></div>
+      </div></details>`;
+  },
+  bind(){
+    const body = document.getElementById('pr-body');
+    body.querySelectorAll('[data-tab]').forEach(b=>b.onclick = ()=>{ this.tab = b.dataset.tab; this.stop(); this.render(); });
+    body.querySelectorAll('[data-memo]').forEach(t=>t.addEventListener('input', ()=>{ const d = this.load(); d[t.dataset.memo] = Object.assign({}, d[t.dataset.memo], { memo: t.value.slice(0, 200) }); this.save(d); }));
+    body.querySelectorAll('[data-say]').forEach(b=>b.onclick = ()=>{ const it = this.items.find(x=>x.id === b.dataset.say); if(it) try{ speakQuestion(it.q, null); }catch(_){} });
+    body.querySelectorAll('[data-time]').forEach(b=>b.onclick = ()=>this.toggle(b.dataset.time, b));
+  },
+  toggle(id, btn){
+    if(this.tq === id){ this.finishTimer(); return; }
+    this.stop(); this.tq = id; this.t0 = Date.now(); btn.textContent = '연습 끝';
+    const it = this.items.find(x=>x.id === id), info = QTYPE_INFO[it.type] || QTYPE_INFO.general, lo = Math.round(info.range[0] / 5.2), hi = Math.round(info.range[1] / 5.2);
+    const el = document.getElementById('pr-t-' + id);
+    this.timer = setInterval(()=>{ const sec = Math.floor((Date.now() - this.t0) / 1000); if(el){ el.textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; el.className = 'pr-timer' + (sec > hi ? ' over' : sec >= lo ? ' ok' : ''); } }, 250);
+  },
+  finishTimer(){
+    const id = this.tq, sec = Math.floor((Date.now() - this.t0) / 1000); this.stop();
+    if(sec >= 5){ const d = this.load(); d[id] = Object.assign({}, d[id], { done: true, best: sec }); this.save(d);
+      const it = this.items.find(x=>x.id === id), info = QTYPE_INFO[it.type] || QTYPE_INFO.general, lo = Math.round(info.range[0] / 5.2), hi = Math.round(info.range[1] / 5.2);
+      showToast(sec < lo ? `${sec}초 · 조금 짧아요. 경험이나 결과를 한 문장 더 넣어 보세요.` : sec > hi ? `${sec}초 · 조금 길어요. 결론부터 말하고 배경을 줄여 보세요.` : `${sec}초 · 권장 시간 안에 말했어요.`, 'info');
+      const open = id; this.render(); const q = document.querySelector(`#pr-body .pr-q[data-id="${open}"]`); if(q) q.open = true; }
+    else showToast('5초 넘게 말하면 연습한 것으로 표시돼요.', 'info');
+  },
+  stop(){ if(this.timer){ clearInterval(this.timer); this.timer = null; } const b = this.tq !== -1 ? document.querySelector(`[data-time="${this.tq}"]`) : null; if(b) b.textContent = '연습 시작'; this.tq = -1; },
+};
 /* 2026-11-02k 한림대 데모: 면접 준비 흐름. 끝나면 고른 분야로 기존 면접 준비 창(openSetup)을 열고 답변 시간·면접관 진행 방식을 맞춰 둠.
    학년·경험·기업·채용공고는 아직 질문 생성에 쓰이지 않고 state.flowCtx에만 담김 (커리어 인바디·채용공고 연동 전 화면 틀) */
 const StartFlow = {
@@ -11421,6 +11613,7 @@ const StartFlow = {
     const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${s.major.grade}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.role)}${s.job.post ? ' · 채용공고 반영' : ''}`;
     const co = s.kind === 'job' ? (s.job.companyId ? `<b>${escapeHtml(s.job.company)}</b> · 기업 맞춤 질문 2개 포함 (2·3번)` : escapeHtml(s.job.company ? s.job.company + ' (목록에 없어 직무 일반 질문)' : '선택 안 함 (직무 일반 질문)')) : '';
     return `<h2 class="fl-h">이렇게 면접을 준비했어요</h2><p class="fl-lead">'다음'을 누르면 카메라·마이크를 점검하는 창으로 넘어가요.</p>
+    <div class="pr-cta"><div><b>본 면접 전에 질문부터 연습해 볼까요?</b><p>${s.kind === 'job' && s.job.companyId ? `${escapeHtml(s.job.company)} 예상 질문 6개 + ` : ''}꼭 나오는 질문 · 직무·공통 질문</p></div><button type="button" class="btn btn-outline" onclick="PrepRoom.open()">질문 미리 연습</button></div>
     <dl class="fl-sum"><dt>면접 목적</dt><dd>${s.kind === 'major' ? '전공·경험 면접' : '기업·직무 맞춤 면접'}</dd>${co ? `<dt>목표 기업</dt><dd>${co}</dd>` : ''}<dt>내 정보</dt><dd>${info}</dd>
     <dt>활용할 경험</dt><dd>${u.length ? u.map(e=>escapeHtml(e.text)).join(', ') : '선택 안 함 (일반 질문)'}</dd>
     <dt>진행 방식</dt><dd>${s.mode === 'real' ? '실전형 · 힌트·중간 피드백 없음, 마친 뒤 종합 리포트' : '연습형 · 힌트·즉시 피드백, 멈추고 이어 하기'}</dd>
@@ -15218,6 +15411,9 @@ function buildQuestionPool(field, difficulty){
     PUBLIC_COMMON_QA.forEach(cat=>cat.items.forEach(it=>pool.push({q:it.q, ref:it.ref, diff:it.diff})));
   }
   (EXAM_QA[field.id]||[]).forEach(it=>pool.push({q:it.q, ref:it.ref, diff:it.diff}));
+  if(!pool.length && typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS){   // 2026-11-02r 클론: 문제은행이 비면 한림대 기본 질문
+    (HALLYM_QA[field.id] || []).concat(HALLYM_QA.common.slice(1, 7)).forEach(it=>pool.push({ q:it.q, ref:'', diff:it.diff, hallym:true }));
+  }
   for(let i=pool.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [pool[i],pool[j]]=[pool[j],pool[i]];
@@ -17485,7 +17681,7 @@ async function runDialogInterview(){
   if(!resume && !realSet && !opt.questions && state.flowCtx && state.flowCtx.purpose === 'job'){
     try{ if(state.companyPackP) await Promise.race([state.companyPackP, new Promise(r=>setTimeout(r, 4000))]); }catch(_){}
     const cp = CompanyData.active();
-    if(cp){ const cq = CompanyData.questions(cp, (opt.count || 5) >= 6 ? 3 : 2); opt.extraQuestions = cq.concat(opt.extraQuestions || []); }
+    if(cp){ const cq = CompanyData.questions(cp, (opt.count || 5) >= 6 ? 3 : 2, true); opt.extraQuestions = cq.concat(opt.extraQuestions || []); }
   }
   if(resume){
     opt.questions = resume.questions.map(x=>Object.assign({}, x)); delete opt.extraQuestions; delete opt.docQuestion;
@@ -19992,7 +20188,12 @@ const StenoDialog = {
     }
     this.lastSource = 'local';
     const field = FIELDS.find(f=>f.id===fieldId) || REVIEW_FIELD;
-    return buildQuestionPool(field, diff || '중').slice(0, count);
+    const pool = buildQuestionPool(field, diff || '중');
+    if(pool.length && pool[0].hallym && count >= 3){   // 2026-11-02r 한림대 기본 질문: 자기소개 → (직무·공통) → 마지막 할 말
+      const C = HALLYM_QA.common;
+      return [{ q:C[0].q, ref:'', diff:'하' }].concat(pool.slice(0, count - 2), [{ q:C[7].q, ref:'', diff:'하' }]);
+    }
+    return pool.slice(0, count);
   },
 
   /* ①-2 국회 실전 세트: 순서가 정해진 7문항 (자기소개 → 지원동기 → 국회 지식 2 → 속기 실무 → 경험 → 마지막 할 말) */
