@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02a';
+var APP_VERSION = '2026-11-02b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -92,7 +92,7 @@ var APP_VERSION = '2026-11-02a';
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
 }catch(e){} })();
 </script>
-<title>ZAVAPASS AI · 한국AI속기사협회 AI 모의면접</title>
+<title>ZAVAPASS × 한림대학교 · AI 모의면접</title>
 <!-- 2026-10-27c: 앱 아이콘 Z + 합격 체크 (어두운 바탕) -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%231F1F21'/%3E%3Cpath d='M134 128h232v52L218 332h148v52H134v-52l148-152H134z' fill='%23fff'/%3E%3Ccircle cx='370' cy='372' r='74' fill='%23E8532A' stroke='%231F1F21' stroke-width='14'/%3E%3Cpath d='M338 373l23 23 42-46' fill='none' stroke='%23fff' stroke-width='19' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <meta name="theme-color" content="#ffffff">
@@ -5355,6 +5355,15 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 /* 2026-10-26i 회원가입·마이페이지·코치·내 성장 (PC·휴대폰 같게) */
 #modal-signup .su-flow{margin:0 0 18px;} #modal-signup .su-flow li{flex:1 1 auto;} #modal-signup .su-flow li:last-child{flex:0 0 auto;} @media(max-width:520px){ #modal-signup .su-flow li{font-size:13px;gap:5px;} #modal-signup .su-flow li:not(:last-child)::after{margin:0 5px 0 1px;min-width:8px;} }
 .su-opt{font-weight:400;color:#5b6474;} .signup-hint{color:#5b6474 !important;font-size:12.5px;}
+/* 2026-11-02b 한림대 데모: 회원가입 학생 인증 틀 */
+.signup-field select{width:100%;padding:11px 12px;border:1px solid var(--slate-300);border-radius:var(--radius-s);background:#fff;color:var(--navy-900);font-family:var(--font-ui);font-size:13.5px;transition:border-color .15s, box-shadow .15s;}
+.signup-field select:focus{outline:none;border-color:var(--blue-500);box-shadow:0 0 0 3px rgba(61,107,240,.15);}
+.signup-field select:disabled{background:#F4F4F6;color:#8a909c;}
+.signup-field select.invalid{border-color:var(--danger);box-shadow:0 0 0 3px rgba(214,69,69,.12);}
+#modal-signup .su-univ{margin:0 0 14px;padding:14px 14px 12px;border:1px solid #E6E6EA;border-radius:12px;background:#FAFAFB;}
+#modal-signup .su-univ-t{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:14px;font-weight:700;color:#1c1c1e;}
+#modal-signup .su-univ-badge{font-size:11.5px;font-weight:600;color:#5b6474;background:#EDEEF1;border-radius:999px;padding:2px 8px;}
+#screen-login .lg-brand .d3-org{display:inline !important;}   /* 로그인 화면은 휴대폰에서도 '× 한림대학교'를 보여 줌 */
 #signup-consent-row{min-height:44px;align-items:center;} #signup-consent{width:22px;height:22px;flex:none;}
 .mp-sec-t{margin:0 0 10px;font-size:16px;font-weight:700;color:var(--c-ink,#1c1c1e);} .mp-sec-t small{display:block;margin-top:2px;font-size:13px;font-weight:500;color:var(--c-ink-3,#66666c);}
 .mp-docs{padding:16px;border:1.5px solid var(--c-accent,#e8532a);border-radius:14px;margin-bottom:22px;background:#fffaf7;}
@@ -5805,11 +5814,11 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
   <div class="lg">
     <div class="lg-wrap">
       <section class="lg-intro">
-        <a class="lg-brand" href="javascript:void(0)"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">한국AI속기사협회</span></a>
+        <a class="lg-brand" href="javascript:void(0)"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
         <h1 class="lg-h">실전처럼 답하고, <br>차근차근 준비하세요.</h1>
         <p class="lg-lead">지원 분야에 맞는 질문으로 면접을 연습하고,<br class="hide-m"> 답변을 돌아보며 다음 면접을 준비하세요.</p>
         <ul class="lg-feat">
-          <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span><strong>분야별 면접 질문</strong>공공기관 공통 질문과 지원 분야 질문을 미리 살펴봐요.</span></li>
+          <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span><strong>분야별 면접 질문</strong>인성·직무 공통 질문과 지원 직무 질문을 미리 살펴봐요.</span></li>
           <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span><strong>음성으로 답변 연습</strong>질문을 듣고 말로 답하면 글자로 바뀌어요.</span></li>
           <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg><span><strong>연습 기록과 점수 추이</strong>지난 연습을 돌아보고 변화를 확인해요.</span></li>
         </ul>
@@ -5817,7 +5826,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
           <figure class="lg-prev" aria-label="면접 화면 예시">
             <figcaption class="lg-prev-cap">면접 화면 예시</figcaption>
             <div class="lg-prev-frame" aria-hidden="true">
-              <div class="lg-prev-top"><span class="t">국회 속기사 면접 리허설</span><span class="b">1 / 2문항</span></div>
+              <div class="lg-prev-top"><span class="t">직무 면접 리허설</span><span class="b">1 / 2문항</span></div>
               <div class="lg-prev-card"><p class="lbl">현재 질문</p><p class="q">상사와의 마찰이 생겼을 때 어떻게 대처할 것인가요?</p></div>
               <div class="lg-prev-card"><div class="row2"><p class="lbl">내 답변</p><span class="st"><i></i>답변 중</span></div><div class="wave"><span style="height:4px"></span><span style="height:8px"></span><span style="height:12px"></span><span style="height:7px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:5px"></span><span style="height:9px"></span><span style="height:13px"></span><span style="height:6px"></span><span style="height:11px"></span><span style="height:8px"></span><span style="height:4px"></span><span style="height:7px"></span><span style="height:10px"></span><span style="height:5px"></span></div><p class="ans">먼저 상사의 의견을 끝까지 듣고, 제가 오해한 부분이 없는지 확인하겠습니다.</p></div>
             </div>
@@ -5851,16 +5860,16 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
           <div class="lg-info">
             <p class="t">이용 안내</p>
             <ol>
-              <li><b>서류 합격자 전용</b> 서비스예요. 가입만으로는 연습이 열리지 않아요.</li>
-              <li>가입하고 로그인하면 나오는 화면에서 <b>서류에 합격한 분야</b>를 골라 보내 주세요.</li>
-              <li>담당자가 서류 합격을 확인하면 그 분야의 면접 연습이 열려요. 그 전에는 ‘승인 대기’ 화면만 보여요.</li>
+              <li><b>한림대학교 재학생</b>을 위한 AI 모의면접 서비스예요.</li>
+              <li>회원가입할 때 <b>소속 학과와 학번</b>을 입력해 주세요.</li>
+              <li>학생 확인이 끝나면 면접 연습이 열려요. 그 전에는 ‘승인 대기’ 화면이 보여요.</li>
             </ol>
-            <p class="lg-help">로그인이 안 되거나 비밀번호를 잊었거나 이용 기간 연장이 필요하면 담당자에게 문의해 주세요.</p>
+            <p class="lg-help">로그인이 안 되거나 비밀번호를 잊었다면 한림대학교 취업진로지원센터로 문의해 주세요.</p>
           </div>
         </div>
       </section>
     </div>
-    <footer class="lg-foot"><span class="lg-foot-l"><button type="button" class="lg-policy" onclick="openPolicy()">개인정보 처리방침</button><span>운영 한국AI속기사협회</span></span><span class="lg-foot-r"><button type="button" class="lg-kakao kakao-show" onclick="openKakaoChannel()" style="display:none;"><svg class="kk-ic" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M10 3C5.6 3 2 5.8 2 9.2c0 2.2 1.5 4.1 3.7 5.2l-.8 2.9c-.1.3.2.5.4.3l3.4-2.3c.4 0 .9.1 1.3.1 4.4 0 8-2.8 8-6.2S14.4 3 10 3z"/></svg>카카오톡 문의</button><button type="button" class="lg-precheck" onclick="openPrecheck()">시작 전 점검 — 브라우저·마이크·소리 확인하기 ›</button></span></footer>
+    <footer class="lg-foot"><span class="lg-foot-l"><button type="button" class="lg-policy" onclick="openPolicy()">개인정보 처리방침</button><span>한림대학교 취업진로지원센터</span></span><span class="lg-foot-r"><button type="button" class="lg-precheck" onclick="openPrecheck()">시작 전 점검 — 브라우저·마이크·소리 확인하기 ›</button></span></footer>
   </div>
 </section>
 
@@ -5878,7 +5887,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
     </div>
   </div>
   <div class="pd">
-    <header class="pd-top"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">한국AI속기사협회</span></header>
+    <header class="pd-top"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></header>
     <main class="pd-card">
      <div id="pd-wait" data-st="new">
       <!-- 2026-10-26h: 화면이 하는 일을 하나로 — ① 분야 보내기 ② 담당자 확인 중 ③ 반려되면 다시 보내기 -->
@@ -5958,7 +5967,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 <section id="screen-dashboard" class="screen v3">
   <header class="d3-hdr">
     <div class="d3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">한국AI속기사협회</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="dash">
         <a href="javascript:void(0)" data-go="home" aria-current="page" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" class="adm-only" data-adm="notices" onclick="openAdminScreen('notices')">공지사항</a>
@@ -6823,7 +6832,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 <section id="screen-practice" class="screen v3">
   <header class="d3-hdr">
     <div class="d3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">한국AI속기사협회</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="practice">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" aria-current="page">면접 연습</a>
@@ -6914,7 +6923,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 <section id="screen-interview" class="screen">
   <header class="d3-hdr rh3-hdr">
     <div class="d3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="openConfirmEnd()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">한국AI속기사협회</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="openConfirmEnd()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="interview">
         <a href="javascript:void(0)" onclick="openConfirmEnd()">홈</a>
         <a href="javascript:void(0)" aria-current="page">면접 연습</a>
@@ -6947,7 +6956,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
       <!-- 리허설(워밍업 룸) 전용 상단: 로고 · 제목 · 모드 표시 -->
       <div class="rh-topbrand rh-only">
         <span class="rh-logo" aria-hidden="true"><svg class="logo-mark" viewBox="0 0 24 24" fill="none"><path d="M6 3.5h12a3.5 3.5 0 0 1 3.5 3.5v7a3.5 3.5 0 0 1-3.5 3.5h-6.4L7.8 21.4V17.5H6A3.5 3.5 0 0 1 2.5 14V7A3.5 3.5 0 0 1 6 3.5z" fill="#fff"/><path d="M12 6.2l1.25 3.05L16.3 10.5l-3.05 1.25L12 14.8l-1.25-3.05L7.7 10.5l3.05-1.25z" fill="#2F6FE0"/><path d="M16.9 6.2l.55 1.35 1.35.55-1.35.55-.55 1.35-.55-1.35-1.35-.55 1.35-.55z" fill="#2F6FE0" opacity=".8"/></svg></span>
-        <b>한국AI속기사협회</b><i class="rh-topsep"></i><span id="rh-top-title">AI 모의면접 리허설</span>
+        <b>한림대학교</b><i class="rh-topsep"></i><span id="rh-top-title">AI 모의면접 리허설</span>
         <span class="rh-modepill rehearsal-only"><b>면접</b><span>채점 없음</span></span>
         <span class="live-pill live-only"><i></i>면접 진행 중</span>
       </div>
@@ -7137,7 +7146,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 <section id="screen-result" class="screen v3">
   <header class="d3-hdr r3-hdr">
     <div class="d3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">한국AI속기사협회</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
       <nav class="d3-nav r4-nav" aria-label="주 메뉴" data-nav="result">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" onclick="navGo('practice')">면접 연습</a>
@@ -7881,13 +7890,13 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
       </div>
       <div>
         <h2>회원가입</h2>
-        <p><b>서류 합격자 전용</b> 서비스예요. 가입하고 나면 합격한 분야를 골라 보내 주세요. 담당자가 확인한 뒤 면접 연습을 열어 드려요.</p>
+        <p><b>한림대학교 재학생</b>을 위한 AI 모의면접이에요. 소속 학과와 학번을 입력하면 학생 확인 뒤 면접 연습을 열어 드려요.</p>
       </div>
     </div>
     <div class="modal-body">
       <ol class="pd-flow su-flow" aria-label="진행 순서">
         <li class="on"><i>1</i><span>가입하기</span></li>
-        <li><i>2</i><span>분야 보내기</span></li>
+        <li><i>2</i><span>학생 확인</span></li>
         <li><i>3</i><span>연습 시작</span></li>
       </ol>
       <div class="signup-grid">
@@ -7914,16 +7923,31 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
           <div class="su-match" id="signup-pw2-err" aria-live="polite"></div>
         </div>
       </div>
-      <div class="signup-field">
-        <label for="signup-phone">휴대폰 번호 <span class="req">*</span></label>
-        <input id="signup-phone" type="tel" inputmode="numeric" placeholder="010-1234-5678" autocomplete="tel" maxlength="13" oninput="this.value=formatPhone(this.value); validateSignupField('phone')">
-        <div class="field-error" id="signup-phone-err"></div>
-        <div class="signup-hint">관리자가 면접 일정 안내 등 연락할 때만 사용해요.</div>
+      <!-- 2026-11-02b 한림대 데모: 학생 인증 틀. 학적 DB 연동 전이라 화면만 있고, 학번은 저장하지 않음 -->
+      <div class="su-univ" role="group" aria-labelledby="su-univ-t">
+        <p class="su-univ-t" id="su-univ-t">한림대학교 학생 인증 <span class="su-univ-badge">학적 연동 예정</span></p>
+        <div class="signup-grid">
+          <div class="signup-field">
+            <label for="signup-college">소속 단과대학 <span class="req">*</span></label>
+            <select id="signup-college" onchange="fillSignupDepts(); validateSignupField('univ')"><option value="">단과대학 선택</option></select>
+          </div>
+          <div class="signup-field">
+            <label for="signup-dept">학과 <span class="req">*</span></label>
+            <select id="signup-dept" disabled onchange="validateSignupField('univ')"><option value="">학과 선택</option></select>
+          </div>
+        </div>
+        <div class="signup-field" style="margin-bottom:0;">
+          <label for="signup-sid">학번 <span class="req">*</span></label>
+          <input id="signup-sid" type="text" inputmode="numeric" maxlength="10" placeholder="예: 20231234" autocomplete="off" oninput="this.value=this.value.replace(/\D/g,''); validateSignupField('univ')">
+          <div class="field-error" id="signup-univ-err"></div>
+          <div class="signup-hint">학번은 학생 확인에만 써요. 학교 학적 시스템과 연동되면 자동으로 확인돼요.</div>
+        </div>
       </div>
       <div class="signup-field" style="margin-bottom:0;">
-        <label for="signup-note">지원 기관 <span class="su-opt">(선택)</span></label>
-        <input id="signup-note" type="text" placeholder="예: ○○시의회, 10월 면접" onkeydown="if(event.key==='Enter') submitSignup()">
-        <div class="signup-hint">적어 두면 담당자가 확인할 때 참고해요. 가입 뒤 화면에서 분야를 다시 골라 보내면 돼요.</div>
+        <label for="signup-phone">휴대폰 번호 <span class="req">*</span></label>
+        <input id="signup-phone" type="tel" inputmode="numeric" placeholder="010-1234-5678" autocomplete="tel" maxlength="13" oninput="this.value=formatPhone(this.value); validateSignupField('phone')" onkeydown="if(event.key==='Enter') submitSignup()">
+        <div class="field-error" id="signup-phone-err"></div>
+        <div class="signup-hint">면접 연습 안내 등 꼭 필요한 연락에만 사용해요.</div>
       </div>
       <div class="su-agree" role="group" aria-labelledby="su-agree-t">
         <p class="su-agree-t" id="su-agree-t">필수 동의 <small>두 가지 모두 체크해야 가입할 수 있어요</small></p>
@@ -8066,7 +8090,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 const ZAVAPASS_ENV = window.ZAVAPASS_ENV || {};
 const SUPABASE_URL = String(ZAVAPASS_ENV.VITE_SUPABASE_URL || '').trim();
 /* 문의 창구: 카카오톡 채널 주소 (예: https://pf.kakao.com/_xxxxx/chat). 비워 두면 문의 버튼이 숨겨짐 */
-const KAKAO_CHANNEL_URL = 'https://pf.kakao.com/_gFdLxb';
+const KAKAO_CHANNEL_URL = '';   // 2026-11-02b 한림대 데모: 협회 카카오톡 채널을 쓰지 않음 (문의는 '의견 보내기'로)
 const SUPABASE_ANON_KEY = String(ZAVAPASS_ENV.VITE_SUPABASE_ANON_KEY || '').trim();
 const PROD_SUPABASE_REFS = ['aqkukxcjcbfxqfesmuva'];   // 운영 ZAVAPASS 프로젝트: 클론에서는 절대 연결 금지
 (function(){
@@ -22692,13 +22716,34 @@ function openAddUser(){
 }
 
 /* ---------------- signup (applicant self sign-up, no permission granted yet) ---------------- */
+/* 2026-11-02b 한림대 데모: 단과대학·학과 드롭다운. 예시 목록이라 학교 학사 정보를 받으면 이 표만 바꾸면 됨 */
+const HALLYM_DEPTS = {
+  '인문대학': ['국어국문학과', '영어영문학과', '사학과', '철학과'],
+  '사회과학대학': ['심리학과', '사회학과', '미디어스쿨', '법학과'],
+  '경영대학': ['경영학과', '경제학과', '회계세무학과'],
+  '자연과학대학': ['화학과', '생명과학과', '바이오메디컬학과'],
+  '소프트웨어융합대학': ['소프트웨어학부', '빅데이터학과', '정보통신공학과'],
+  '의과대학': ['의예과', '의학과'],
+  '간호대학': ['간호학과']
+};
+function fillSignupColleges(){
+  const c = document.getElementById('signup-college'); if(!c) return;
+  c.innerHTML = '<option value="">단과대학 선택</option>' + Object.keys(HALLYM_DEPTS).map(k => `<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');
+  fillSignupDepts();
+}
+function fillSignupDepts(){
+  const c = document.getElementById('signup-college'), d = document.getElementById('signup-dept'); if(!c || !d) return;
+  const list = HALLYM_DEPTS[c.value] || [];
+  d.innerHTML = '<option value="">학과 선택</option>' + list.map(k => `<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');
+  d.disabled = !c.value;
+}
 function openSignup(){
   document.getElementById('signup-name').value='';
   document.getElementById('signup-id').value='';
   document.getElementById('signup-pw').value='';
-  document.getElementById('signup-note').value='';
   document.getElementById('modal-signup').classList.add('active');
-  ['signup-name','signup-id','signup-phone','signup-pw','signup-pw2','signup-note'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.value=''; el.classList.remove('invalid'); } });
+  ['signup-name','signup-id','signup-phone','signup-pw','signup-pw2','signup-sid','signup-college','signup-dept'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.value=''; el.classList.remove('invalid'); } });
+  fillSignupColleges(); { const ue = document.getElementById('signup-univ-err'); if(ue) ue.textContent = ''; }
   { const e2 = document.getElementById('signup-pw2-err'); if(e2){ e2.textContent = ''; e2.classList.remove('ok'); } toggleSignupPwVisible(false); }
   const consent=document.getElementById('signup-consent'); if(consent){ consent.checked=false; validateSignupField('consent'); }
   const pledge=document.getElementById('signup-pledge'); if(pledge){ pledge.checked=false; validateSignupField('pledge'); }
@@ -22755,6 +22800,12 @@ function validateSignupField(which, force){
     else if(v && force && !isValidPhone(v)) msg = '번호 자리수를 확인해 주세요';
     err.textContent = msg;
     input.classList.toggle('invalid', !!msg);
+  }else if(which === 'univ'){
+    const c = document.getElementById('signup-college'), d = document.getElementById('signup-dept'), s = document.getElementById('signup-sid');
+    const sidBad = (s.value && !/^\d{6,10}$/.test(s.value) && (force || s.value.length >= 10)) || (force && !s.value);
+    const msg = force && !c.value ? '소속 단과대학을 골라 주세요' : force && !d.value ? '학과를 골라 주세요' : sidBad ? '학번을 숫자로 정확히 입력해 주세요' : '';
+    c.classList.toggle('invalid', !!force && !c.value); d.classList.toggle('invalid', !!force && !!c.value && !d.value); s.classList.toggle('invalid', sidBad);
+    document.getElementById('signup-univ-err').textContent = msg;
   }else if(which === 'consent'){
     const c = document.getElementById('signup-consent');
     const bad = !c.checked && !!force;
@@ -22774,10 +22825,18 @@ async function submitSignup(){
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-id').value.trim();
   const pw = document.getElementById('signup-pw').value.trim();
-  const note = document.getElementById('signup-note').value.trim();
+  const college = document.getElementById('signup-college').value, dept = document.getElementById('signup-dept').value;
+  const sid = document.getElementById('signup-sid').value.trim();
+  const note = college && dept ? `한림대학교 ${college} ${dept}` : '';   // 학번은 연동 전이라 저장하지 않음
   const phone = formatPhone(document.getElementById('signup-phone').value);
   if(!name || !email){
     showToast('이름과 이메일을 입력해 주세요');
+    return;
+  }
+  if(!college || !dept || !/^\d{6,10}$/.test(sid)){
+    validateSignupField('univ', true);
+    document.getElementById(!college ? 'signup-college' : !dept ? 'signup-dept' : 'signup-sid').focus();
+    showToast('소속 단과대학·학과와 학번을 입력해 주세요');
     return;
   }
   if(!phone){
