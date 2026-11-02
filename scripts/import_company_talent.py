@@ -14,6 +14,9 @@ import openpyxl
 MAIN = ['대기업 그룹', '재계 그룹(31~102위)', '시가총액 상위 기업', '금융권', 'IT·플랫폼·유니콘',
         '공기업', '준정부기관', '기타공공기관', '시총 101~200위·코스닥']
 REFERENCE_ONLY = '시총 101~200위·코스닥'
+# 엑셀 v3 이후 확인된 이름 변경 (ID: (엑셀 이름, 바뀐 이름, 비고에 덧붙일 말)) — 다시 넣어도 바뀐 이름이 유지되게
+RENAMED = {'G5-043': ('강릉원주대학교치과병원', '강원대학교치과병원',
+                      '[이름 변경] 강릉원주대학교치과병원 → 강원대학교치과병원 (강원대·강릉원주대 통합, 2026-11-02 확인)')}
 
 
 def clean(v):
@@ -56,6 +59,10 @@ def read(path):
     dup = [k for k, n in collections.Counter(c['id'] for c in companies).items() if n > 1]
     if dup or any(not c['id'] or not c['name'] for c in companies):
         sys.exit(f'ID 중복 또는 빈 ID·회사명이 있어요: {dup}')
+    for c in companies:
+        old, new, why = RENAMED.get(c['id'], (None, None, None))
+        if old and c['name'] == old:
+            c['name'], c['note'] = new, ' / '.join(x for x in (c['note'], why) if x)
     missing = [k for k in review if k not in {c["id"] for c in companies}]
     if missing:
         sys.exit(f"'점검필요' 탭의 ID가 본문에 없어요: {missing}")
