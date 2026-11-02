@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02h';
+var APP_VERSION = '2026-11-02i';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5379,8 +5379,6 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 .hm-data-txt p{margin:4px 0 0;font-size:14px;color:var(--c-ink-3,#6b6b72);}
 .hm-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
 .hm-row .g4-reports{grid-template-columns:1fr !important;}
-.hm-growth-card{margin-top:16px;}
-#hm-growth svg{display:block;width:100%;max-width:720px;height:auto;max-height:240px;margin:0 auto;}
 .hm-rep-empty{display:none;}
 #g4-reports-sec[style*="none"] + .hm-rep-empty{display:block;}
 @media(max-width:720px){ .hm-row{grid-template-columns:1fr;} .hm-modes{grid-template-columns:1fr;} .hm-data{flex-direction:column;align-items:flex-start;} }
@@ -6053,7 +6051,7 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
       <section class="d3-card d3-stats" id="d3-stats"></section>
     </div>
 
-    <!-- 2026-11-02g 한림대 데모 홈: 내 경험·데이터 확인 → 지난 면접의 보완점 | 최근 면접 기록 → 나의 성장 추이 -->
+    <!-- 2026-11-02g 한림대 데모 홈: 내 경험·데이터 확인 → 지난 면접의 보완점 | 최근 면접 기록 (2026-11-02i 성장 추이는 '나의 성장' 화면에서만) -->
     <section class="d3-card hm-data" aria-label="내 경험·데이터 확인">
       <div class="hm-data-txt"><h2 class="d3-section-title">내 경험·데이터 확인</h2><p>이력서·자기소개서를 올려 두면 내 전공과 활동 경험을 바탕으로 맞춤 질문을 받아요.</p></div>
       <button type="button" class="d3-btn d3-btn-ghost" onclick="openMyPage()">확인하기</button>
@@ -6069,10 +6067,6 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
         <div class="qa-empty hm-rep-empty">아직 면접 기록이 없어요. 연습형 면접부터 시작해 보세요.</div>
       </section>
     </div>
-    <section class="d3-card d3-panel hm-growth-card">
-      <div class="d3-panel-head"><h3 class="d3-panel-title">나의 성장 추이</h3><button class="d3-btn-text" type="button" onclick="navGo('growth')">자세히</button></div>
-      <div class="gw-line" id="hm-growth"><div class="d3-empty"><p class="d3-empty-desc">면접을 두 번 이상 하면 점수 흐름이 그려져요.</p></div></div>
-    </section>
 
     <section class="d3-card rr-card" id="rr-card" style="display:none;" aria-label="실제 면접 질문 남기기"></section>
 
@@ -10922,9 +10916,6 @@ function renderHomeExtras(history, isAdmin, expired){
   const wk = document.getElementById('g4-week'), reco = document.getElementById('g4-reco'), repSec = document.getElementById('g4-reports-sec'), rep = document.getElementById('g4-reports');
   if(!wk || !reco || !repSec) return;
   if(isAdmin){ wk.style.display = 'none'; reco.style.display = 'none'; repSec.style.display = 'none'; return; }
-  // 2026-11-02g 한림대 데모 홈: 나의 성장 추이 (내 성장 페이지의 점수 흐름 그래프와 같은 그림, 최근 12회)
-  { const hg = document.getElementById('hm-growth'); if(hg){ const pts = history.slice().sort((a,b)=>a.timestamp-b.timestamp).slice(-12);
-    hg.innerHTML = pts.length >= 2 ? gwLineSvg(pts) : `<div class="d3-empty"><p class="d3-empty-desc">${pts.length ? '한 번 더 연습하면 점수 흐름이 그려져요.' : '면접을 두 번 이상 하면 점수 흐름이 그려져요.'}</p></div>`; } }
   // 이번 주(월~일) 연습 횟수 · 연속 일수
   const now = new Date(); const dow = (now.getDay()+6)%7; const mon = new Date(now.getFullYear(), now.getMonth(), now.getDate()-dow);
   const weekN = history.filter(r=>r.timestamp >= mon.getTime()).length; const GOAL = 5;
