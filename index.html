@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-02b';
+var APP_VERSION = '2026-11-02c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5363,7 +5363,10 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 #modal-signup .su-univ{margin:0 0 14px;padding:14px 14px 12px;border:1px solid #E6E6EA;border-radius:12px;background:#FAFAFB;}
 #modal-signup .su-univ-t{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:14px;font-weight:700;color:#1c1c1e;}
 #modal-signup .su-univ-badge{font-size:11.5px;font-weight:600;color:#5b6474;background:#EDEEF1;border-radius:999px;padding:2px 8px;}
-#screen-login .lg-brand .d3-org{display:inline !important;}   /* 로그인 화면은 휴대폰에서도 '× 한림대학교'를 보여 줌 */
+/* 2026-11-02c '× 한림대학교'를 ZAVAPASS와 같은 굵기·크기로, 모든 화면·모든 폭에서 보여 줌 */
+.d3-org{display:inline-flex !important;align-items:baseline;gap:8px;font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--c-ink,#1c1c1e);white-space:nowrap;}
+.d3-org .d3-x{font-style:normal;font-weight:400;color:var(--c-ink-3,#8a8a90);}
+@media(max-width:560px){ .d3-org{font-size:16px;gap:6px;} }
 #signup-consent-row{min-height:44px;align-items:center;} #signup-consent{width:22px;height:22px;flex:none;}
 .mp-sec-t{margin:0 0 10px;font-size:16px;font-weight:700;color:var(--c-ink,#1c1c1e);} .mp-sec-t small{display:block;margin-top:2px;font-size:13px;font-weight:500;color:var(--c-ink-3,#66666c);}
 .mp-docs{padding:16px;border:1.5px solid var(--c-accent,#e8532a);border-radius:14px;margin-bottom:22px;background:#fffaf7;}
@@ -5814,7 +5817,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
   <div class="lg">
     <div class="lg-wrap">
       <section class="lg-intro">
-        <a class="lg-brand" href="javascript:void(0)"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
+        <a class="lg-brand" href="javascript:void(0)"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
         <h1 class="lg-h">실전처럼 답하고, <br>차근차근 준비하세요.</h1>
         <p class="lg-lead">지원 분야에 맞는 질문으로 면접을 연습하고,<br class="hide-m"> 답변을 돌아보며 다음 면접을 준비하세요.</p>
         <ul class="lg-feat">
@@ -5887,7 +5890,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
     </div>
   </div>
   <div class="pd">
-    <header class="pd-top"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></header>
+    <header class="pd-top"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></header>
     <main class="pd-card">
      <div id="pd-wait" data-st="new">
       <!-- 2026-10-26h: 화면이 하는 일을 하나로 — ① 분야 보내기 ② 담당자 확인 중 ③ 반려되면 다시 보내기 -->
@@ -5967,7 +5970,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 <section id="screen-dashboard" class="screen v3">
   <header class="d3-hdr">
     <div class="d3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="dash">
         <a href="javascript:void(0)" data-go="home" aria-current="page" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" class="adm-only" data-adm="notices" onclick="openAdminScreen('notices')">공지사항</a>
@@ -6832,7 +6835,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 <section id="screen-practice" class="screen v3">
   <header class="d3-hdr">
     <div class="d3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="practice">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" aria-current="page">면접 연습</a>
@@ -6923,7 +6926,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 <section id="screen-interview" class="screen">
   <header class="d3-hdr rh3-hdr">
     <div class="d3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="openConfirmEnd()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="openConfirmEnd()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="interview">
         <a href="javascript:void(0)" onclick="openConfirmEnd()">홈</a>
         <a href="javascript:void(0)" aria-current="page">면접 연습</a>
@@ -7146,7 +7149,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 <section id="screen-result" class="screen v3">
   <header class="d3-hdr r3-hdr">
     <div class="d3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org">× 한림대학교</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
       <nav class="d3-nav r4-nav" aria-label="주 메뉴" data-nav="result">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" onclick="navGo('practice')">면접 연습</a>
