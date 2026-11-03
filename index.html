@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-03j';
+var APP_VERSION = '2026-11-03k';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -12438,6 +12438,7 @@ const School = {
       fbBox.innerHTML = list.length ? `<ul class="schl-fbl">${list.map(x=>{ const p = this.d.pMap[x.user_id]; return `<li><div class="schl-fb-h"><span class="schl-tag ${x.reply ? 'ok' : 'new'}">${x.reply ? '답장함' : escapeHtml(x.status || '새 글')}</span><b>${escapeHtml(p ? p.name : '알 수 없음')}</b><small>${escapeHtml(p && p.dept ? p.dept : '')} · ${escapeHtml(x.kind || '의견')} · ${formatDateFull(x.created_at)}</small></div>
         <p class="schl-fb-m">${escapeHtml(x.message)}</p>${x.reply ? `<p class="schl-fb-r"><b>답장</b> ${escapeHtml(x.reply)}</p>` : ''}
         <div class="schl-fb-a"><label class="sr" for="schl-rp-${x.id}">답장</label><textarea id="schl-rp-${x.id}" rows="2" maxlength="1000" placeholder="${x.reply ? '답장 고치기' : '답장 쓰기'}">${escapeHtml(x.reply || '')}</textarea><button type="button" class="schl-btn" data-reply="${x.id}">${x.reply ? '고치기' : '답장 보내기'}</button></div></li>`; }).join('')}</ul>` : `<p class="schl-empty">${this.fbAll ? '받은 의견이 없어요.' : '답장할 의견이 없어요.'}</p>`;
+      fbMarkSeen(fb.data); this.fbNew = 0;
       fbBox.querySelectorAll('[data-reply]').forEach(b=>b.onclick = async ()=>{ const t = this.G('schl-rp-' + b.dataset.reply).value.trim(); if(!t) return showToast('답장 내용을 적어 주세요');
         const { error } = await sb.rpc('reply_feedback', { p_id: +b.dataset.reply, p_reply: t, p_status: '답장함' }); if(error) return showToast('보내지 못했어요. ' + friendlyErr(error), 'warn'); showToast('답장을 보냈어요', 'ok'); this.loadTalk(); }); }
     if(nt.error) ntBox.innerHTML = `<p class="schl-warn">공지를 불러오지 못했어요: ${escapeHtml(nt.error.message)}</p>`;
@@ -14654,6 +14655,19 @@ async function sendFeedback(){
 
 /* ---------------- 관리자: 의견·문제 목록 ---------------- */
 const FB_STATUSES = ['새 글','확인 중','처리 완료'];
+/* 2026-11-03k 관리자가 의견 목록을 열면 그때 본 '새 글'을 '확인 중'(읽었고 아직 처리 전)으로 바꿔 메뉴 숫자를 지움.
+   이번 화면에서는 무엇이 새로 왔는지 보이게 표시는 그대로 두고, 다음에 열 때부터 '확인 중'으로 보임 */
+async function fbMarkSeen(rows){
+  try{
+    if(!(state.currentUser && state.currentUser.isAdmin)) return;
+    const ids = (rows || []).filter(fbAlert).map(r=>r.id); if(!ids.length) return;
+    const { error } = await sb.from('feedback').update({ status:'확인 중', updated_at: new Date().toISOString() }).in('id', ids).eq('status', '새 글');
+    if(error){ console.warn('[의견 읽음 표시]', error.message); return; }
+    (state.feedbackRows || []).forEach(r=>{ if(ids.includes(r.id)) r.status = '확인 중'; });
+    const b = document.getElementById('fb-nav-badge'); if(b){ b.textContent = '0'; b.style.display = 'none'; }
+    try{ syncTabBadges(); }catch(_){} try{ AdminFb.set(0); }catch(_){}
+  }catch(_){}
+}
 async function loadFeedback(force){
   const note = document.getElementById('fb-note');
   try{
@@ -14668,6 +14682,7 @@ async function loadFeedback(force){
   renderFeedback();
   const badge = document.getElementById('fb-nav-badge');
   if(badge){ const n = (state.feedbackRows||[]).filter(fbAlert).length; badge.textContent = n; badge.style.display = n ? '' : 'none'; try{ AdminFb.set(n); }catch(_){} }
+  fbMarkSeen(state.feedbackRows);
 }
 /* ---------- 관리자 · 베타 현황 (2026-10-07) ----------
    면접자(관리자 제외)별: 마지막 접속(activity_log login) · 연습 횟수(interview_records) · 평균/최근 점수 · 자동 오류/의견(feedback) · 이용 기간 */
@@ -23785,11 +23800,6 @@ const IvVoice = {
         <details class="ivv-sec"><summary>크레딧 예산 <small>${bud ? `한 달 ${bud.toLocaleString()}크레딧` : '정하지 않음'}</small></summary>
           <p class="ivv-sub">목소리를 바꾸면 녹음본을 다시 만들어야 해서 크레딧이 들어요. 한 달 예산을 적어 두면 저장 전에 예상 사용량을 예산과 비교해 보여 줘요.</p>
           <div class="ivv-bud"><label>한 달 예산 <input id="ivv-bud" type="number" min="0" step="1000" value="${bud || ''}" placeholder="예: 300000"> 크레딧</label><label>경고 기준 <input id="ivv-warn" type="number" min="10" max="100" value="${this.budget.warn || 80}">%</label><button type="button" class="btn-manage" data-budsave="1">예산 저장</button></div></details>
-        <details class="ivv-sec"${this.log.length ? '' : ''}><summary>변경 기록 <small>최근 ${this.log.length}건 · 눌러서 그때 설정으로 되돌리기</small></summary>
-          ${this.log.length ? `<ul class="ivv-log">${this.log.map(l=>{ const p = this.P(l.persona_id) || { n:l.persona_id }, b = l.before || {}, a = l.after || {};
-            const what = [b.voice_name !== a.voice_name ? `${escapeHtml(b.voice_name || '미지정')} → ${escapeHtml(a.voice_name || '미지정')}` : '', (+b.tempo || 1) !== (+a.tempo || 1) ? `속도 ${(+b.tempo || 1)}→${(+a.tempo || 1)}` : '', (b.pitch || 0) !== (a.pitch || 0) ? `높낮이 ${b.pitch || 0}→${a.pitch || 0}` : '', JSON.stringify(b.emotions || {}) !== JSON.stringify(a.emotions || {}) ? '감정' : '', b.fallback !== a.fallback ? '예비 목소리' : '', b.enabled !== a.enabled ? (a.enabled ? '사용 켬' : '사용 끔') : ''].filter(Boolean).join(' · ') || '처음 지정';
-            return `<li><time>${escapeHtml(formatDateFull(l.created_at))}</time><b>${escapeHtml(p.n)}</b><span>${what}${l.note ? ` <em>“${escapeHtml(l.note)}”</em>` : ''}</span>${l.before ? `<button type="button" class="fl-del" data-undo="${l.id}">이 변경 전으로</button>` : ''}</li>`; }).join('')}</ul>` : '<p class="ivv-sub">아직 바꾼 기록이 없어요.</p>'}</details>
-        <details class="ivv-sec" open><summary>연결 점검 <small>서버 함수가 클론에 배포됐는지 · API 키가 들어갔는지</small></summary>${AiCheck.html()}</details>
         <details class="ivv-sec"><summary>타입캐스트 API를 붙일 때 필요한 것 <small>관리자 확인용</small></summary>${this.checklist()}</details>
       </div>`;
     this.bind(root);
