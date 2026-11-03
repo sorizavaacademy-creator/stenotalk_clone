@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-03e';
+var APP_VERSION = '2026-11-03f';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -9657,7 +9657,7 @@ async function tryRestoreSession(){
   startAccessWatch();
   QuestionBank.load(); try{ RubricPoints.load(); }catch(_){}
   if(maybeForceNewPassword(profile)) return;
-  if(School.afterLogin()) return;
+  // 2026-11-03f 새로고침(Ctrl+F5)은 메인 화면으로. 관리 화면은 로그인할 때만 자동으로 열고, 그 뒤에는 이름 메뉴의 '관리 화면'으로
   maybeOpenDemoFromUrl();
   maybeStartTour();
   setTimeout(()=>{ try{ InterviewDraft.offer(); }catch(_){} }, 900);
@@ -11266,7 +11266,7 @@ async function renderDashboard(){
 
   const extraGrid = document.getElementById('user-extra-grid');
   const adminBtn = document.getElementById('nav-admin-btn');
-  if(adminBtn){ const sOn = typeof School !== 'undefined' && School.isOn(); adminBtn.style.display = (isAdmin || sOn) ? '' : 'none'; adminBtn.textContent = sOn ? '학교 관리 화면' : '관리자 화면'; }
+  if(adminBtn){ const sOn = typeof School !== 'undefined' && School.isOn(); adminBtn.style.display = (isAdmin || sOn) ? '' : 'none'; adminBtn.textContent = (sOn && !isAdmin) ? '관리 화면' : '관리자 화면'; }
   if(isAdmin){
     if(extraGrid) extraGrid.style.display = 'none';
     const b = document.querySelector('#screen-dashboard .d3-bottom'); if(b && b !== extraGrid) b.style.display = 'none';
