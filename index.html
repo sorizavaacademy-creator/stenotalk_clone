@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-04d';
+var APP_VERSION = '2026-11-04e';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5647,6 +5647,36 @@ html.pk-open{overflow:hidden;}
 .pk-chk{margin-top:10px;border:1px solid #E6EAF0;border-radius:12px;padding:0 12px;} .pk-chk summary{display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;font-size:14px;list-style:none;} .pk-chk summary::-webkit-details-marker{display:none;}
 .pk-prog{flex:1;height:8px;border-radius:999px;background:#EEF1F5;overflow:hidden;} .pk-prog i{display:block;height:100%;background:#2E7D4F;border-radius:999px;}
 .pk-chk ul{list-style:none;margin:0 0 10px;padding:0;} .pk-chk li{padding:5px 0;font-size:14px;} .pk-chk label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;} .pk-chk input{margin-top:3px;accent-color:#2E7D4F;} .pk-chk label span{flex:1;min-width:0;} .pk-chk small{display:block;color:#6B7485;font-size:12.5px;margin-top:2px;}
+/* 2026-11-04e 결과 화면: 이번에 고칠 한 가지 · 받아쓴 말 고치기 · 달라진 점 */
+.rs-next{position:relative;margin:0 0 18px;padding:18px 20px;border:1.5px solid #F2C9B5;border-radius:16px;background:linear-gradient(180deg,#FFF8F4,#fff);color:#172033;}
+.rs-next-k{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#C8441C;letter-spacing:-.01em;}
+.rs-next-k i{font-style:normal;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#C8441C;color:#fff;font-size:12px;}
+.rs-next h2{margin:8px 0 6px;font-size:21px;line-height:1.4;letter-spacing:-.02em;}
+.rs-next-why{margin:0;color:#3A4456;font-size:15px;line-height:1.65;} .rs-next-why b{color:#C8441C;font-size:13.5px;margin-right:4px;}
+.rs-next-ex{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:#F4F6FA;color:#3A4456;font-size:14px;line-height:1.6;} .rs-next-ex b{color:#1c2a44;margin-right:4px;}
+.rs-next-q{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 0;font-size:13.5px;color:#4A5466;}
+.rs-next-q .qn{flex:none;padding:2px 9px;border-radius:999px;background:#1c2a44;color:#fff;font-weight:800;font-size:12.5px;}
+.rs-next-q .qt{flex:1;min-width:200px;font-weight:600;color:#172033;line-height:1.5;}
+.rs-next-q .ax{flex:none;padding:2px 9px;border-radius:999px;background:#FDECEC;color:#A12B2B;font-weight:700;font-size:12.5px;}
+.rs-next-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.rs-next-acts .pk-btn{min-height:44px;font-size:15px;} .rs-next-acts .pk-btn.pri{background:#C8441C;border-color:#C8441C;}
+.pk-tb.pk-fix{min-height:30px;padding:0 10px;font-size:12.5px;border-color:#E3D6C4;color:#7A4A12;background:#FFFBF4;}
+.pk-fixbox{display:flex;flex-direction:column;gap:8px;margin-top:6px;}
+.pk-fixbox textarea{width:100%;box-sizing:border-box;min-height:120px;padding:10px 12px;border:1.5px solid #E0A21B;border-radius:10px;font:inherit;font-size:15px;line-height:1.65;resize:vertical;background:#fff;}
+.pk-fixbox textarea:focus{outline:none;border-color:#B26A00;}
+.pk-fixbox .pk-fix-tip{margin:0;font-size:13px;color:#6A4A12;line-height:1.55;}
+.pk-fixbox .pk-fix-warn{margin:0;font-size:13px;color:#A12B2B;line-height:1.55;}
+.pk-fixbox .pk-row{justify-content:flex-end;}
+.af-fixed-me{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:#FFF1D6;color:#8A5A00;font-size:11.5px;font-weight:700;vertical-align:1px;}
+.pk-grow{padding:12px 14px;border-radius:12px;background:#fff;border:1.5px solid #CFE5D6;}
+.pk-grow > b{font-size:13.5px;color:#21633C;}
+.pk-grow h4{margin:6px 0 0;font-size:16.5px;line-height:1.5;color:#172033;}
+.pk-grow ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:14px;line-height:1.55;}
+.pk-grow li{display:flex;gap:7px;} .pk-grow li::before{content:'✓';flex:none;color:#2E7D4F;font-weight:800;}
+.pk-grow li.nx::before{content:'→';color:#B26A00;} .pk-grow li.nx{color:#6A4A12;}
+.pk-grow.flat{border-color:#E6EAF0;} .pk-grow.flat > b{color:#4A5466;}
+@media(max-width:720px){ .rs-next{padding:16px;} .rs-next h2{font-size:19px;} .rs-next-acts .pk-btn{flex:1 1 100%;} }
+@media print{ .rs-next-acts,.pk-tb.pk-fix{display:none !important;} }
 @media(max-width:720px){ .pk-two{grid-template-columns:1fr;} .pk-ov{padding:0;align-items:stretch;} .pk-box,.pk-box.wide{width:100%;max-height:100vh;border-radius:0;} .pk-big b{font-size:24px;} }
 /* 면접관 10명 목소리 (2026-11-03m: 글자 크게·대비 높게, 10명 표 + 오른쪽 설정 창) */
 #ivv-root,#ivv-dr-host{--iv-ink:#172033;--iv-sub:#4A5466;--iv-line:#DDE3EC;--iv-blue:#2346A0;--iv-navy:#1c2a44;font-size:15px;color:var(--iv-ink);}
@@ -7735,6 +7765,7 @@ html.ivv-dr-open{overflow:hidden;}
         <div class="save-banner" id="save-banner" style="display:none;"><span id="save-banner-text"></span><button class="btn btn-sm" id="save-retry-btn" onclick="retrySaveRecord()">다시 저장</button></div>
       </div>
     </div>
+    <section class="rs-next" id="rs-next" hidden aria-label="이번에 고칠 한 가지"></section>
 
     <div class="r4-top">
       <div class="result-hero-grade r4-grade">
@@ -20345,6 +20376,7 @@ async function endInterview(){
   try{ renderNonverbalPanel(); }catch(e){ console.warn('[표정·시선]', e); }
   try{ renderResultTop(); }catch(e){ console.warn('[결과 상단]', e); }
   try{ renderResultDelivery(); }catch(e){ console.warn('[전달력 카드]', e); }
+  try{ PracticeKit.renderNext(); }catch(e){ console.warn('[이번에 고칠 한 가지]', e); }
   // 국회 실전 세트: 면접관 종합 의견 (규칙으로 먼저 보여 주고, AI가 켜져 있으면 저장 뒤 AI 의견으로 바꿈)
   const isSetResult = state.interviewMode==='dialog' && !!state.dialogRealSet;
   SetReview.reset();
@@ -20433,11 +20465,16 @@ function buildSavePayload(durationLabel){
     answer_text: state.answerTexts[i] || '',
     score: (state.answerScores[i] != null) ? state.answerScores[i] : null,
     kind: item.followup ? 'followup' : 'question',
-    feedback: (state.answerFeedback[i] ? buildFeedbackText(state.answerFeedback[i]) : '')
-      + ((state.answerFeedback[i] && state.answerFeedback[i].rubric && !state.answerFeedback[i].rubric.empty) ? '\n[리포트 '+state.answerFeedback[i].rubric.grade+' · '+['content','structure','detail','length','attitude'].map(k=>Rubric.AXIS_LABELS[k]+' '+state.answerFeedback[i].rubric.axes[k].score).join(' · ')+']' : '')
-      + ((state.answerDelivery && state.answerDelivery[i] && state.answerDelivery[i].measured) ? '\n[전달력 '+state.answerDelivery[i].score+'점] '+state.answerDelivery[i].summary : '') || null,
+    feedback: answerFbString(i),
   }));
   return { pid: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), uid: state.currentUser.id, ts: Date.now(), field: state.selectedField.name, rec, answers, recordId: state.savedRecordId || null, tries: 0 };
+}
+/** 저장할 문항 피드백 글: 본문 + [리포트 등급 · 항목 점수] + [전달력] (2026-11-04e 받아쓴 말 고치기도 같이 씀) */
+function answerFbString(i){
+  const a = state.answerFeedback && state.answerFeedback[i], d = state.answerDelivery && state.answerDelivery[i];
+  return ((a ? buildFeedbackText(a) : '')
+    + ((a && a.rubric && !a.rubric.empty) ? '\n[리포트 '+a.rubric.grade+' · '+['content','structure','detail','length','attitude'].map(k=>Rubric.AXIS_LABELS[k]+' '+a.rubric.axes[k].score).join(' · ')+']' : '')
+    + ((d && d.measured) ? '\n[전달력 '+d.score+'점] '+d.summary : '')) || null;
 }
 /** 기록 행 저장 (DB에 아직 없는 칸은 빼고 다시 시도) */
 async function insertRecordRow(row){
@@ -20663,7 +20700,7 @@ function renderResultBars(){
           <p class="delivery-note">${escapeHtml(d.notes.join(' '))}</p>`
           : `<p class="delivery-note na">${escapeHtml(d ? d.summary : '전달력을 측정할 음성 기록이 없어요.')}</p>`}
         <div class="qanswer">
-          <div class="qanswer-head"><span class="qanswer-label">내 답변</span><span class="qanswer-btns">${SelfCam.buttonHtml(i-1)}${AnswerAudio.buttonHtml(i-1)}</span></div>
+          <div class="qanswer-head"><span class="qanswer-label">내 답변${analysis && analysis.fixed ? '<span class="af-fixed-me">고친 답변으로 다시 채점함</span>' : ''}</span><span class="qanswer-btns">${SelfCam.buttonHtml(i-1)}${AnswerAudio.buttonHtml(i-1)}${texts[i-1] ? `<button type="button" class="pk-tb pk-fix" onclick="PracticeKit.editAnswer(${i-1})" title="음성 인식이 잘못 받아 적은 말을 고치고 다시 채점해요">✎ 받아쓴 말 고치기</button>` : ''}</span></div>
           ${(state.answerFace && state.answerFace[i-1]) ? `<div class="nv-qchip">${escapeHtml(FaceCoach.chipText(state.answerFace[i-1]))}</div>` : ''}
           <p class="qanswer-text" id="qans-text-${i-1}">${answerText}</p>
         </div>
@@ -20671,10 +20708,7 @@ function renderResultBars(){
           <span class="qfeedback-label">${feedbackLabel}</span>
           <p class="q-fb-text">${feedbackText}</p>${FaceCoach.answerNoteHtml(state.answerFace && state.answerFace[i-1])}${extraHtml}
         </div>
-        ${item ? PracticeKit.toolsHtml({ q: item.q, ref: item.ref || null, followup: !!item.followup, answer: texts[i-1] || '', score: (rb && !rb.empty) ? rb.total : (scores[i-1] != null ? scores[i-1] : null),
-          feedback: analysis ? buildFeedbackText(analysis) : '', axes: (rb && !rb.empty) ? Object.fromEntries(['content','structure','detail','length','attitude'].map(k=>[Rubric.AXIS_LABELS[k], rb.axes[k].score])) : null,
-          fieldId: state.selectedField && state.selectedField.id, fieldName: state.selectedField && state.selectedField.name, companyId: item.co ? item.co.id : null, companySeq: item.co ? item.co.seq : null, companyName: item.co ? item.co.name : null,
-          recordId: state.savedRecordId || null, src: 'result' }) : ''}
+        ${item ? PracticeKit.toolsHtml(PracticeKit.resultItem(i-1)) : ''}
         </div>
       </div>`;
   }
@@ -24298,18 +24332,197 @@ const PracticeKit = {
       return `<tr><th>${escapeHtml(k)}</th><td>${a != null ? a : '–'}</td><td><b>${b != null ? b : '–'}</b></td><td class="${dd > 0 ? 'up' : dd < 0 ? 'down' : ''}">${dd == null ? '' : dd > 0 ? '▲' + dd : dd < 0 ? '▼' + (-dd) : '='}</td></tr>`; }).join('') : '';
     res.innerHTML = `<div class="pk-cmp">
         <div class="pk-big"><div><small>이전</small><b>${o.score != null ? o.score : '–'}</b></div><i>→</i><div><small>이번</small><b class="now">${score}</b></div>${d != null ? `<span class="pk-delta ${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d > 0 ? '+' + d + '점 올랐어요' : d < 0 ? d + '점' : '그대로예요'}</span>` : ''}</div>
+        ${this.growthHtml(o.answer, ans, prevAxes, axes, d)}
         ${rows ? `<table class="pk-ax"><thead><tr><th>항목</th><th>이전</th><th>이번</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : ''}
         <div class="pk-fb"><b>${ai ? 'AI 피드백' : '피드백 (기본 채점)'}</b><p>${escapeHtml(fb)}</p>
           ${ai && ai.strengths.length ? `<p class="pk-s"><b>잘한 점</b> ${ai.strengths.map(escapeHtml).join(' · ')}</p>` : ''}${ai && ai.improvements.length ? `<p class="pk-i"><b>보완할 점</b> ${ai.improvements.map(escapeHtml).join(' · ')}</p>` : ''}</div>
         <div class="pk-acts"><button type="button" class="pk-btn" onclick="PracticeKit.again()">↻ 한 번 더 고쳐 답하기</button><button type="button" class="pk-btn pk-ai" onclick="PracticeKit.rewriteNow()">✎ 이 답변 AI로 고쳐 보기</button></div>
       </div>`;
     btn.disabled = false; btn.textContent = '다시 채점하기';
-    this._last = { answer: ans, score, feedback: fb };
+    this._last = { answer: ans, score, feedback: fb, axes };
     try{ await sb.from('answer_retries').insert({ record_id: o.recordId || null, question: this.qn(o.q), prev_answer: o.answer || null, prev_score: o.score != null ? o.score : null, answer: ans.slice(0, 4000), score, feedback: fb.slice(0, 4000), axes, graded_by: ai ? 'ai' : 'local' }); }catch(_){}
     res.scrollIntoView({ block:'nearest', behavior:'smooth' });
   },
+  /** ⑥ 무엇이 달라졌는지 한눈에: 항목 점수 차이 + 답변 글에서 새로 생긴 점(숫자·본인 행동·결과·결론 먼저) */
+  growth(prevAns, ans, pa, na){
+    const good = [], next = [], P = String(prevAns || ''), N = String(ans || '');
+    const UP = { '내용':'질문이 묻는 핵심을 더 많이 짚었어요', '구조':'결론을 먼저 말하고 이유·예시를 붙여 흐름이 또렷해졌어요', '구체성':'숫자·기간·본인 역할을 넣어 더 구체적으로 말했어요', '분량':'알맞은 길이로 말했어요', '태도·언어':'더 격식 있는 말투로 끝까지 답했어요' };
+    const DN = { '내용':'질문이 묻는 것에 먼저 답해 보세요', '구조':'첫 문장에 결론부터 말해 보세요', '구체성':'숫자·기간·본인 역할을 다시 넣어 보세요', '분량':'30초~1분 분량으로 맞춰 보세요', '태도·언어':'끝까지 존댓말로 맺어 보세요' };
+    if(pa && na) Object.keys(na).forEach(k=>{ const a = pa[k], b = na[k]; if(a == null || b == null) return; if(b - a >= 8 && UP[k]) good.push({ k, t: UP[k], d: b - a }); else if(a - b >= 8 && DN[k]) next.push({ k, t: `${DN[k]} (${k} 점수가 이전보다 ${a - b}점 낮아요)`, d: a - b }); });
+    good.sort((x, y)=>y.d - x.d); next.sort((x, y)=>y.d - x.d);
+    const has = (re, t)=>(t.match(re) || []).length;
+    const num = /\d+|(?:두|세|네|다섯|여섯|열)\s?(?:달|명|가지|차례|주)/g;
+    const act = /(제가|저는|직접|맡아|맡았|맡은|주도|제안|해결|만들|정리했|이끌|설득|조율|시도했)/g;
+    const res = /(그 결과|결과적으로|덕분에|늘었|줄었|높아졌|낮아졌|개선|달성|성과|해냈|마쳤|배웠)/g;
+    const feat = [];
+    if(has(num, N) > has(num, P) && !good.some(g=>g.k === '구체성')) feat.push('숫자로 규모·기간·결과를 보여 줬어요');
+    if(has(act, N) > has(act, P) + 1) feat.push('본인이 한 행동을 직접 설명했어요');
+    if(has(res, N) > has(res, P)) feat.push('행동의 결과까지 말했어요');
+    const first = s=>(String(s).split(/(?<=[.!?。])\s+|(?<=습니다|니다|어요|에요)\s+/)[0] || '');
+    const concl = /(생각합니다|입니다|하겠습니다|싶습니다|때문입니다|이유는|저는 .{0,20}(사람|지원|강점))/;
+    if(concl.test(first(N)) && !concl.test(first(P)) && !good.some(g=>g.k === '구조')) feat.push('첫 문장에서 결론을 먼저 말했어요');
+    const A = '본인이 한 행동을 직접 설명했어요', R = '행동의 결과까지 말했어요';
+    let items = good.map(g=>g.t).concat(feat).filter((t, x, arr)=>arr.indexOf(t) === x);
+    // 머리 문장: "이번에는 본인 행동과 결과를 설명했어요" 처럼 가장 큰 변화를 한 문장으로, 나머지는 아래 목록에
+    let head = '';
+    if(items.includes(A) && items.includes(R)){ head = '이번에는 본인 행동과 그 결과까지 설명했어요'; items = items.filter(t=>t !== A && t !== R); }
+    else if(items.length){ head = '이번에는 ' + items[0]; items = items.slice(1); }
+    return { head, rest: items.slice(0, 2), next: next.slice(0, 1).map(x=>x.t) };
+  },
+  growthHtml(prevAns, ans, pa, na, d){
+    if(!prevAns || !String(prevAns).trim()) return '';
+    let g; try{ g = this.growth(prevAns, ans, pa, na); }catch(_){ return ''; }
+    if(!g.head){
+      const t = d != null && d > 0 ? '점수는 올랐지만 눈에 띄게 달라진 점은 아직 적어요. 숫자·본인 행동·결과 중 하나를 더 넣어 보세요.'
+        : '이전 답변과 크게 달라진 점이 없어요. 피드백에서 짚은 점을 하나 골라 넣어 다시 말해 보세요.';
+      return `<div class="pk-grow flat"><b>무엇이 달라졌나요</b><h4>${escapeHtml(t)}</h4>${g.next.length ? `<ul>${g.next.map(t=>`<li class="nx">다음엔 ${escapeHtml(t)}</li>`).join('')}</ul>` : ''}</div>`;
+    }
+    return `<div class="pk-grow"><b>무엇이 달라졌나요</b><h4>${escapeHtml(g.head)}</h4>
+      ${g.rest.length || g.next.length ? `<ul>${g.rest.map(t=>`<li>${escapeHtml(t)}</li>`).join('')}${g.next.map(t=>`<li class="nx">다음엔 ${escapeHtml(t)}</li>`).join('')}</ul>` : ''}</div>`;
+  },
   again(){ const res = document.getElementById('pk-res'), ta = document.getElementById('pk-ans'); if(this._last){ this.cur = Object.assign({}, this.cur, this._last); } if(res) res.innerHTML = ''; if(ta) ta.focus(); },
   rewriteNow(){ const ta = document.getElementById('pk-ans'); const o = Object.assign({}, this.cur, this._last || {}, { answer: ta ? ta.value.trim() : '' }); this.openRewrite(o); },
+
+  /* ── 2026-11-04e 결과 화면 ⑤ 이번에 고칠 한 가지 · ④ 받아쓴 말 고치기 ── */
+  /** 결과 화면 i번째 문항을 연습 도구가 쓰는 모양으로 */
+  resultItem(i){
+    const item = state.interviewQuestions[i]; if(!item) return null;
+    const a = (state.answerFeedback || [])[i], rb = a && a.rubric, sc = (state.answerScores || [])[i];
+    return { q: item.q, ref: item.ref || null, followup: !!item.followup, answer: (state.answerTexts || [])[i] || '', score: (rb && !rb.empty) ? rb.total : (sc != null ? sc : null),
+      feedback: a ? buildFeedbackText(a) : '', axes: (rb && !rb.empty) ? Object.fromEntries(['content','structure','detail','length','attitude'].map(k=>[Rubric.AXIS_LABELS[k], rb.axes[k].score])) : null,
+      fieldId: state.selectedField && state.selectedField.id, fieldName: state.selectedField && state.selectedField.name, companyId: item.co ? item.co.id : null, companySeq: item.co ? item.co.seq : null, companyName: item.co ? item.co.name : null,
+      recordId: state.savedRecordId || null, src: 'result', qi: i };
+  },
+  NEXT_TIP: {
+    content:   { t:'질문이 묻는 핵심을 빠짐없이 말하기', ex:'답하기 전에 "이 질문이 묻는 것이 무엇인지"를 떠올리고, 첫 문장에서 그 물음에 바로 답해 보세요.' },
+    structure: { t:'첫 문장에 결론부터 말하기', ex:'"저는 ○○라고 생각합니다. 이유는 두 가지입니다. 첫째, …" 처럼 결론 → 이유 → 예시 순서로요.' },
+    detail:    { t:'숫자·기간·본인 역할을 넣어 말하기', ex:'"3개월 동안 5명이 함께한 활동에서 제가 맡은 일은 ○○였고, 그 결과 ○○가 늘었습니다."' },
+    lengthS:   { t:'조금 더 길게, 30초~1분 분량으로 말하기', ex:'결론 한 문장 → 경험 한 가지 → 배운 점 한 문장, 세 덩어리로 말하면 알맞은 길이가 돼요.' },
+    lengthL:   { t:'1분 안에 핵심만 말하기', ex:'경험은 하나만 고르고, 결론 → 내가 한 일 → 결과 순서로 줄여 보세요.' },
+    attitude:  { t:'끝까지 격식 있는 존댓말로 말하기', ex:'"~했어요" 대신 "~했습니다"로, "그냥·좀·약간" 같은 말은 빼 보세요.' },
+    delivery:  { t:'군말을 줄이고 한 박자 쉬어 말하기', ex:'"음·어"가 나오려 할 때 잠깐 숨을 고르고, 문장 끝을 또렷하게 맺어 보세요.' },
+  },
+  /** 가장 점수가 낮은 문항의 가장 약한 항목 하나를 골라 결과 화면 맨 위에 */
+  pickNext(){
+    const n = state.currentQ || 0; let best = null;
+    for(let i = 0; i < n; i++){
+      const t = String((state.answerTexts || [])[i] || '').trim(); if(t.replace(/\s/g, '').length < 5) continue;
+      const a = (state.answerFeedback || [])[i], rb = a && a.rubric; if(!rb || rb.empty) continue;
+      if(!best || rb.total < best.rb.total) best = { i, a, rb };
+    }
+    if(!best) return null;
+    const { rb } = best;
+    const keys = ['content','structure','detail','length','attitude'].concat(rb.axes.delivery && rb.axes.delivery.measured ? ['delivery'] : []);
+    let ax = keys[0]; keys.forEach(k=>{ if(rb.axes[k].score < rb.axes[ax].score) ax = k; });
+    const L = rb.axes.length; const tipKey = ax === 'length' ? ((L && L.range && L.chars > L.range[1]) ? 'lengthL' : 'lengthS') : ax;
+    return Object.assign(best, { ax, tip: this.NEXT_TIP[tipKey], axScore: rb.axes[ax].score, why: ((best.a.improvements || []).filter(Boolean)[0] || '') });
+  },
+  renderNext(){
+    const box = document.getElementById('rs-next'); if(!box) return;
+    const p = this.pickNext(); if(!p){ box.hidden = true; box.innerHTML = ''; return; }
+    const o = this.resultItem(p.i), k = this.reg(o), item = state.interviewQuestions[p.i];
+    const allGood = p.rb.total >= 85;
+    box.innerHTML = `<div class="rs-next-k"><i>1</i>${allGood ? '이번에 더 다듬을 한 가지' : '이번에 고칠 한 가지'}</div>
+      <h2>${escapeHtml(p.tip.t)}</h2>
+      ${p.why ? `<p class="rs-next-why"><b>${p.a.ai ? 'AI가 짚은 점' : '짚은 점'}</b> ${escapeHtml(p.why)}</p>` : ''}
+      <p class="rs-next-ex"><b>이렇게 해 보세요</b>${escapeHtml(p.tip.ex)}</p>
+      <div class="rs-next-q"><span class="qn">Q${p.i + 1}</span><span class="qt">${item && item.followup ? '[꼬리질문] ' : ''}${escapeHtml(o.q)}</span><span class="ax">${escapeHtml(Rubric.AXIS_LABELS[p.ax])} ${p.axScore}점 · 이 문항 ${p.rb.total}점</span></div>
+      <div class="rs-next-acts">
+        <button type="button" class="pk-btn pri" onclick="PracticeKit.openRetry('${k}')">↻ 이 질문 다시 답하기</button>
+        ${o.answer && o.answer.trim().length >= 5 && this.uid() ? `<button type="button" class="pk-btn pk-ai" onclick="PracticeKit.openRewrite('${k}')">✎ AI가 고친 답변 보기</button>` : ''}
+        <button type="button" class="pk-btn" onclick="PracticeKit.showQ(${p.i})">이 질문 결과 보기 ↓</button>
+      </div>`;
+    box.hidden = false;
+  },
+  showQ(i){
+    const g = document.querySelector(`#result-bars .q-result-group[data-qi="${i}"]`); if(!g) return;
+    g.classList.add('open'); const h = g.querySelector('.q-head'); if(h) h.setAttribute('aria-expanded', 'true');
+    g.scrollIntoView({ block:'start', behavior:'smooth' });
+  },
+  /** ④ 음성 인식이 잘못 받아 적은 말을 결과 화면에서 고치고 그 문항만 다시 채점 */
+  editAnswer(i){
+    const p = document.getElementById('qans-text-' + i); if(!p || document.getElementById('qans-fix-' + i)) return;
+    const old = String((state.answerTexts || [])[i] || '');
+    const box = document.createElement('div'); box.className = 'pk-fixbox'; box.id = 'qans-fix-' + i;
+    box.innerHTML = `<p class="pk-fix-tip">음성 인식이 <b>잘못 받아 적은 말</b>만 바로잡아 주세요. 면접에서 하지 않은 말을 새로 넣으면 실제 실력과 다른 점수가 나와요. 내용을 바꿔 보고 싶으면 <b>↻ 이 질문 다시 답하기</b>를 쓰세요.</p>
+      <textarea id="qans-ta-${i}" aria-label="받아 적은 내 답변 고치기"></textarea>
+      <p class="pk-fix-warn" id="qans-warn-${i}" hidden></p>
+      <div class="pk-row"><button type="button" class="pk-btn ghost" onclick="PracticeKit.cancelFix(${i})">취소</button><button type="button" class="pk-btn pri" id="qans-go-${i}" onclick="PracticeKit.fixAnswer(${i})">고치고 다시 채점</button></div>`;
+    p.hidden = true; p.after(box);
+    const ta = box.querySelector('textarea'); ta.value = old;
+    const warn = box.querySelector('.pk-fix-warn');
+    ta.oninput = ()=>{ const r = this.changeRatio(old, ta.value); warn.hidden = r < 0.4; warn.textContent = '처음 받아 적은 글과 많이 달라졌어요. 잘못 들은 말만 고친 게 맞는지 확인해 주세요.'; };
+    ta.focus(); try{ ta.setSelectionRange(ta.value.length, ta.value.length); }catch(_){}
+  },
+  cancelFix(i){ const b = document.getElementById('qans-fix-' + i), p = document.getElementById('qans-text-' + i); if(b) b.remove(); if(p) p.hidden = false; },
+  /** 어절 기준으로 얼마나 바뀌었는지 (0 = 그대로, 1 = 전부 다름) */
+  changeRatio(a, b){
+    const A = String(a).split(/\s+/).filter(Boolean), B = String(b).split(/\s+/).filter(Boolean); if(!A.length) return B.length ? 1 : 0;
+    const cnt = new Map(); A.forEach(w=>cnt.set(w, (cnt.get(w) || 0) + 1)); let same = 0;
+    B.forEach(w=>{ const c = cnt.get(w) || 0; if(c){ same++; cnt.set(w, c - 1); } });
+    return 1 - same / Math.max(A.length, B.length);
+  },
+  async fixAnswer(i){
+    const ta = document.getElementById('qans-ta-' + i), btn = document.getElementById('qans-go-' + i); if(!ta || this._fixing) return;
+    const item = state.interviewQuestions[i]; if(!item) return;
+    const old = String(state.answerTexts[i] || ''), text = ta.value.replace(/\s+/g, ' ').trim();
+    if(text === old.replace(/\s+/g, ' ').trim()){ this.cancelFix(i); return showToast('바뀐 곳이 없어요'); }
+    if(text.replace(/\s/g, '').length < 5) return showToast('답변을 5자 이상 남겨 주세요');
+    this._fixing = true; btn.disabled = true; btn.textContent = '다시 채점하는 중…'; ta.readOnly = true;
+    const before = (state.answerFeedback[i] && state.answerFeedback[i].rubric && !state.answerFeedback[i].rubric.empty) ? state.answerFeedback[i].rubric.total : state.answerScores[i];
+    try{
+      const prevA = state.answerFeedback[i] || {};
+      const analysis = analyzeAnswer(text, item.ref);
+      if(item.followup){ analysis.followup = true; analysis.evaluation = item.evaluation || prevA.evaluation || ''; }
+      let ai = null;
+      if(typeof AI_GRADING_ENABLED !== 'undefined' && AI_GRADING_ENABLED && AiSwitch.on('ai_grading')){
+        ai = await gradeAnswerWithAI(item.q, item.ref, text, state.selectedField ? state.selectedField.name : '', { isFollowup: !!item.followup, priorAnswer: item.followup && i > 0 ? (state.answerTexts[i - 1] || '') : null });
+      }
+      if(ai) Object.assign(analysis, { score: ai.score, ai:true, aiFeedback: ai.feedback, strengths: ai.strengths, improvements: ai.improvements, rewrite: ai.rewrite, model: ai.model });
+      analysis.fixed = true;
+      state.answerTexts[i] = text; state.answerScores[i] = analysis.score; state.answerFeedback[i] = analysis;
+      this.rerenderResult(i);
+      const a2 = state.answerFeedback[i], after = (a2 && a2.rubric && !a2.rubric.empty) ? a2.rubric.total : state.answerScores[i];
+      const saved = await this.saveFix(i);
+      showToast(`받아쓴 말을 고치고 다시 채점했어요 (${before != null ? before + '점 → ' : ''}${after}점)` + (saved === false ? ' · 기록에는 아직 반영하지 못했어요' : ''), saved === false ? 'warn' : 'ok');
+      try{ Activity.log('answer_fix', { q: i, before, after }); }catch(_){}
+    }catch(e){
+      console.warn('[받아쓴 말 고치기]', e); showToast('다시 채점하지 못했어요. ' + (e.message || e), 'warn');
+      if(btn){ btn.disabled = false; btn.textContent = '고치고 다시 채점'; } if(ta) ta.readOnly = false;
+    }finally{ this._fixing = false; }
+  },
+  /** 고친 뒤 결과 화면을 다시 그림 (펼쳐 둔 문항은 그대로) */
+  rerenderResult(i){
+    const open = [...document.querySelectorAll('#result-bars .q-result-group.open')].map(g=>g.dataset.qi);
+    if(!open.includes(String(i))) open.push(String(i));
+    renderResultBars();
+    try{ renderResultSummary(); }catch(e){ console.warn(e); }
+    try{ renderResultFocus(); }catch(e){ console.warn(e); }
+    try{ CoResult.render(); }catch(_){}
+    try{ Inbody.renderResult(); }catch(_){}
+    try{ ResultFold.apply(); }catch(_){}
+    try{ renderResultTop(); }catch(_){}
+    try{ renderResultDelivery(); }catch(_){}
+    try{ this.renderNext(); }catch(_){}
+    open.forEach(qi=>{ const g = document.querySelector(`#result-bars .q-result-group[data-qi="${qi}"]`); if(g){ g.classList.add('open'); const h = g.querySelector('.q-head'); if(h) h.setAttribute('aria-expanded', 'true'); } });
+    const g = document.querySelector(`#result-bars .q-result-group[data-qi="${i}"]`); if(g) g.scrollIntoView({ block:'nearest' });
+  },
+  /** 저장 전이면 저장할 내용에 넣고, 이미 저장됐으면 서버 함수로 그 문항만 바꿈. 실패면 false */
+  async saveFix(i){
+    if(state.demoResult) return true;
+    for(let w = 0; state.saveInFlight && w < 60; w++) await new Promise(r=>setTimeout(r, 500));   // 저장 중이면 끝날 때까지 기다렸다가
+    const p = state.savePayload, fb = answerFbString(i), sc = state.answerScores[i] != null ? state.answerScores[i] : null;
+    if(p){ const r = p.answers && p.answers.find(x=>x.question_index === i); if(r){ r.answer_text = state.answerTexts[i]; r.score = sc; r.feedback = fb; } if(p.rec) p.rec.score = state.lastAverageScore || 0; }
+    if(!state.saveDone || !state.savedRecordId){
+      if(p){ try{ if(PendingSave.list(p.uid).some(x=>x.pid === p.pid)) PendingSave.add(p); }catch(_){} }   // 이 기기에 보관 중이면 고친 내용으로 바꿔 둠
+      return null;   // 아직 저장 전 → 저장할 때 고친 내용으로 들어감
+    }
+    try{
+      const { error } = await sb.rpc('student_fix_answer', { p_record: state.savedRecordId, p_index: i, p_text: state.answerTexts[i], p_score: sc, p_feedback: fb, p_record_score: state.lastAverageScore || 0 });
+      if(error){ console.warn('[받아쓴 말 저장 실패]', error); return false; }
+      return true;
+    }catch(e){ console.warn('[받아쓴 말 저장 실패]', e); return false; }
+  },
 
   /* ── ② AI가 고친 답변 ── */
   hash(s){ let h = 2166136261; for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36) + s.length.toString(36); },
