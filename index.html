@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-03d';
+var APP_VERSION = '2026-11-03e';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5510,8 +5510,9 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 .pr-how li b{width:22px;height:22px;flex:0 0 22px;border-radius:50%;background:#1c1c1e;color:#fff;display:grid;place-items:center;font-size:12px;}
 .pr-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 /* 2026-11-03d 학교 관리 화면 */
-#screen-school{--schl-bg:#F6F7F9;--schl-card:#fff;--schl-line:#E4E7EC;--schl-ink:#1B2230;--schl-ink2:#4A5468;--schl-mute:#7A8394;--schl-accent:#2F4B8A;--schl-accent-soft:#E9EEF8;--schl-up:#2E7D4F;--schl-down:#B54708;background:var(--schl-bg);min-height:100vh;color:var(--schl-ink);}
-#screen-school .schl-scope{margin-left:14px;font-size:13px;color:var(--schl-mute);} #screen-school .schl-scope b{color:var(--schl-ink);}
+#screen-admin{--schl-bg:#F6F7F9;--schl-card:#fff;--schl-line:#E4E7EC;--schl-ink:#1B2230;--schl-ink2:#4A5468;--schl-mute:#7A8394;--schl-accent:#2F4B8A;--schl-accent-soft:#E9EEF8;--schl-up:#2E7D4F;--schl-down:#B54708;}
+#screen-admin .schl-scope{margin-left:12px;font-size:13px;color:var(--schl-mute);white-space:nowrap;} #screen-admin .schl-scope b{color:var(--schl-ink);} #screen-admin .admin-menu-btn[hidden],#screen-admin .afind[hidden]{display:none !important;}
+#admin-view-sch #schl-main{display:flex;flex-direction:column;gap:14px;} @media(max-width:960px){ #screen-admin .schl-scope{display:none;} }
 .schl-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px;max-width:1280px;margin:0 auto;padding:20px 24px 60px;box-sizing:border-box;}
 .schl-side{display:flex;flex-direction:column;gap:4px;position:sticky;top:76px;align-self:start;}
 .schl-nav{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid transparent;background:none;border-radius:12px;padding:10px 12px;cursor:pointer;font:inherit;color:var(--schl-ink);}
@@ -5578,18 +5579,8 @@ body.schl-noscroll{overflow:hidden;} .schl-drawer[hidden],.schl-drawer-bg[hidden
 .schl-re-depts{display:grid !important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;} .schl-re-depts[hidden]{display:none !important;} .schl-re-col{display:flex;flex-direction:column;gap:3px;font-size:12.5px;} .schl-re-col b{font-size:12px;color:var(--schl-mute);}
 .schl-re-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;} .schl-re-row label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:var(--schl-ink2);} .schl-re-row .grow{flex:1;min-width:200px;} .schl-re-row select,.schl-re-row input{padding:8px 10px;border:1px solid var(--schl-line);border-radius:9px;font:inherit;font-size:13.5px;font-weight:400;}
 .schl-log{list-style:none;margin:0;padding:0;} .schl-log li{display:grid;grid-template-columns:130px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid #F0F2F5;font-size:13px;} .schl-log li:first-child{border-top:0;} .schl-log time{color:var(--schl-mute);font-size:12px;} .schl-log small{color:var(--schl-mute);font-size:12px;} .schl-log em{color:var(--schl-ink2);}
-@media(max-width:960px){ .schl-layout{grid-template-columns:1fr;padding:14px 16px 40px;} .schl-side{position:static;flex-direction:row;overflow-x:auto;} .schl-nav{flex:none;} .schl-nav small{display:none;} .schl-two{grid-template-columns:1fr;} .schl-kpis{grid-template-columns:repeat(2,minmax(0,1fr));} .schl-re-roles{grid-template-columns:repeat(2,minmax(0,1fr));} #screen-school .schl-scope{display:none;} }
+@media(max-width:960px){ .schl-two{grid-template-columns:1fr;} .schl-kpis{grid-template-columns:repeat(2,minmax(0,1fr));} .schl-re-roles{grid-template-columns:repeat(2,minmax(0,1fr));} }
 @media(max-width:560px){ .schl-mini{grid-template-columns:repeat(2,minmax(0,1fr));} .schl-help li{grid-template-columns:1fr;gap:3px;} .schl-log li{grid-template-columns:1fr;gap:2px;} }
-#screen-school .a3-hdr{background:#fff;border-bottom:1px solid var(--schl-line);position:sticky;top:0;z-index:20;}
-#screen-school .a3-hdr-inner{max-width:1280px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:12px;box-sizing:border-box;}
-#screen-school .d3-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--schl-ink);font-weight:800;}
-#screen-school .d3-logo{display:inline-flex;align-items:center;gap:6px;font-size:17px;letter-spacing:.02em;} #screen-school .d3-dot{width:8px;height:8px;border-radius:50%;background:#E8542A;display:inline-block;}
-#screen-school .a3-tag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--schl-accent-soft);color:var(--schl-accent);font-size:12px;font-weight:700;}
-#screen-school .a3-spacer{flex:1;} #screen-school .a3-link{border:1px solid var(--schl-line);background:#fff;border-radius:9px;padding:7px 12px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--schl-ink);}
-#screen-school .d3-user{position:relative;} #screen-school .d3-user-btn{display:flex;align-items:center;gap:8px;border:0;background:none;cursor:pointer;font:inherit;color:var(--schl-ink);padding:4px;}
-#screen-school .d3-avatar{width:32px;height:32px;border-radius:50%;background:var(--schl-ink);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;flex:none;} #screen-school .d3-user-name{font-size:14px;font-weight:600;}
-#screen-school .d3-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:160px;background:#fff;border:1px solid var(--schl-line);border-radius:10px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:30;}
-#screen-school .d3-menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:6px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--schl-ink);} #screen-school .d3-menu button:hover{background:#F2F4F7;} #screen-school .d3-menu hr{border:0;border-top:1px solid var(--schl-line);margin:4px 0;}
 /* 2026-11-03c 면접관 10명 목소리 (관리자) */
 .ivv-load{color:var(--slate-400);font-size:14px;}
 .ivv-stat{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 14px;}
@@ -6551,32 +6542,12 @@ body.schl-noscroll{overflow:hidden;} .schl-drawer[hidden],.schl-drawer-bg[hidden
 </section>
 
 <!-- ============ ADMIN (관리자) SCREEN ============ -->
-<!-- 2026-11-03d 학교 관리 화면 (관리자·교직원·학과 담당) -->
-<section id="screen-school" class="screen v3">
-  <header class="a3-hdr">
-    <div class="a3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="School.open('overview')"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="a3-tag" id="schl-role-tag">학교 관리</span></a>
-      <span class="schl-scope" id="schl-scope"></span>
-      <span class="a3-spacer"></span>
-      <button class="a3-link" onclick="School.toStudent()">학생 화면 보기</button>
-      <div class="d3-user schl-user">
-        <button class="d3-user-btn" id="schl-user-btn" onclick="School.menu(event)" aria-expanded="false" aria-haspopup="menu"><span class="d3-avatar" id="schl-avatar">관</span><span class="d3-user-name" id="schl-name"></span></button>
-        <div class="d3-menu" id="schl-menu" style="display:none;" role="menu"><button role="menuitem" onclick="School.closeMenu(); openMyPage()">마이페이지</button><hr><button role="menuitem" onclick="School.closeMenu(); handleLogout()">로그아웃</button></div>
-      </div>
-    </div>
-  </header>
-  <div class="schl-layout">
-    <nav class="schl-side" id="schl-side" aria-label="학교 관리 메뉴"></nav>
-    <main class="schl-main" id="schl-main"></main>
-  </div>
+<section id="screen-admin" class="screen v3">
   <div class="schl-drawer-bg" id="schl-drawer-bg" hidden onclick="School.closeStudent()"></div>
   <aside class="schl-drawer" id="schl-drawer" hidden aria-label="학생 상세"></aside>
-</section>
-
-<section id="screen-admin" class="screen v3">
   <header class="a3-hdr">
     <div class="a3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="a3-tag">관리자</span></a>
+      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="a3-tag" id="a3-role-tag">관리자</span></a><span class="schl-scope" id="schl-scope"></span>
       <span class="a3-spacer"></span>
       <button class="a3-link" onclick="goDashboard()"><svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3h6v6M17 3l-8 8M14 11v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>사용자 화면으로</button>
       <div class="d3-user">
@@ -6662,6 +6633,9 @@ body.schl-noscroll{overflow:hidden;} .schl-drawer[hidden],.schl-drawer-bg[hidden
         <div class="admin-count-line"><span class="admin-toolbar-count" id="qm-count"></span></div>
         <div class="qm-list" id="qm-list"></div>
       </div>
+
+      <!-- 2026-11-03e 학교 관리 (현황·학생·연습 기록·의견·공지·권한 관리) — 관리자·교직원·학과 담당 -->
+      <div class="admin-view" id="admin-view-sch"><div id="schl-main"></div></div>
 
       <!-- 면접관 10명 목소리 (2026-11-03c) -->
       <div class="admin-view" id="admin-view-ivvoice"><div id="ivv-root"></div></div>
@@ -9012,7 +8986,7 @@ function showScreen(id){
   try{ document.body.classList.toggle('is-admin-ui', !!(state.currentUser && state.currentUser.isAdmin)); }catch(_){}   // 2026-10-20o 관리자: 면접 연습·리포트·내 성장 메뉴 숨김
   try{ AdminFb.refresh(); }catch(_){}
   try{ setTimeout(()=>AppUpdate.maybeShow(), 300); }catch(_){}
-  const fab = document.getElementById('fb-fab'); if(fab) fab.style.display = (state.currentUser && !state.currentUser.isAdmin && id !== 'screen-login' && id !== 'screen-school') ? '' : 'none';
+  const fab = document.getElementById('fb-fab'); if(fab) fab.style.display = (state.currentUser && !state.currentUser.isAdmin && id !== 'screen-login' && id !== 'screen-admin') ? '' : 'none';
   const hfab = document.getElementById('help-fab'); if(hfab) hfab.style.display = (state.currentUser && !state.currentUser.isAdmin && id === 'screen-dashboard') ? '' : 'none';
   document.body.classList.toggle('fab-compact', id === 'screen-interview');
   try{ if(typeof MicStream !== 'undefined'){ if(id === 'screen-login') MicStream.close(); else MicStream.setHold(id === 'screen-interview'); } }catch(_){}
@@ -12165,7 +12139,32 @@ const School = {
   role(){ const u = state.currentUser; return u ? (u.role || (u.isAdmin ? 'admin' : u.isStaff ? 'staff' : 'student')) : 'student'; },
   can(what){ const r = this.role(); return what === 'view' ? ['admin','staff','dept'].includes(r) : what === 'manage' ? ['admin','staff'].includes(r) : what === 'admin' ? r === 'admin' : false; },
   isOn(){ return typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS && this.can('view'); },
-  afterLogin(){ if(!this.isOn()) return false; this.d = null; this.open('overview'); return true; },
+  afterLogin(){ if(!this.isOn()) return false; this.d = null; openAdminScreen('sch-overview'); return true; },
+  /** 한림대: 관리자 화면 하나에 예전 기능과 학교 관리를 합침. 교직원·학과 담당은 학교 관리 칸만 */
+  allowView(v){ if(!this.isOn() || this.can('admin')) return true; if(!/^sch-/.test(v)) return false; if(v === 'sch-roles') return false; if(v === 'sch-talk') return this.can('manage'); return true; },
+  adaptAdmin(){
+    const G = ADMIN_GROUPS;
+    if(!this._adapted){ this._adapted = true;
+      G.today.label = '현황'; G.today.views = [['sch-overview','현황'],['overview','할 일 · 요약'],['live','지금 접속 · 접속 기록']];
+      G.users.label = '학생'; G.users.views = [['sch-students','학생'],['users','계정 관리'],['expired','기간 끝난 사람'],['beta','연습 진행표'],['approvals','서류 합격 승인']];
+      G.results.views = [['sch-records','연습 기록'],['records','면접 기록 (자세히)'],['realset','실전 세트 · 자기소개'],['hardq','점수 낮은 질문'],['export','엑셀로 내려받기 (전체)']];
+      G.talk.views = [['sch-talk','의견 · 공지'],['feedback','의견 · 오류 신고 (자세히)'],['notices','공지 보내기 (자세히)']];
+      const st = G.settings; delete G.settings; G.roles = { label:'권한 관리', views:[['sch-roles','권한 관리']] }; G.settings = st;
+      const side = document.querySelector('#screen-admin .admin-sidebar'), talk = side && side.querySelector('[data-group="talk"]'), set = side && side.querySelector('[data-group="settings"]');
+      if(talk && set && !side.querySelector('[data-group="roles"]')){ const b = talk.cloneNode(true); b.dataset.group = 'roles'; b.classList.remove('active'); b.querySelectorAll('.menu-badge').forEach(x=>x.remove());
+        const svg = b.querySelector('svg'); if(svg) svg.innerHTML = '<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'; side.insertBefore(b, set); }
+    }
+    const TXT = !this.can('admin') ? { today:['현황','학과별 이용 · 연습 추이'], users:['학생','점수 추이 · 상담 메모 · 서류'], results:['연습 결과','기록 목록 · 엑셀 내려받기'], talk:['소통','학생 의견 답장 · 공지'] } : { today:['현황','학과별 이용 · 할 일 · 접속'], users:['학생','학생 상세 · 계정 · 기간 · 진행표'], results:['연습 결과','연습 기록 · 실전 세트 · 엑셀'], questions:['질문','질문 · 녹음 · 실제 후기'], talk:['소통','의견 · 공지'], roles:['권한 관리','관리자 · 교직원 · 학과 담당'], settings:['AI · 비용','AI · 크레딧 · 면접관 목소리'] };
+    document.querySelectorAll('#screen-admin .admin-menu-btn[data-group]').forEach(b=>{ const g = G[b.dataset.group], vs = g ? g.views.filter(([v])=>this.allowView(v)) : [];
+      b.hidden = !vs.length; if(vs.length) b.onclick = ()=>showAdminView(vs[0][0]);
+      const t = TXT[b.dataset.group], nm = b.querySelector('.amb-name'), ds = b.querySelector('.amb-desc'); if(t && nm && nm.firstChild && nm.firstChild.nodeType === 3) nm.firstChild.nodeValue = t[0] + ' '; if(t && ds) ds.textContent = t[1]; });
+    const u = state.currentUser || {}, r = this.role(), tag = this.G('a3-role-tag'), sc = this.G('schl-scope');
+    if(tag) tag.textContent = SC_ROLE[r] || '관리자';
+    if(sc) sc.innerHTML = r === 'dept' ? `맡은 학과 <b>${escapeHtml((u.scopeDepts || []).join(', ') || '없음')}</b>` : r === 'staff' ? '모든 학과 학생' : '';
+    const af = this.G('afind'); if(af) af.hidden = !this.can('admin');   // 예전 관리 기능 찾기는 관리자만
+    const st = document.querySelector('#screen-admin .admin-sidebar-title'); if(st) st.textContent = r === 'admin' ? '관리자 메뉴' : `${SC_ROLE[r]} 메뉴`;
+  },
+  show(sub){ this.view = sub; this.closeStudent(); if(!this.d) this.load(); else this.render(); },
   async rejectSuspended(profile){
     if(!profile || profile.status !== '이용 중지') return false;
     try{ await sb.auth.signOut(); }catch(_){}
@@ -12180,26 +12179,24 @@ const School = {
   },
   async open(view){
     if(!this.can('view')){ showToast('관리자·교직원·학과 담당만 들어갈 수 있어요.'); return; }
-    view = view || this.view || 'overview';
-    if(view === 'voice'){ openAdminScreen('ivvoice'); return; }
-    if(!this.views().some(x=>x[0] === view)) view = 'overview';
-    this.view = view; this.closeStudent();
-    showScreen('screen-school'); try{ Activity.setPresence('school'); }catch(_){}
-    this.paintHead(); this.paintSide();
-    if(!this.d) await this.load(); else this.render();
-    window.scrollTo({ top:0 });
+    view = view || 'overview';
+    const v = view === 'voice' ? 'ivvoice' : 'sch-' + view;
+    const sc = document.querySelector('.screen.active');
+    if(sc && sc.id === 'screen-admin') showAdminView(v); else await openAdminScreen(v);
   },
   toStudent(){ this.closeStudent(); goDashboard(); },
   menu(e){ if(e) e.stopPropagation(); const m = this.G('schl-menu'), b = this.G('schl-user-btn'); const open = m.style.display === 'none'; m.style.display = open ? '' : 'none'; b.setAttribute('aria-expanded', String(open));
     if(open) setTimeout(()=>document.addEventListener('click', this._mc = ()=>this.closeMenu(), { once:true }), 0); },
   closeMenu(){ const m = this.G('schl-menu'); if(m) m.style.display = 'none'; const b = this.G('schl-user-btn'); if(b) b.setAttribute('aria-expanded', 'false'); },
-  paintHead(){
+  paintHead(){ try{ this.adaptAdmin(); }catch(_){} },
+  _oldHead(){
     const u = state.currentUser || {}, r = this.role();
     this.G('schl-role-tag').textContent = SC_ROLE[r];
     this.G('schl-scope').innerHTML = r === 'dept' ? `맡은 학과 <b>${escapeHtml((u.scopeDepts || []).join(', ') || '없음')}</b>` : r === 'staff' ? '모든 학과 학생' : '모든 학과 학생 · 권한 관리';
     this.G('schl-name').textContent = u.name || ''; this.G('schl-avatar').textContent = (u.name || '관').slice(0, 1);
   },
-  paintSide(){
+  paintSide(){ try{ renderAdminSubtabs(state.adminView); }catch(_){} },
+  _oldSide(){
     const box = this.G('schl-side');
     box.innerHTML = this.views().map(([v, l, d])=>`<button type="button" class="schl-nav${v === this.view ? ' on' : ''}" data-v="${v}" ${v === this.view ? 'aria-current="page"' : ''}><b>${l}${v === 'talk' && this.fbNew ? `<span class="schl-badge">${this.fbNew}</span>` : ''}</b><small>${d}</small></button>`).join('');
     box.querySelectorAll('[data-v]').forEach(b=>b.onclick = ()=>this.open(b.dataset.v));
@@ -12905,13 +12902,15 @@ async function dashAdminGo(filter){
   if(filter !== undefined){ try{ setUserFilter(filter, false); }catch(_){} }
 }
 async function openAdminScreen(view){
-  if(!state.currentUser || !state.currentUser.isAdmin){ showToast('관리자만 들어갈 수 있어요.'); return; }
+  const sOn = typeof School !== 'undefined' && School.isOn();   // 2026-11-03e 한림대: 관리자·교직원·학과 담당이 같은 관리 화면을 씀 (보이는 메뉴는 권한대로)
+  if(!state.currentUser || !(state.currentUser.isAdmin || sOn)){ showToast('관리자만 들어갈 수 있어요.'); return; }
   const nameEl = document.getElementById('nav-username-admin');
   if(nameEl) nameEl.textContent = state.currentUser.name; { const av = document.getElementById('a3-avatar'); if(av) av.textContent = (state.currentUser.name||'관').slice(0,1); }
   showScreen('screen-admin');
+  if(sOn) School.adaptAdmin();
   Activity.setPresence('admin');
-  showAdminView(view || state.adminView || 'overview');
-  await renderAdmin();
+  showAdminView(view || state.adminView || (sOn ? 'sch-overview' : 'overview'));
+  if(state.currentUser.isAdmin) await renderAdmin();
   try{ if(state.adminView === 'reports' || state.adminView === 'reportcall'){ ReportAdmin.render(); ReportAdmin.renderCall(); } if(state.adminView === 'approvals') ApprovalAdmin.render(); }catch(_){}
 }
 /* ---------------- 어려운 문항 TOP 10 (관리자 · 2026-10-12) ----------------
@@ -13066,13 +13065,18 @@ const AdminFind = {
     pipeline:'AI 켜기 끄기 꼬리질문 채점 횟수 한도 하루 5회 전체 OpenAI 오픈에이아이 비용 요금',
     tccredit:'타입캐스트 크레딧 남은 요금제 충전 안전장치 1인 한도 사람별 사용량 typecast',
     ttslive:'즉석 읽은 문장 꼬리질문 음성 녹음본 저장 대신읽음 새문장',
+    'sch-overview':'현황 학과별 이용 연습 추이 주별 많이 고른 기업 도움이 필요한 학생 평균 점수',
+    'sch-students':'학생 상세 점수 추이 상담 메모 서류 자기소개서 이력서 인바디 학점 어학',
+    'sch-records':'연습 기록 엑셀 csv 내려받기 기간 분야 학과',
+    'sch-talk':'의견 답장 공지 올리기',
+    'sch-roles':'권한 관리 교직원 학과 담당 관리자 이용 중지 조교',
     ivvoice:'면접관 10명 목소리 캐릭터 타입캐스트 매핑 겹침 발음 사전 예산 녹음 다시 녹음 감정 속도 높낮이 예비',
     voice:'목소리 면접관 음성 타입캐스트 OpenAI 속도 발음 교정',
     devtest:'문제 확인 개발 점검 테스트 동작',
   },
   pages(){
     const out = [];
-    Object.values(ADMIN_GROUPS).forEach(g=>g.views.forEach(([v,l])=>out.push({ kind:'page', v, t:l, path:g.label + ' › ' + l, hay:(g.label + ' ' + l + ' ' + (this.keys[v]||'')).toLowerCase().replace(/\s+/g,' ') })));
+    Object.values(ADMIN_GROUPS).forEach(g=>g.views.filter(([v])=>typeof School === 'undefined' || School.allowView(v)).forEach(([v,l])=>out.push({ kind:'page', v, t:l, path:g.label + ' › ' + l, hay:(g.label + ' ' + l + ' ' + (this.keys[v]||'')).toLowerCase().replace(/\s+/g,' ') })));
     return out;
   },
   run(q){
@@ -13119,7 +13123,7 @@ function renderAdminSubtabs(view){
   const g = adminGroupOf(view); try{ const sc = document.getElementById('screen-admin'); if(sc) sc.dataset.ag = g; }catch(_){} const box = document.getElementById('admin-subtabs'); if(!box) return;   // 2026-10-22n 메뉴 색
   document.querySelectorAll('.admin-menu-btn[data-group]').forEach(b=>b.classList.toggle('active', b.dataset.group === g));
   try{ const sbar = document.querySelector('#screen-admin .admin-sidebar'), ab = document.querySelector('.admin-menu-btn.active[data-group]'); if(sbar && ab && sbar.scrollWidth > sbar.clientWidth + 4) sbar.scrollTo({ left: Math.max(0, ab.offsetLeft - (sbar.clientWidth - ab.offsetWidth) / 2), behavior:'smooth' }); }catch(_){}   // 2026-10-22n 휴대폰: 지금 메뉴가 보이게
-  const vs = ADMIN_GROUPS[g].views;
+  const vs = ADMIN_GROUPS[g].views.filter(([v])=>typeof School === 'undefined' || School.allowView(v));
   box.innerHTML = vs.length > 1 ? vs.map(([v,l])=>`<button type="button" class="${v===view?'on':''}" onclick="showAdminView('${v}')">${l}${TAB_BADGES[v]?`<span class="menu-badge" id="${TAB_BADGES[v][1]}" style="display:none;"></span>`:''}${v==='live'?'<span class="live-dot-nav" id="live-tab-dot" style="display:none;"></span>':''}</button>`).join('') : '';
   syncTabBadges();
 }
@@ -13149,6 +13153,7 @@ function renderOverviewHardQ(){
   go();
 }
 function showAdminView(view){
+  if(typeof School !== 'undefined' && School.isOn() && !School.allowView(view)) view = 'sch-overview';   // 2026-11-03e 교직원·학과 담당은 학교 관리 칸만
   state.adminView = view;
   /* 2026-10-27a: '기간 끝난 사람'은 면접자 목록 화면을 같이 쓰되, 기간 끝난 사람만 보여 줌 (면접자 목록에서는 빠짐) */
   if(view === 'users' || view === 'expired'){ const sc = view === 'expired' ? 'ended' : 'active'; if(state.userScope !== sc){ state.userChip = ''; state.userField = ''; state.selectedUserIds && state.selectedUserIds.clear(); } state.userScope = sc; try{ applyUserScope(); }catch(e){ console.warn('[기간 끝난 사람]', e); } }
@@ -13168,7 +13173,8 @@ function showAdminView(view){
   if(view === 'reports' || view === 'reportcall') ReportAdmin.load(true);
   if(view === 'reportq') ReportQ.load(true);   // 2026-10-26d
   if(view === 'sttfix') SttAdmin.load(true);   // 2026-10-26d
-  document.querySelectorAll('.admin-view').forEach(el=>el.classList.toggle('active', el.id === 'admin-view-'+(pv ? 'pipeline' : view === 'expired' ? 'users' : view)));
+  if(/^sch-/.test(view)) School.show(view.slice(4)); else if(typeof School !== 'undefined') School.closeStudent();
+  document.querySelectorAll('.admin-view').forEach(el=>el.classList.toggle('active', el.id === 'admin-view-'+(pv ? 'pipeline' : view === 'expired' ? 'users' : /^sch-/.test(view) ? 'sch' : view)));
   try{ renderAdminSubtabs(view); }catch(e){ console.warn('[관리자 탭]', e); }
   window.scrollTo({top:0});
 }
