@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-04a';
+var APP_VERSION = '2026-11-04b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5584,6 +5584,8 @@ body.schl-noscroll{overflow:hidden;} .schl-drawer[hidden],.schl-drawer-bg[hidden
 @media(max-width:960px){ .schl-two{grid-template-columns:1fr;} .schl-kpis{grid-template-columns:repeat(2,minmax(0,1fr));} .schl-re-roles{grid-template-columns:repeat(2,minmax(0,1fr));} }
 @media(max-width:560px){ .schl-mini{grid-template-columns:repeat(2,minmax(0,1fr));} .schl-help li{grid-template-columns:1fr;gap:3px;} .schl-log li{grid-template-columns:1fr;gap:2px;} }
 /* 2026-11-03c 면접관 10명 목소리 (관리자) */
+/* 2026-11-04b 면접 화면: 숨긴 요소(면접관 목록·기업 카드)가 자리를 차지해 카드가 아래로 밀리던 것 막음 (원본과 같은 위치) */
+#screen-interview [hidden]{display:none !important;}
 /* 2026-11-04 학생 연습 도구 (PracticeKit) */
 .pk-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
 .pk-tb{display:inline-flex;align-items:center;gap:4px;min-height:34px;padding:0 12px;border:1px solid #D8DEE8;border-radius:999px;background:#fff;color:#2b3242;font:inherit;font-size:13px;font-weight:700;cursor:pointer;}
@@ -10873,8 +10875,12 @@ const QuestionBank = {
         const { data, error } = await sbAll(()=>sb.from('questions').select('id,field_id,bank,category,q,hint,ref,diff,sort_order,is_active').eq('is_active', true).order('sort_order', {ascending:true}).order('id', {ascending:true}));
         if(error) throw error;
         if(Array.isArray(data) && data.length > 50){ this.rebuild(data); this.loaded = true; }
+        else if(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS){ this.rebuild(data || []); this.loaded = true; }   // 2026-11-04 클론: 문제은행이 비어 있으면 화면에 들어 있는 한림대 질문으로 (buildQuestionPool)
         else throw new Error('문항이 너무 적어요 ('+((data||[]).length)+'개)');
-      }catch(e){ console.warn('[문항] DB에서 질문을 받지 못했어요 (다시 누르면 다시 받아요):', (e && e.message) || e); this.loading = null; }
+      }catch(e){
+        if(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS){ console.warn('[문항] DB 문항을 못 받아 한림대 기본 질문으로 진행:', (e && e.message) || e); this.loaded = true; }
+        else { console.warn('[문항] DB에서 질문을 받지 못했어요 (다시 누르면 다시 받아요):', (e && e.message) || e); this.loading = null; }
+      }
       return this.loaded;
     })();
     return this.loading;
@@ -16919,6 +16925,9 @@ function countByDifficulty(field, difficulty){
     PUBLIC_COMMON_QA.forEach(cat=>cat.items.forEach(it=>{ if(it.diff===difficulty) n++; }));
   }
   (EXAM_QA[field.id]||[]).forEach(it=>{ if(it.diff===difficulty) n++; });
+  if(!n && typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS && buildQuestionPool(field, difficulty).some(x=>x.hallym)){   // 2026-11-04 한림대 기본 질문으로 낼 때는 그 질문 수로
+    hallymMidQuestions(field.id).forEach(it=>{ if(it.diff===difficulty) n++; });
+  }
   return n;
 }
 function updateDifficultyNote(){
@@ -18449,6 +18458,14 @@ function renderVoiceSelect(){
 function renderPrimaryVoice(){
   const sub = document.getElementById('voice-primary-sub'); const title = document.getElementById('voice-primary-title');
   if(!sub) return;
+  if(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS){   // 2026-11-04 목소리는 모두 타입캐스트: 고른 면접관마다 정해진 목소리를 보여 줌
+    const ids = (state.flowCtx && Array.isArray(state.flowCtx.interviewers) && state.flowCtx.interviewers.length) ? state.flowCtx.interviewers : ['hr'];
+    const names = ids.slice(0, 4).map(id=>{ const p = IvVoice.P(id), c = IvVoice.eff(id, (IvVoice.map || {})[id]); return p ? `${p.n} ${c.voice_name || ''}`.trim() : ''; }).filter(Boolean);
+    title.textContent = '라이브 면접: 타입캐스트 면접관 목소리';
+    sub.textContent = `타입캐스트 · ${names.join(' · ')}${ids.length > 4 ? ` 외 ${ids.length - 4}명` : ''}`;
+    if(!IvVoice.map && !renderPrimaryVoice._ld){ renderPrimaryVoice._ld = true; IvVoice.loadMap().then(()=>{ if(IvVoice.map) try{ renderPrimaryVoice(); }catch(_){} }); }
+    return;
+  }
   const st = loadTtsSettings();
   const preset = st.model==='gpt-4o-mini-tts' ? (st.preset==='custom' ? '직접 지시' : ((TTS_INSTRUCTION_PRESETS[st.preset]||{}).label||'')) : '';
   const recorded = VoiceBank.loaded && VoiceBank.byText.size > 0;
@@ -21652,7 +21669,7 @@ const IvPanel = {
     this.cur = k;
   },
   onQuestion(q){
-    this.fu = 0; this.speak(0);
+    this.speak(0);   // 2026-11-04b 기본 질문은 진행 면접관. 꼬리질문 차례(fu)는 면접 내내 이어서 돌아감 (질문마다 처음으로 돌리면 늘 두 번째 면접관만 물었음)
     const n = document.getElementById('iv-question-notice'); if(!n) return;
     if(this.defNotice == null) this.defNotice = n.textContent;
     const h = document.getElementById('iv-co-hint');
