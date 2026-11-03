@@ -1,4 +1,5 @@
 // 운영 ZAVAPASS에서 읽어 온 원본 (2026-11-03, 읽기만). 클론(yiuraowvnadqdrnysdce)에만 배포
+// 2026-11-03n 클론: 녹음도 타입캐스트로만 (OpenAI 목소리로는 녹음하지 않음)
 // 2026-10-21g: 타입캐스트로 녹음한 글자 수를 tts_usage에 남김
 // 2026-10-21e: ids로 고른 항목만 다시 녹음
 // 2026-10-21d: 질문이 1,000개를 넘으면 뒤쪽이 빠지던 문제 수정 (1,000개씩 나눠 끝까지 읽음)
@@ -12,25 +13,19 @@
 // 요청 (POST, JSON)
 //   { action: "status" }                                   → 남은 개수만 조회 (비용 없음) + 타입캐스트로 녹음된 개수
 //   { action: "run", target: "questions"|"lines", limit: 20,
-//     voice: "onyx", model: "gpt-4o-mini-tts", speed: 1.05, instructions: "말투 지시", force: false,
-//     provider?: "openai"|"typecast", tc?: { voice_id, tempo, pitch, emotion, intensity } }
+//     force: false, provider: "typecast", tc: { voice_id, tempo, pitch, emotion, intensity } }
 // 응답 { processed, failed:[{id,error}], remaining, total, done }
 //
-// 필요한 Secret: OPENAI_API_KEY 또는 TYPECAST_API_KEY (기본 제공 SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 도 사용)
+// 필요한 Secret: TYPECAST_API_KEY (기본 제공 SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 도 사용)
 // 관리자만 호출할 수 있어요(profiles.is_admin 확인).
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const TYPECAST_API_KEY = Deno.env.get("TYPECAST_API_KEY") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const BUCKET = "question-audio";
-const ALLOWED_VOICES = ["alloy", "ash", "ballad", "cedar", "coral", "echo", "fable", "marin", "nova", "onyx", "sage", "shimmer", "verse"];
-// 2026-10-07: marin·cedar(OpenAI 권장 최고 품질)·ballad·verse 추가 — gpt-4o-mini-tts에서만 됨(tts-1 계열이면 onyx로 대체)
-const MINI_ONLY_VOICES = ["ballad", "cedar", "marin", "verse"];
-const ALLOWED_MODELS = ["gpt-4o-mini-tts", "tts-1", "tts-1-hd"];
 const CONCURRENCY = 3;          // 동시에 보내는 개수 (타입캐스트 라이트 요금제 동시 5건 안에서, 회사 다른 프로그램 몫 남김)
 const MAX_LIMIT = 20;           // 한 번 호출에 최대 처리 개수 (함수 실행 시간 제한 안에서 끝나도록)
 const TC_MODEL_TAG = "typecast-ssfm-v30";
@@ -72,24 +67,6 @@ function sanitize(text: string) {
   let t = text;
   Object.keys(FIXES).sort((a, b) => b.length - a.length).forEach((k) => { t = t.split(k).join(FIXES[k]); });
   return t.replace(/\s*\/\s*/g, " 또는 ").replace(/·/g, " ").replace(/~/g, "에서 ").replace(/%/g, "퍼센트").replace(/\s{2,}/g, " ").trim();
-}
-
-// ---- OpenAI TTS (실패 시 지수 백오프로 최대 3회) ----
-async function ttsOpenAI(text: string, voice: string, model: string, speed: number, instructions: string): Promise<Uint8Array> {
-  const payload: Record<string, unknown> = { model, voice, input: sanitize(text), speed, response_format: "mp3" };
-  if (model === "gpt-4o-mini-tts" && instructions) payload.instructions = instructions;
-  let lastErr = "";
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const res = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST", headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify(payload),
-    });
-    if (res.ok) return new Uint8Array(await res.arrayBuffer());
-    const t = await res.text();
-    lastErr = `OpenAI ${res.status}: ${t.slice(0, 200)}`;
-    if (res.status === 401 || res.status === 402 || res.status === 400) break;      // 키/크레딧/요청 오류는 재시도해도 소용없음
-    await new Promise((r) => setTimeout(r, 800 * Math.pow(2, attempt)));           // 429·5xx → 0.8s, 1.6s, 3.2s
-  }
-  throw new Error(lastErr);
 }
 
 // ---- 타입캐스트 TTS (429·5xx는 최대 3회 재시도, 감정 설정을 못 받는 목소리는 기본값으로) ----
@@ -175,17 +152,10 @@ Deno.serve(async (req: Request) => {
       const l = await pending("lines", false, 0);
       return json({ questions: { total: q.total, remaining: q.remaining, typecast: q.tc, chars: q.chars }, lines: { total: l.total, remaining: l.remaining, typecast: l.tc, chars: l.chars }, typecast_key: !!TYPECAST_API_KEY });
     }
-    const useTc = body.provider === "typecast";
-    const tcs = useTc ? tcSettings(body.tc) : null;
-    if (useTc && !TYPECAST_API_KEY) return json({ error: "TYPECAST_API_KEY Secret이 설정되어 있지 않습니다." }, 500);
-    if (useTc && !tcs) return json({ error: "타입캐스트 목소리가 정해지지 않았어요. ② 면접관 목소리에서 골라 저장해 주세요." }, 400);
-    if (!useTc && !OPENAI_API_KEY) return json({ error: "OPENAI_API_KEY Secret이 설정되어 있지 않습니다." }, 500);
+    const tcs = tcSettings(body.tc);   // 2026-11-03n 타입캐스트로만 녹음
+    if (!TYPECAST_API_KEY) return json({ error: "TYPECAST_API_KEY Secret이 설정되어 있지 않습니다." }, 500);
+    if (!tcs) return json({ error: "타입캐스트 목소리가 정해지지 않았어요. 관리자 › 기본 목소리에서 타입캐스트 목소리를 골라 저장해 주세요." }, 400);
 
-    const model = ALLOWED_MODELS.includes(body.model) ? body.model : "gpt-4o-mini-tts";
-    let voice = ALLOWED_VOICES.includes(body.voice) ? body.voice : "onyx";
-    if (model !== "gpt-4o-mini-tts" && MINI_ONLY_VOICES.includes(voice)) voice = "onyx";
-    const speed = Math.min(1.3, Math.max(0.7, Number(body.speed) || 1.0));
-    const instructions = String(body.instructions ?? "").trim().slice(0, 300);
     const limit = Math.min(MAX_LIMIT, Math.max(1, Number(body.limit) || 10));
     FIXES = {};
     if (body.fixes && typeof body.fixes === "object") {
@@ -214,12 +184,12 @@ Deno.serve(async (req: Request) => {
       while (idx < rows.length) {
         const row = rows[idx++];
         try {
-          const bytes = tcs ? await ttsTypecast(row.text, tcs) : await ttsOpenAI(row.text, voice, model, speed, instructions);
+          const bytes = await ttsTypecast(row.text, tcs as TcSet);
           if (bytes.length < 500) throw new Error("음성 데이터가 비어 있음");
           const url = await upload(`${prefix}/${row.id}.mp3`, bytes);
           await rest(`${table}?id=eq.${row.id}`, {
             method: "PATCH", headers: { Prefer: "return=minimal" },
-            body: JSON.stringify({ audio_url: url, audio_text: row.text, audio_voice: tcs ? `tc:${tcs.voice_id}` : voice, audio_model: tcs ? TC_MODEL_TAG : model, audio_at: new Date().toISOString() }),
+            body: JSON.stringify({ audio_url: url, audio_text: row.text, audio_voice: `tc:${(tcs as TcSet).voice_id}`, audio_model: TC_MODEL_TAG, audio_at: new Date().toISOString() }),
           });
           processed++; chars += row.text.length;
         } catch (e) {
@@ -231,7 +201,7 @@ Deno.serve(async (req: Request) => {
 
     if (tcs && chars) { try { await rest(`tts_usage`, { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ user_id: admin.id, provider: "typecast", kind: "record", chars }) }); } catch (e) { console.warn("[사용 기록 실패]", (e as Error).message); } }
     const left = Math.max(0, remaining - processed);
-    return json({ target, processed, failed, remaining: left, total, done: left === 0 && failed.length === 0, provider: tcs ? "typecast" : "openai", chars });
+    return json({ target, processed, failed, remaining: left, total, done: left === 0 && failed.length === 0, provider: "typecast", chars });
   } catch (e) {
     console.error("generate-audio 예외", e);
     return json({ error: `서버 오류: ${(e as Error).message}` }, 500);

@@ -1,4 +1,8 @@
 // 운영 ZAVAPASS에서 읽어 온 원본 (2026-11-03, 읽기만). 클론(yiuraowvnadqdrnysdce)에만 배포
+// 2026-11-03n 클론: 목소리는 타입캐스트로만 읽음. OpenAI 목소리로 대신 읽던 것(타입캐스트 실패·한도 초과 때)을 없앰
+//   - 요청에 타입캐스트 목소리가 없으면 기본 타입캐스트 목소리(DEFAULT_TC)로 읽음
+//   - 한도에 걸리면 429(code tts_limit), 타입캐스트가 실패하면 502(code typecast_failed) → 앱이 면접관 예비 설정(브라우저 목소리·글자만)으로 이어감
+//   - OpenAI는 질문·꼬리질문 '글'을 만들 때만 씀 (다른 함수)
 // 2026-10-26a: 끝음 점검으로 다시 읽은 요청(retry)은 앱이 보낸 이유(end_note: 끝음 점수)를 사용 기록 note에 남김 (주간 즉석 문장 점검용)
 // 2026-10-23m: 사람별 한도 — profiles.tts_cap(매달 한도, null=기본·0=없음) + tts_bonus/tts_bonus_month(그달만 추가)
 // 2026-10-23d: 즉석으로 읽은 문장 종류에 doc_question(서류 질문) 추가
@@ -14,20 +18,16 @@
 // 질문·꼬리질문 문장을 자연스러운 목소리(mp3)로 바꿔 돌려줍니다.
 //
 // 요청 (POST, JSON)
-//   { text, voice, speed, model?, instructions?,                       ← OpenAI 설정 (타입캐스트가 실패할 때도 이걸로 읽음)
-//     provider?: "openai"|"typecast", tc?: { voice_id, tempo, pitch, emotion, intensity } }
-// 응답  audio/mpeg (mp3)  · 헤더 X-Voice-Provider: openai | typecast | openai-fallback
+//   { text, provider: "typecast", tc: { voice_id, tempo, pitch, emotion, intensity }, purpose?, retry?, end_note? }
+// 응답  audio/mpeg (mp3)  · 헤더 X-Voice-Provider: typecast
 //
-// 필요한 Secret: OPENAI_API_KEY, (타입캐스트를 쓸 때) TYPECAST_API_KEY   선택: OPENAI_TTS_MODEL (기본 gpt-4o-mini-tts)
+// 필요한 Secret: TYPECAST_API_KEY
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const TYPECAST_API_KEY = Deno.env.get("TYPECAST_API_KEY") ?? "";
-const TTS_MODEL = Deno.env.get("OPENAI_TTS_MODEL") ?? "gpt-4o-mini-tts";
-const ALLOWED_VOICES = ["alloy", "ash", "ballad", "cedar", "coral", "echo", "fable", "marin", "nova", "onyx", "sage", "shimmer", "verse"];
-// 2026-10-07: marin·cedar(OpenAI 권장 최고 품질)·ballad·verse 추가 — gpt-4o-mini-tts에서만 됨(tts-1 계열이면 onyx로 대체)
-const MINI_ONLY_VOICES = ["ballad", "cedar", "marin", "verse"];
+// 앱이 목소리를 안 보냈을 때 쓰는 기본 타입캐스트 목소리 (엘리스 · 여성 · 중년 · 뉴스·아나운서). 앱의 TC_DEFAULT와 같게
+const DEFAULT_TC = { voice_id: "tc_686dc45bbd6351e06ee64daf", tempo: 1, pitch: 0, emotion: "normal" };
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -198,57 +198,26 @@ Deno.serve(async (req: Request) => {
   const text = String(body.text ?? "").trim().slice(0, 1000);   // 비용 보호: 최대 1,000자
   if (!text) return json({ error: "text는 필수입니다." }, 400);
 
-  // 2026-10-21b 타입캐스트 먼저 (설정이 typecast일 때) → 실패하면 아래 OpenAI로 대신 읽음
-  let note = "";
+  // 2026-11-03n 타입캐스트로만 읽음 (OpenAI 목소리로 대신 읽지 않음)
   const purpose = String(body.purpose ?? "");
   // 2026-10-26a 끝음 점검으로 다시 읽은 이유 (앱이 보냄, 80자까지)
   const endNote = body.retry === true && typeof body.end_note === "string" ? body.end_note.replace(/[\r\n]+/g, " ").slice(0, 80) : "";
-  if (body.provider === "typecast") {
-    if (!TYPECAST_API_KEY) note = "TYPECAST_API_KEY 없음";
-    else if (purpose !== "admin_test" && (note = await guardReason())) { console.warn("[타입캐스트 안전장치 → OpenAI로]", note); }
-    else if (purpose !== "admin_test" && !ap.exempt && (note = await userCapReason(user.id, ap.capInfo))) { console.warn("[1인 한도 → OpenAI로]", user.id, note); }
-    else {
-      try {
-        const bytes = await typecastTts(text, body.tc);
-        G.used += text.length;
-        { const c = U.get(user.id); if (c) c.used += text.length; }
-        logUsage(user.id, "live", text.length, text, purpose, body.retry === true, "typecast", endNote);
-        return new Response(bytes, { status: 200, headers: { ...corsHeaders, "Content-Type": "audio/mpeg", "Cache-Control": "no-store", "X-Voice-Provider": "typecast" } });
-      } catch (e) { note = (e as Error).name === "AbortError" ? "타입캐스트 응답 지연(12초)" : (e as Error).message; console.warn("[타입캐스트 실패 → OpenAI로 대신]", note); }
-    }
+  const tc = body.tc && /^(tc|uc)_[A-Za-z0-9]+$/.test(String(body.tc.voice_id ?? "").trim()) ? body.tc : DEFAULT_TC;
+  if (!TYPECAST_API_KEY) return json({ error: "TYPECAST_API_KEY Secret이 설정되어 있지 않습니다.", code: "no_key" }, 500);
+  if (purpose !== "admin_test") {
+    let lim = await guardReason();
+    if (!lim && !ap.exempt) lim = await userCapReason(user.id, ap.capInfo);
+    if (lim) { console.warn("[타입캐스트 한도 → 목소리 없이]", user.id, lim); return json({ error: lim, code: "tts_limit" }, 429); }
   }
-
-  if (!OPENAI_API_KEY) return json({ error: "OPENAI_API_KEY Secret이 설정되어 있지 않습니다." + (note ? ` (타입캐스트: ${note})` : "") }, 500);
-  let voice = ALLOWED_VOICES.includes(body.voice) ? body.voice : "onyx";
-  const speed = Math.min(1.3, Math.max(0.7, Number(body.speed) || 0.95));
-  // 관리자 "목소리 비교" 화면에서 고른 설정: 모델(허용 목록 안에서만) · 말투 지시(300자 제한, gpt-4o-mini-tts만 적용)
-  const ALLOWED_MODELS = ["gpt-4o-mini-tts", "tts-1", "tts-1-hd"];
-  const model = ALLOWED_MODELS.includes(body.model) ? body.model : TTS_MODEL;
-  if (model !== "gpt-4o-mini-tts" && MINI_ONLY_VOICES.includes(voice)) voice = "onyx";
-  const DEFAULT_INSTRUCTIONS = "한국어 채용 면접의 면접관입니다. 차분하고 또렷하며 정중한 어조로, 서두르지 않고 읽습니다.";
-  const instructions = String(body.instructions ?? "").trim().slice(0, 300) || DEFAULT_INSTRUCTIONS;
-
   try {
-    const payload: Record<string, unknown> = { model, voice, input: text, speed, response_format: "mp3" };
-    if (model === "gpt-4o-mini-tts") payload.instructions = instructions;   // tts-1 계열은 instructions를 받지 않음
-    const res = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      const t = await res.text();
-      console.error("OpenAI TTS 오류", res.status, t);
-      return json({ error: `OpenAI TTS 오류 (${res.status}): ${t.slice(0, 300)}` + (note ? ` (타입캐스트: ${note})` : "") }, 502);
-    }
-    const audio = await res.arrayBuffer();
-    // 2026-10-21j 타입캐스트로 읽어야 했는데 OpenAI로 대신 읽은 경우도 남김 (관리자 '즉석으로 읽은 문장' 목록에 이유와 함께 표시)
-    if (body.provider === "typecast") logUsage(user.id, "live", text.length, text, purpose, body.retry === true, "openai", note || "이유 알 수 없음");
-    const h: Record<string, string> = { ...corsHeaders, "Content-Type": "audio/mpeg", "Cache-Control": "no-store", "X-Voice-Provider": body.provider === "typecast" ? "openai-fallback" : "openai" };
-    if (note) h["X-Voice-Note"] = encodeURIComponent(note.slice(0, 150));
-    return new Response(audio, { status: 200, headers: h });
+    const bytes = await typecastTts(text, tc);
+    G.used += text.length;
+    { const c = U.get(user.id); if (c) c.used += text.length; }
+    logUsage(user.id, "live", text.length, text, purpose, body.retry === true, "typecast", endNote);
+    return new Response(bytes, { status: 200, headers: { ...corsHeaders, "Content-Type": "audio/mpeg", "Cache-Control": "no-store", "X-Voice-Provider": "typecast" } });
   } catch (e) {
-    console.error("speak-text 예외", e);
-    return json({ error: `서버 오류: ${(e as Error).message}` }, 500);
+    const note = (e as Error).name === "AbortError" ? "타입캐스트 응답 지연(12초)" : (e as Error).message;
+    console.warn("[타입캐스트 실패]", note);
+    return json({ error: `타입캐스트 오류: ${note}`.slice(0, 300), code: "typecast_failed" }, 502);
   }
 });

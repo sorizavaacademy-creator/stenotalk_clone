@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-03m';
+var APP_VERSION = '2026-11-03n';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -7029,9 +7029,9 @@ html.ivv-dr-open{overflow:hidden;}
             </div>
             <button type="button" class="vs-btn line" onclick="VoiceSet.play('saved')">▶ 들어 보기</button>
           </section>
-          <p class="vs-lead">채점과 꼬리질문 <b>문장은 OpenAI</b>가 만들고, 여기서 고른 <b>목소리</b>가 그 문장을 읽어요. 바꾼 목소리는 <b>저장</b>해야 면접에 쓰여요.</p>
+          <p class="vs-lead">채점과 꼬리질문 <b>문장은 OpenAI</b>가 만들고, 여기서 고른 <b>타입캐스트 목소리</b>가 그 문장을 읽어요. 목소리는 모두 타입캐스트로 읽어요. 바꾼 목소리는 <b>저장</b>해야 면접에 쓰여요.</p>
 
-          <section class="vs-step">
+          <section class="vs-step" hidden>   <!-- 2026-11-03n 타입캐스트만 써서 종류 고르기는 숨김 -->
             <h3 class="vs-h"><i>1</i>어떤 목소리를 쓸까요?</h3>
             <div class="vs-engines" id="vs-engines" role="group" aria-label="목소리 종류">
               <button type="button" class="vs-eng" data-v="typecast" aria-pressed="false" onclick="VoiceSet.setEngine('typecast')">
@@ -7046,7 +7046,7 @@ html.ivv-dr-open{overflow:hidden;}
           </section>
 
           <section class="vs-step">
-            <h3 class="vs-h"><i>2</i>목소리 고르기</h3>
+            <h3 class="vs-h"><i>1</i>타입캐스트 목소리 고르기</h3>
             <!-- 타입캐스트 -->
             <div id="vs-panel-tc" hidden>
               <div class="vs-need" id="tc-need" hidden>
@@ -7093,7 +7093,7 @@ html.ivv-dr-open{overflow:hidden;}
           </section>
 
           <section class="vs-step">
-            <h3 class="vs-h"><i>3</i>들어 보고 저장하기</h3>
+            <h3 class="vs-h"><i>2</i>들어 보고 저장하기</h3>
             <label class="vs-label" for="tts-text">들어볼 문장 <small>면접에서 나올 문장을 넣어 보세요</small></label>
             <textarea id="tts-text" class="vs-input" rows="2">국회 상임위원회 회의 중 발언자가 겹칠 경우, 속기록 작성 순서를 어떻게 정리하시겠습니까? 조서와 녹취록의 차이도 함께 설명해 주십시오.</textarea>
             <div class="vs-quick" role="group" aria-label="예시 문장">
@@ -7177,7 +7177,7 @@ html.ivv-dr-open{overflow:hidden;}
             <label>질문 수 <select id="loop-count" class="voice-select" style="flex:0;width:auto;padding:4px 8px;"><option>1</option><option selected>2</option><option>3</option><option>5</option></select></label>
             <label>꼬리질문 전체 최대 <select id="loop-followups" class="voice-select" style="flex:0;width:auto;padding:4px 8px;"><option>0</option><option>1</option><option selected>3</option><option>5</option></select></label>
             <label>목소리 <select id="loop-voice" class="voice-select" style="flex:0;width:auto;padding:4px 8px;" onchange="StenoVoice.provider=this.value">
-              <option value="browser" selected>브라우저 음성 (무료)</option><option value="openai">OpenAI 음성 (키 필요)</option></select></label>
+              <option value="browser" selected>브라우저 음성 (무료)</option><option value="openai">타입캐스트 음성 (서버)</option></select></label>
             <label id="loop-openai-voice-wrap" style="display:none;">OpenAI 목소리 <select id="loop-openai-voice" class="voice-select" style="flex:0;width:auto;padding:4px 8px;" onchange="StenoVoice.openaiVoice=this.value">
               <option value="marin">marin (여성·자연스러움 · OpenAI 권장)</option><option value="cedar">cedar (남성·자연스러움 · OpenAI 권장)</option><option value="onyx" selected>onyx (남성·낮음)</option><option value="echo">echo (남성)</option><option value="ash">ash (남성·차분)</option><option value="sage">sage (여성·차분)</option><option value="nova">nova (여성)</option><option value="coral">coral (여성·또렷)</option><option value="ballad">ballad (남성·부드러움)</option><option value="verse">verse (남성·생기)</option></select></label>
             <button class="btn btn-outline pipe-btn" style="padding:5px 10px;font-size:12px;" onclick="StenoVoice.speak('안녕하세요. 오늘 면접을 진행할 면접관입니다.')">목소리 미리 듣기</button>
@@ -21999,12 +21999,17 @@ const TTS_INSTRUCTION_PRESETS = {
   slow:   { label:'천천히 또렷하게', text:'한국어 채용 면접의 면접관입니다. 평소보다 조금 천천히, 단어 사이를 살짝 띄우며 또렷하게 읽습니다. 전문 용어는 한 글자씩 정확하게 발음합니다. 정중하고 차분합니다.' },
   strict: { label:'격식 있고 단호하게', text:'한국어 채용 면접의 면접관입니다. 격식 있고 단호한 어조로, 감정을 드러내지 않고 또렷하게 읽습니다. 서두르지 않습니다.' },
 };
-const TTS_DEFAULTS = { voice:'onyx', speed:1.0, model:'gpt-4o-mini-tts', preset:'natural', custom:'', provider:'openai', tc:null };   // 2026-10-21b provider: openai | typecast (tc: 타입캐스트 목소리)
+/* 2026-11-03n 목소리는 모두 타입캐스트로 읽음 (OpenAI는 질문·꼬리질문 '글'만 만듦). 저장된 설정이 OpenAI여도 이 기본 타입캐스트 목소리로 */
+const TC_DEFAULT = { voice_id:'tc_686dc45bbd6351e06ee64daf', name:'엘리스', desc:'여성 · 중년', tempo:1, pitch:0, emotion:'normal' };
+const TC_EMOS = ['smart','normal','happy','sad','angry','tonedown','toneup','whisper'];   // 타입캐스트가 받는 감정
+const TTS_DEFAULTS = { voice:'onyx', speed:1.0, model:'gpt-4o-mini-tts', preset:'natural', custom:'', provider:'typecast', tc:Object.assign({}, TC_DEFAULT) };   // 2026-10-21b provider: openai | typecast (tc: 타입캐스트 목소리)
 /** 2026-10-21b 지금 설정이 타입캐스트를 쓰는지 (목소리가 골라져 있어야 함) */
 function ttsUsesTypecast(st){ return !!(st && st.provider === 'typecast' && st.tc && st.tc.voice_id); }
-function ttsEngineOf(st){ return ttsUsesTypecast(st) ? { provider:'typecast', tc:{ voice_id:st.tc.voice_id, tempo:st.tc.tempo, pitch:st.tc.pitch, emotion:st.tc.emotion } } : null; }
+function ttsEngineOf(st){ const t = ttsUsesTypecast(st) ? st.tc : TC_DEFAULT; return { provider:'typecast', tc:{ voice_id:t.voice_id, tempo:t.tempo || 1, pitch:t.pitch || 0, emotion: TC_EMOS.includes(t.emotion) ? t.emotion : 'normal' } }; }
 function ttsEngineLabel(st){ return ttsUsesTypecast(st) ? `타입캐스트 ${st.tc.name || st.tc.voice_id} · ${st.tc.tempo || 1}배` : `OpenAI ${st.voice} · ${st.model} · ${st.speed}배`; }
-function loadTtsSettings(){ try{ const v = JSON.parse(localStorage.getItem('stenotalk_tts')||'null'); return Object.assign({}, TTS_DEFAULTS, v||{}); }catch(_){ return Object.assign({}, TTS_DEFAULTS); } }
+function loadTtsSettings(){ let r; try{ const v = JSON.parse(localStorage.getItem('stenotalk_tts')||'null'); r = Object.assign({}, TTS_DEFAULTS, v||{}); }catch(_){ r = Object.assign({}, TTS_DEFAULTS); }
+  if(!ttsUsesTypecast(r)){ r.provider = 'typecast'; r.tc = Object.assign({}, TC_DEFAULT); }   // 2026-11-03n 예전 OpenAI 설정은 기본 타입캐스트 목소리로
+  return r; }
 function saveTtsSettings(v){ try{ localStorage.setItem('stenotalk_tts', JSON.stringify(v)); }catch(_){} }
 function ttsInstructionText(st){ return (st.preset==='custom' ? (st.custom||'') : (TTS_INSTRUCTION_PRESETS[st.preset]||TTS_INSTRUCTION_PRESETS.calm).text); }
 /* 2026-10-21i 즉석으로 읽는 문장이 무엇인지(AI 꼬리질문·기본 꼬리질문·질문) 서버 사용 기록에 함께 남기기 위한 꼬리표 */
@@ -22249,7 +22254,7 @@ const StenoVoice = {
       ivPid = IvVoice.speakerId(); ivKind = (opts && opts.kind) || IvVoice.kindOf(ivPid);
       if(IvVoice.serverOff){ IvVoice.speakBrowser(sanitizeForSpeech(text), onDone, ivPid, ivKind); return; }
       const eng = IvVoice.engineFor(ivPid, ivKind);   // 관리자가 이 면접관에게 고른 타입캐스트 목소리
-      if(eng) this.engine = eng; else { const o = IvVoice.openaiFor(ivPid); this.engine = null; this.openaiVoice = o.voice; this.speed = o.speed; this.instructions = o.instructions; }   // 안 골랐으면 면접관마다 다른 OpenAI 목소리
+      this.engine = eng;   // 2026-11-03n 안 골랐으면 그 면접관의 기본 타입캐스트 목소리 (OpenAI 목소리는 쓰지 않음)
     }
     if(this.provider === 'openai' || ivPid !== null){   // 면접관이 말할 때는 늘 서버 목소리로
       try{
@@ -22305,7 +22310,7 @@ const StenoVoice = {
     for(let i=0;i<waits.length;i++){
       if(waits[i]){ await new Promise(r=>setTimeout(r, waits[i])); if(my !== this._seq) throw new Error('취소됨'); }
       try{ return await fetchSpeechBlob(text, this.openaiVoice, this.speed, this.ttsModel, this.instructions, this.engine); }
-      catch(e){ last = e; const m = String(e && e.message || ''); if(/HTTP 40[0134]\b|not found|invalid|unauthorized|권한/i.test(m)) break; console.warn('[면접관 목소리 '+(i+1)+'회 실패]', m); }
+      catch(e){ last = e; const m = String(e && e.message || ''); if(/HTTP 40[0134]\b|not found|invalid|unauthorized|권한|한도|안전장치/i.test(m)) break; console.warn('[면접관 목소리 '+(i+1)+'회 실패]', m); }
     }
     throw last || new Error('음성 생성 실패');
   },
@@ -23503,14 +23508,14 @@ function ttsFillUI(){
   document.getElementById('tts-speed').value = st.speed; document.getElementById('tts-speed-val').textContent = st.speed;
   sel.value = st.preset; document.getElementById('tts-custom').value = st.custom || '';
   const fx = loadSpeechFixes(); document.getElementById('tts-fixes').value = Object.keys(fx).map(k=>k+'='+fx[k]).join('\n');
-  state.ttsEngineUI = { provider: st.provider === 'typecast' ? 'typecast' : 'openai', tc: st.tc || null }; ttsPaintEngine();
+  state.ttsEngineUI = { provider: 'typecast', tc: st.tc || null }; ttsPaintEngine();
   ttsPresetChanged(); ttsModelChanged(); ttsShowSaved(); try{ TcCompare.cost(); }catch(_){}
 }
 function ttsSaveFixes(){ const o = parseSpeechFixes(document.getElementById('tts-fixes').value); saveSpeechFixes(o); showToast('발음 교정 '+Object.keys(o).length+'개를 저장했어요. 이미 녹음된 질문에 적용하려면 "전체 다시 녹음"이 필요해요.'); }
 function ttsReadUI(){
   return { voice: document.getElementById('tts-voice').value, model: document.getElementById('tts-model').value,
     speed: parseFloat(document.getElementById('tts-speed').value), preset: document.getElementById('tts-preset').value, custom: document.getElementById('tts-custom').value.trim(),
-    provider: (state.ttsEngineUI && state.ttsEngineUI.provider) || 'openai', tc: (state.ttsEngineUI && state.ttsEngineUI.tc) || null };
+    provider: 'typecast', tc: (state.ttsEngineUI && state.ttsEngineUI.tc) || null };
 }
 /* 2026-10-21b 면접관 목소리 엔진 (OpenAI / 타입캐스트) — 채점·꼬리질문 문장은 늘 OpenAI, 읽어 주는 목소리만 고름 */
 function ttsSetEngine(v){ VoiceSet.setEngine(v); }
@@ -23626,6 +23631,19 @@ const IV_WANT = {
   quiet:{ g:'male', age:['middle_age','elder'], emo:'tonedown', fu:'tonedown', tempo:0.9, pitch:-1 },
   ethics:{ g:'female', age:['middle_age','elder'], emo:'calm', fu:'calm', tempo:0.95, pitch:0 },
 };
+/* 2026-11-03n 면접관별 기본 타입캐스트 목소리 (실제 목록에서 성별·나이대·말투에 맞춰 서로 겹치지 않게 고름). 관리자가 고르면 그 목소리로 */
+const IV_TC_DEFAULT = {
+  hr:{ voice_id:'tc_686dc45bbd6351e06ee64daf', name:'엘리스', gender:'female', age:'middle_age' },
+  lead:{ voice_id:'tc_6a0e85a97f7750959b970d5d', name:'대진', gender:'male', age:'middle_age' },
+  exec:{ voice_id:'tc_6a5882fe54564e2a06a218bb', name:'제우스', gender:'male', age:'elder' },
+  senior:{ voice_id:'tc_6aa23da1f9559d89ed550d7e', name:'크리스타', gender:'female', age:'young_adult' },
+  press:{ voice_id:'tc_62ce5451b130717df10ea36e', name:'안토니오', gender:'male', age:'middle_age' },
+  data:{ voice_id:'tc_691d49ccc47926d741f15913', name:'효은', gender:'female', age:'young_adult' },
+  value:{ voice_id:'tc_6a98d6350402016f616a7a7c', name:'아마라', gender:'female', age:'middle_age' },
+  logic:{ voice_id:'tc_68d49c2db4c8a308c4030245', name:'하오란', gender:'male', age:'young_adult' },
+  quiet:{ voice_id:'tc_69a8e49d2e36ab42260be475', name:'캘럼', gender:'male', age:'middle_age' },
+  ethics:{ voice_id:'tc_68f04250d96385a3aa5e8865', name:'도나텔라', gender:'female', age:'middle_age' },
+};
 const IV_LINES = {
   hr:'안녕하세요. 긴장 푸시고, 1분 동안 자기소개 부탁드립니다.', lead:'방금 말씀하신 프로젝트에서 본인이 직접 맡은 일을 구체적으로 말씀해 주세요.',
   exec:'10년 뒤 어떤 사람이 되어 있고 싶은지, 짧게 말씀해 주시죠.', senior:'편하게 하셔도 돼요. 우리 회사에 지원한 이유가 궁금해요.',
@@ -23679,11 +23697,6 @@ const IvVoice = {
   f:{ g:'', age:'', q:'' }, _seq:0, _cache:new Map(), _audio:null, _pk:null, serverOff: !DEMO_TTS_SERVER,
   find:false, drawer:false, shown:30,
   people(){ return StartFlow.PEOPLE; },
-  /* 타입캐스트 목소리를 아직 안 고른 면접관이 서버로 말할 때 쓰는 OpenAI 목소리 (gpt-4o-mini-tts, 성별·성격에 맞춤) */
-  OA:{ hr:'coral', lead:'ash', exec:'onyx', senior:'nova', press:'echo', data:'sage', value:'shimmer', logic:'verse', quiet:'cedar', ethics:'marin' },
-  openaiFor(pid){ const p = this.P(pid) || {}, w = IV_WANT[pid] || {};
-    return { voice: this.OA[pid] || 'onyx', speed: Math.max(0.85, Math.min(1.15, w.tempo || 1)),
-      instructions: p.n ? `한국어 채용 면접의 ${p.n}입니다. ${p.m}. ${p.p === 'hard' ? '단호하고 짧게' : p.p === 'soft' ? '부드럽고 편안하게' : '차분하고 또박또박'} 말해 주세요.` : '' }; },
   P(pid){ return this.people().find(p=>p.id === pid); },
   cur(pid){ return this.draft[pid] || this.rows[pid] || null; },
   sig(r){ return r && r.voice_id ? [r.provider || 'typecast', r.voice_id, (+r.tempo || 1).toFixed(2), r.pitch || 0, JSON.stringify(r.emotions || {})].join('|') : ''; },
@@ -23692,6 +23705,12 @@ const IvVoice = {
   voiceOf(id){ return (this.catalog || []).find(v=>v.voice_id === id) || null; },
   blank(pid){ const w = IV_WANT[pid] || {}; return { persona_id: pid, provider:'typecast', voice_id:'', voice_name:'', voice_meta:{}, tempo: w.tempo || 1, pitch: w.pitch || 0,
     emotions:{ question: w.emo || 'normal', followup: w.fu || 'normal', press: 'toneup' }, fallback:'browser', enabled:true }; },
+  /** 실제로 읽을 설정: 고른 타입캐스트 목소리. 안 골랐거나 껐으면 이 면접관의 기본 타입캐스트 목소리 (2026-11-03n) */
+  eff(pid, c){ if(c && c.voice_id && c.enabled !== false && !/^sample-/.test(c.voice_id)) return c;
+    const D = IV_TC_DEFAULT[pid] || IV_TC_DEFAULT.hr, w = IV_WANT[pid] || {};
+    return { persona_id: pid, provider:'typecast', voice_id: D.voice_id, voice_name: D.name, voice_meta:{ gender: D.gender, age: D.age }, tempo: w.tempo || 1, pitch: w.pitch || 0,
+      emotions:{ question: w.emo || 'normal', followup: w.fu || 'normal', press:'toneup' }, fallback: (c && c.fallback) || 'browser', enabled:true, isDefault:true }; },
+  tcEmo(e){ return TC_EMOS.includes(e) ? e : 'normal'; },   // '차분하게'처럼 타입캐스트에 없는 감정은 보통으로
   edit(pid){ if(!this.draft[pid]) this.draft[pid] = JSON.parse(JSON.stringify(this.rows[pid] || this.blank(pid))); return this.draft[pid]; },
 
   /* ── 면접 화면(학생) ── */
@@ -23703,8 +23722,8 @@ const IvVoice = {
   active(){ return !!(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS && state.flowCtx && Array.isArray(state.flowCtx.interviewers) && state.flowCtx.interviewers.length); },
   speakerId(){ try{ const ppl = IvPanel.people(); const p = ppl[Math.max(0, IvPanel.cur)]; return p ? p.id : null; }catch(_){ return null; } },
   kindOf(pid){ const it = state.interviewQuestions && state.interviewQuestions[state.currentQ - 1]; if(it && it.followup) return 'followup'; const p = this.P(pid); return p && p.p === 'hard' ? 'press' : 'question'; },
-  engineFor(pid, kind){ const m = (this.map || {})[pid]; if(!m || m.enabled === false || m.provider !== 'typecast' || !m.voice_id || /^sample-/.test(m.voice_id)) return null;   // 예시 목록에서 고른 목소리는 실제로 없음 → OpenAI 목소리로
-    const e = m.emotions || {}; return { provider:'typecast', tc:{ voice_id:m.voice_id, tempo:+m.tempo || 1, pitch:m.pitch || 0, emotion: e[kind] || e.question || 'normal' } }; },
+  engineFor(pid, kind){ const s = this.eff(pid, (this.map || {})[pid]), e = s.emotions || {};   // 늘 타입캐스트 (안 골랐으면 기본 목소리)
+    return { provider:'typecast', tc:{ voice_id:s.voice_id, tempo:+s.tempo || 1, pitch:s.pitch || 0, emotion: this.tcEmo(e[kind] || e.question || 'normal') } }; },
   lexApply(text, list){ let t = String(text || ''); (list || this.lexMap || this.lex || []).forEach(x=>{ if(x && x.t && x.s) t = t.split(x.t).join(x.s); }); return t; },
   browserVoice(gender){
     const vs = typeof getKoreanVoices === 'function' ? getKoreanVoices() : []; if(!vs.length) return null;
@@ -23753,12 +23772,13 @@ const IvVoice = {
       if(!this.api) this.catalog = IV_VOICE_SAMPLE;
     }catch(e){ this.api = false; this.apiWhy = e.code === 'no_key' ? '타입캐스트 API 키가 클론 서버에 없어요 (Supabase › Edge Functions › Secrets의 TYPECAST_API_KEY)' : e.status === 404 ? '타입캐스트 서버 함수가 클론에 배포되지 않았어요' : e.status === 403 || e.status === 401 ? '관리자 로그인이 필요해요' : ('연결 실패: ' + (e.message || e)); this.catalog = IV_VOICE_SAMPLE; }
   },
-  dups(){ const by = {}; this.people().forEach(p=>{ const c = this.cur(p.id); if(c && c.enabled !== false && c.voice_id) (by[c.voice_id] = by[c.voice_id] || []).push(p.id); }); return Object.values(by).filter(a=>a.length > 1); },
+  effVid(pid){ return this.eff(pid, this.cur(pid)).voice_id; },
+  dups(){ const by = {}; this.people().forEach(p=>{ const v = this.effVid(p.id); (by[v] = by[v] || []).push(p.id); }); return Object.values(by).filter(a=>a.length > 1); },
   dupOf(pid){ const g = this.dups().find(a=>a.includes(pid)); return g ? g.filter(x=>x !== pid) : []; },
   /* 2026-11-03m 쓰기 편하게: 10명 표 → '바꾸기'로 오른쪽 설정 창 · 추천 5개 먼저 · 재생 중 표시 · 한국어 설명 · 바꾸기 전과 비교 */
   USE_KO:{ 'Conversational':'대화체', 'Announcer':'아나운서', 'News Reporter':'뉴스', 'E-learning/Explainer':'강의·설명', 'Documentary':'다큐', 'Audiobook/Storytelling':'낭독', 'Radio/Podcast':'라디오', 'Voicemail/Voice Assistant':'안내 음성', 'Ads/Promotion':'광고', 'TikTok/Reels/Shorts':'숏폼', 'Game':'게임', 'Anime':'애니', 'Rapper':'랩' },
   rec(pid){
-    const w = IV_WANT[pid] || {}, used = new Set(this.people().filter(p=>p.id !== pid).map(p=>(this.cur(p.id) || {}).voice_id).filter(Boolean));
+    const w = IV_WANT[pid] || {}, used = new Set(this.people().filter(p=>p.id !== pid).map(p=>this.effVid(p.id)));
     const good = /Conversational|Announcer|News Reporter|E-learning|Documentary|Voicemail/, bad = /Anime|Game|Rapper/;
     let h = 7; for(const ch of String(pid)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;   // 면접관마다 추천 순서가 조금씩 다르게
     return (this.catalog || []).filter(v=>v.gender === 'male' || v.gender === 'female').map((v, i)=>{ const u = (v.uses || []).join(' ');
@@ -23767,13 +23787,13 @@ const IvVoice = {
   },
   meta(v){ return v ? [v.gender === 'male' ? '남성' : v.gender === 'female' ? '여성' : '', (typeof TC_AGE !== 'undefined' && TC_AGE[v.age]) || '', v.tone || ''].filter(Boolean).join(' · ') : ''; },
   emoName(e){ return (typeof TC_EMO !== 'undefined' && TC_EMO[e]) || e; },
-  defName(pid){ return DEMO_TTS_SERVER ? `기본 목소리 · OpenAI ${this.OA[pid] || 'onyx'}` : '기본 목소리 · 브라우저'; },
+  defName(pid){ return '기본 · ' + (IV_TC_DEFAULT[pid] || IV_TC_DEFAULT.hr).name; },
   vOf(c){ return c && c.voice_id ? (this.voiceOf(c.voice_id) || { name: c.voice_name || c.voice_id, gender:(c.voice_meta || {}).gender, age:(c.voice_meta || {}).age }) : null; },
   /** 재생 버튼 안쪽: 누르면 '■ 멈춤'으로 바뀜 */
   pl(label){ return `<i class="pi" aria-hidden="true"></i><span class="l1">${label}</span><span class="l2">멈춤</span>`; },
   row(p){
     const c = this.cur(p.id), off = !!(c && c.enabled === false), v = off ? null : this.vOf(c), ch = this.changed(p.id), dup = this.dupOf(p.id).length, on = this.sel === p.id;
-    const line = v ? v.name : (off ? '꺼 둠 · ' : '') + (DEMO_TTS_SERVER ? 'OpenAI ' + (this.OA[p.id] || 'onyx') : '브라우저 목소리');
+    const line = v ? v.name : (off ? '꺼 둠 · ' : '') + this.defName(p.id);
     const tag = ch ? '<span class="ivv-tag ch">저장 전</span>' : dup ? '<span class="ivv-tag dup">겹침</span>' : v ? '<span class="ivv-tag ok">정함</span>' : '<span class="ivv-tag def">기본</span>';
     const av = `<span class="ivv-av" style="background:${p.c}">${escapeHtml(StartFlow.ini(p))}</span>`;
     return `<li class="ivv-p${on && this.drawer ? ' on' : ''}" data-pid="${p.id}">
@@ -23785,7 +23805,7 @@ const IvVoice = {
   editor(pid){
     const p = this.P(pid), d = this.edit(pid), set = !!d.voice_id, off = d.enabled === false, live = set && !off, cv = this.vOf(d), cur = set ? this.voiceOf(d.voice_id) : null, f = this.f;
     const all = this.rec(pid), recs = all.slice(0, 5).map(x=>x.v);
-    const used = {}; this.people().forEach(x=>{ if(x.id !== pid){ const c = this.cur(x.id); if(c && c.voice_id && c.enabled !== false) (used[c.voice_id] = used[c.voice_id] || []).push(x.n); } });
+    const used = {}; this.people().forEach(x=>{ if(x.id !== pid){ const v = this.effVid(x.id); (used[v] = used[v] || []).push(x.n); } });
     const usedTag = v=>used[v.voice_id] ? `<em>${escapeHtml(used[v.voice_id].join('·'))} 사용 중</em>` : '';
     const pick = v=>{ const on = v.voice_id === d.voice_id; return `<button type="button" class="ivv-pick${on ? ' on' : ''}" data-voice="${escapeHtml(v.voice_id)}"${on ? ' aria-pressed="true"' : ''}>${on ? '✓ 선택됨' : '고르기'}</button>`; };
     let list = [];
@@ -23802,7 +23822,7 @@ const IvVoice = {
       <div class="ivv-now${live ? ' set' : ''}">
         <div class="ivv-now-t"><span class="lbl">지금 목소리${ch ? ' <em>저장 전</em>' : ''}</span>
           <b>${live ? escapeHtml(cv.name) : escapeHtml(this.defName(pid))}</b>
-          <small>${live ? escapeHtml(nowMeta) : off ? '고른 목소리를 꺼 두어서 기본 목소리로 읽어요.' : '아직 고르지 않아 면접관 성격에 맞춘 기본 목소리로 읽어요.'}</small></div>
+          <small>${live ? escapeHtml(nowMeta) : escapeHtml([this.meta(this.vOf(this.eff(pid, null))), off ? '고른 목소리를 꺼 두어서 이 면접관의 기본 타입캐스트 목소리로 읽어요.' : '따로 고르지 않아 이 면접관의 기본 타입캐스트 목소리로 읽어요.'].filter(Boolean).join(' · '))}</small></div>
         <div class="ivv-now-b"><button type="button" class="ivv-pbtn" data-play="${pid}" data-pk="p:${pid}">${this.pl('들어 보기')}</button>${set ? '<button type="button" class="ivv-link" data-clear="1">기본 목소리로 되돌리기</button>' : ''}</div>
       </div>
       ${dup.length ? `<p class="ivv-warn">${escapeHtml(DocQ._j(dup.map(x=>this.P(x).n).join('·'), '과/와'))} 같은 목소리예요. 다대일 면접에서 누가 말하는지 헷갈릴 수 있어요. 다른 목소리를 고르거나 ③에서 높낮이·속도를 다르게 해 주세요.</p>` : ''}
@@ -23835,7 +23855,7 @@ const IvVoice = {
           <button type="button" class="ivv-pbtn" data-try="followup" data-pk="t:followup">${this.pl('꼬리질문 말투')}</button>
           ${ch ? `<button type="button" class="ivv-pbtn hl" data-ba="1" data-pk="ba">${this.pl('바꾸기 전 → 후 비교')}</button>` : ''}
           <button type="button" class="ivv-pbtn" data-cmp="1" data-pk="cmp">${this.pl(dup.length ? '겹치는 면접관과 번갈아' : '다른 면접관과 번갈아')}</button></div>
-        <p class="ivv-src" id="ivv-src">${live ? (this.api ? '타입캐스트로 만든 소리예요. 같은 문장·설정은 다시 들어도 크레딧이 들지 않아요.' : '지금은 브라우저 임시 목소리로 들려요.') : DEMO_TTS_SERVER ? `OpenAI ${escapeHtml(this.OA[pid] || 'onyx')} 목소리로 들려요 (면접 때와 같은 소리).` : '브라우저 목소리로 들려요.'}${ch ? ' · 비교는 바꾸기 전 → 바꾼 뒤 순서로 들려요.' : ''}</p>
+        <p class="ivv-src" id="ivv-src">${this.api ? '타입캐스트로 만든 소리예요 (면접 때와 같은 소리). 같은 문장·설정은 다시 들어도 크레딧이 들지 않아요.' : '타입캐스트 연결 전이라 브라우저 임시 목소리로 들려요.'}${ch ? ' · 비교는 바꾸기 전 → 바꾼 뒤 순서로 들려요.' : ''}</p>
       </div>
       <details class="ivv-step ivv-adv"${this.advOpen ? ' open' : ''}>
         <summary><i>3</i>세부 조절 <small>선택 · 속도·높낮이·상황별 감정</small></summary>
@@ -23843,9 +23863,9 @@ const IvVoice = {
           <div class="ivv-row"><label for="ivv-tempo">속도 <b id="ivv-tempo-v">${(+d.tempo || 1).toFixed(2)}배</b></label><input id="ivv-tempo" type="range" min="0.8" max="1.3" step="0.05" value="${+d.tempo || 1}" data-t="tempo"></div>
           <div class="ivv-row"><label for="ivv-pitch">높낮이 <b id="ivv-pitch-v">${d.pitch > 0 ? '+' : ''}${d.pitch || 0}</b></label><input id="ivv-pitch" type="range" min="-6" max="6" step="1" value="${d.pitch || 0}" data-t="pitch"></div>
           <div class="ivv-row"><span class="lbl">상황별 감정</span><div class="ivv-emos">${IV_EMO_KIND.map(([k, l])=>`<label>${l}<select data-emo="${k}">${emos.map(e=>`<option value="${e}"${(d.emotions || {})[k] === e ? ' selected' : ''}>${escapeHtml(this.emoName(e))}</option>`).join('')}</select></label>`).join('')}</div></div>
-          <div class="ivv-row"><label for="ivv-fb">타입캐스트가 안 될 때</label><select id="ivv-fb" data-t="fallback"><option value="browser"${d.fallback === 'browser' ? ' selected' : ''}>브라우저 목소리로 읽기</option><option value="openai"${d.fallback === 'openai' ? ' selected' : ''}>OpenAI 목소리로 읽기 (크레딧 듦)</option><option value="text"${d.fallback === 'text' ? ' selected' : ''}>소리 없이 글자로만</option></select></div>
-          <label class="ivv-use"><input type="checkbox" data-t="enabled"${!off ? ' checked' : ''}> 고른 목소리 사용 (끄면 기본 목소리로 읽어요)</label>
-        </div>` : '<p class="ivv-sub">①에서 목소리를 고르면 속도·높낮이·감정을 조절할 수 있어요. 기본 목소리는 면접관 성격에 맞춰 자동으로 읽어요.</p>'}
+          <div class="ivv-row"><label for="ivv-fb">타입캐스트가 안 될 때</label><select id="ivv-fb" data-t="fallback"><option value="browser"${d.fallback !== 'text' ? ' selected' : ''}>브라우저 목소리로 잠깐 읽기</option><option value="text"${d.fallback === 'text' ? ' selected' : ''}>소리 없이 글자로만</option></select></div>
+          <label class="ivv-use"><input type="checkbox" data-t="enabled"${!off ? ' checked' : ''}> 고른 목소리 사용 (끄면 이 면접관의 기본 타입캐스트 목소리로 읽어요)</label>
+        </div>` : '<p class="ivv-sub">①에서 목소리를 고르면 속도·높낮이·감정을 조절할 수 있어요. 기본 목소리는 면접관 성격에 맞춘 속도·높낮이로 읽어요.</p>'}
       </details>
     </section>`;
   },
@@ -23862,16 +23882,16 @@ const IvVoice = {
     const keep = this._painted === this.sel, sc = sel=>{ const e = document.querySelector('#ivv-dr-host ' + sel) || root.querySelector(sel); return keep && e ? e.scrollTop : 0; };
     const lsTop = sc('.ivv-list'), drE = document.querySelector('#ivv-dr-host .ivv-dr-b'), drTop = keep && drE ? drE.scrollTop : 0;
     const ch = ppl.filter(p=>this.changed(p.id)), dups = this.dups();
-    const set = ppl.filter(p=>{ const c = this.cur(p.id); return c && c.voice_id && c.enabled !== false; }).length, empty = ppl.filter(p=>!(this.cur(p.id) || {}).voice_id).length;
+    const set = ppl.filter(p=>{ const c = this.cur(p.id); return c && c.voice_id && c.enabled !== false; }).length;
     const head = `<div class="ivv-side-h"><b>면접관 10명</b><button type="button" class="ivv-pbtn sm" data-allplay="1" data-pk="all">${this.pl('차례로 듣기')}</button></div>`;
     const i = ppl.findIndex(p=>p.id === this.sel), P = ppl[i];
     root.innerHTML = `
       <div class="admin-view-head"><div><h2>면접관 10명 목소리</h2>
         <p>면접관마다 '바꾸기'를 눌러 목소리를 정해요. 저장하면 <b>새로 시작하는 면접부터</b> 적용돼요.</p></div>
-        <div class="beta-head-btns">${typeof School !== 'undefined' && School.isOn() ? '<button type="button" class="btn-manage" onclick="School.open(\'overview\')">← 현황</button>' : ''}${this.api && empty ? `<button type="button" class="btn-manage" data-auto="1">빈 ${empty}명 추천으로 채우기</button>` : ''}</div></div>
+        <div class="beta-head-btns">${typeof School !== 'undefined' && School.isOn() ? '<button type="button" class="btn-manage" onclick="School.open(\'overview\')">← 현황</button>' : ''}</div></div>
       <div class="ivv-stat">
         <span class="ivv-api ${this.api ? 'ok' : 'off'}"><i></i>${this.api ? `타입캐스트 연결됨 <small>목소리 ${this.catalog.filter(v=>v.gender === 'male' || v.gender === 'female').length}개</small>` : `타입캐스트 연결 전 <small>${escapeHtml(this.apiWhy)}</small>`}</span>
-        <span>목소리 정함 <b>${set}/10명</b>${set < 10 ? ` <small>나머지는 기본 목소리</small>` : ''}</span>
+        <span>따로 고른 목소리 <b>${set}/10명</b>${set < 10 ? ` <small>나머지는 면접관별 기본 타입캐스트 목소리</small>` : ''}</span>
         ${dups.length ? `<span class="warn">목소리 겹침 <b>${dups.length}쌍</b></span>` : ''}
       </div>
       ${this.loadErr ? `<p class="ivv-warn">설정 표를 읽지 못했어요: ${escapeHtml(this.loadErr)} (supabase/clone/009_interviewer_voices.sql 적용 확인)</p>` : ''}
@@ -23907,7 +23927,7 @@ const IvVoice = {
       ['ok', '면접관별 설정 저장·기록·되돌리기', '이 화면과 interviewer_voices·interviewer_voice_log 표. 저장하면 새 면접부터 적용'],
       ['ok', '진행 중인 면접 보호', '면접을 시작할 때 설정을 한 번 읽어 고정 → 중간에 바꿔도 그 면접은 같은 목소리'],
       ['ok', '목소리 겹침 검사', '두 면접관이 같은 목소리면 경고 (다대일 면접에서 누가 말하는지 헷갈림)'],
-      ['ok', '기본 목소리', '타입캐스트 목소리를 안 고른 면접관은 OpenAI 목소리로 면접관마다 다르게 읽음. 서버가 안 되면 브라우저 목소리'],
+      ['ok', '모든 목소리는 타입캐스트', '따로 안 고른 면접관도 면접관마다 정해 둔 기본 타입캐스트 목소리로 읽음. OpenAI는 질문·꼬리질문 글만 만듦. 타입캐스트가 안 되거나 한도에 걸리면 브라우저 목소리(또는 글자만)로 잠깐 대신함'],
       ['ok', 'API 키는 서버에만', '클론 Supabase에 typecast-tts·speak-text 함수 배포, 키는 시크릿에 저장. 운영 프로젝트에는 배포하지 않음'],
       ['ok', '목소리 목록', '타입캐스트 실제 목록(성별·나이·무료 샘플)을 받아 와서 면접관마다 어울리는 순으로 보여 줌'],
       ['ok', '발음 사전', 'LH·KOTRA 같은 말 읽는 법. 목소리를 만들기 전에 같은 사전으로 바꿈'],
@@ -23946,7 +23966,6 @@ const IvVoice = {
     q('[data-ba]', b=>b.onclick = ()=>this.toggle('ba', done=>{ const pid = this.sel, t = line(); this.chain([[pid, t, this.rows[pid] ? Object.assign({}, this.rows[pid]) : this.blank(pid)], [pid, t, this.edit(pid)]], done); }));
     q('[data-cmp]', b=>b.onclick = ()=>this.toggle('cmp', done=>{ const other = this.dupOf(this.sel)[0] || this.people().find(p=>p.id !== this.sel).id; this.chain([[this.sel, IV_LINES[this.sel]], [other, IV_LINES[other]]], done); }));
     q('[data-allplay]', b=>b.onclick = ()=>this.toggle('all', done=>this.chain(this.people().map(p=>[p.id, `${p.n}입니다. ` + IV_LINES[p.id].split(/(?<=[.?])\s/)[0]]), done)));
-    q('[data-auto]', b=>b.onclick = ()=>this.autoFill());
     q('[data-reset]', b=>b.onclick = ()=>{ this.draft = {}; this.render(); });
     q('[data-save]', b=>b.onclick = ()=>this.save());
     q('[data-lexadd]', b=>b.onclick = ()=>{ const t = document.getElementById('ivv-lx-t').value.trim(), sv = document.getElementById('ivv-lx-s').value.trim(); if(!t || !sv) return showToast('쓰인 말과 읽는 법을 모두 적어 주세요'); this.lex = this.lex.filter(x=>x.t !== t).concat([{ t, s: sv }]); this.render(); const d = root.querySelector('.ivv-sec'); if(d) d.open = true; });
@@ -23958,13 +23977,6 @@ const IvVoice = {
     const { error } = await sb.from('app_settings').upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict:'key' });
     if(error){ showToast('저장하지 못했어요. ' + friendlyErr(error), 'warn'); return; }
     showToast(msg, 'ok'); if(key === 'tts_lexicon') this.lexMap = value.slice(); this.render();
-  },
-  autoFill(){
-    let n = 0;
-    this.people().forEach(p=>{ if((this.cur(p.id) || {}).voice_id) return; const best = this.rec(p.id)[0]; if(!best) return; const d = this.edit(p.id), v = best.v, w = IV_WANT[p.id] || {};
-      d.voice_id = v.voice_id; d.voice_name = v.name; d.voice_meta = { gender:v.gender, age:v.age }; d.tempo = w.tempo || 1; d.pitch = w.pitch || 0; d.enabled = true;
-      const ok = e=>(['smart'].concat(v.emotions || [])).includes(e); d.emotions = { question: ok(w.emo) ? w.emo : 'normal', followup: ok(w.fu) ? w.fu : 'normal', press: ok('toneup') ? 'toneup' : 'normal' }; n++; });
-    this.render(); showToast(n ? `${n}명을 어울리는 목소리로 채웠어요. 들어 보고 '저장하고 적용'을 눌러 주세요.` : '비어 있는 면접관이 없어요.', 'info');
   },
   async save(){
     const ids = this.people().filter(p=>this.changed(p.id)).map(p=>p.id); if(!ids.length) return; this.stop();
@@ -23988,24 +24000,20 @@ const IvVoice = {
     if(v.preview_url){ const my = this._seq; let fired = false; const fin = ()=>{ if(fired) return; fired = true; if(my === this._seq && done) done(); }; const a = new Audio(v.preview_url); this._audio = a; a.onended = fin; a.onerror = fin; a.play().catch(fin); return; }
     this.say(this.sel, IV_LINES[this.sel] || VS_SAMPLE_LINE, 'question', Object.assign({}, this.edit(this.sel), { voice_id:v.voice_id, enabled:true, voice_meta:{ gender:v.gender, age:v.age } }), done, true); },
   blobFor(key, mk){ let pr = this._cache.get(key); if(!pr){ pr = mk(); this._cache.set(key, pr); pr.catch(()=>this._cache.delete(key)); } return pr; },   // 같은 문장은 한 번만 만들기 (만드는 중이어도 같이 기다림)
-  /** 미리 듣기: 고른 타입캐스트 목소리 → 없으면 면접 때와 같은 OpenAI 기본 목소리 → 안 되면 브라우저 목소리. 같은 문장·설정은 다시 만들지 않음 */
+  /** 미리 듣기: 고른 타입캐스트 목소리(안 골랐으면 그 면접관의 기본 타입캐스트 목소리) → 안 되면 브라우저 목소리. 같은 문장·설정은 다시 만들지 않음 */
   async say(pid, text, kind, setting, onDone, keep){
     if(!keep) this.stop(); const my = this._seq; let fired = false; const fin = ()=>{ if(fired) return; fired = true; if(my === this._seq && onDone) onDone(); };   // 끝남·오류가 함께 와도 한 번만
     const src = document.getElementById('ivv-src'), t = this.lexApply(text, this.lex);
     const playBlob = async blob=>{ if(my !== this._seq) return; const a = new Audio(URL.createObjectURL(blob)); this._audio = a; a.onended = fin; a.onerror = fin; await a.play(); };
-    const tc = !!(setting && setting.voice_id && setting.enabled !== false && !String(setting.voice_id).startsWith('sample-'));
-    if(this.api && tc){
-      const e = setting.emotions || {}, eng = { provider:'typecast', tc:{ voice_id:setting.voice_id, tempo:+setting.tempo || 1, pitch:setting.pitch || 0, emotion: e[kind] || e.question || 'normal' } };
+    const st = pid ? this.eff(pid, setting) : setting;
+    if(this.api && st && st.voice_id && !/^sample-/.test(st.voice_id)){
+      const e = st.emotions || {}, eng = { provider:'typecast', tc:{ voice_id:st.voice_id, tempo:+st.tempo || 1, pitch:st.pitch || 0, emotion: this.tcEmo(e[kind] || e.question || 'normal') } };
       const key = JSON.stringify(eng) + '|' + t;
       try{ await playBlob(await this.blobFor(key, ()=>fetchSpeechBlob(t, 'onyx', 1, 'gpt-4o-mini-tts', '', eng, { purpose:'admin_test' }))); return; }
       catch(err){ if(src) src.textContent = '타입캐스트로 만들지 못해 브라우저 목소리로 들려 드려요: ' + (err.message || err); }
-    } else if(!tc && !this.serverOff && pid){   // 안 고른 면접관은 면접 때처럼 OpenAI 기본 목소리로
-      const o = this.openaiFor(pid), key = ['oa', o.voice, o.speed, o.instructions, t].join('|');
-      try{ await playBlob(await this.blobFor(key, ()=>fetchSpeechBlob(t, o.voice, o.speed, 'gpt-4o-mini-tts', o.instructions, null, { purpose:'admin_test' }))); return; }
-      catch(err){ if(src) src.textContent = 'OpenAI 목소리를 만들지 못해 브라우저 목소리로 들려 드려요: ' + (err.message || err); }
     }
     if(my !== this._seq) return;
-    this.speakBrowser(t, fin, pid, kind, setting);
+    this.speakBrowser(t, fin, pid, kind, st);
   },
   /** 여러 문장을 차례로: [면접관, 문장, (설정)] */
   chain(list, done){ const my = this._seq; const next = i=>{ if(my !== this._seq) return; if(i >= list.length){ this.spk(null); if(done) done(); return; }
@@ -24014,7 +24022,7 @@ const IvVoice = {
 };
 const VoiceSet = {
   voices:null, loading:false, err:'', g:'', age:'', q:'', shown:40, cache:new Map(), used:0, _seq:0, _sample:null,
-  ui(){ return state.ttsEngineUI || (state.ttsEngineUI = { provider:'openai', tc:null }); },
+  ui(){ return state.ttsEngineUI || (state.ttsEngineUI = { provider:'typecast', tc:null }); },
   st(html){ const el = document.getElementById('tts-status'); if(el) el.innerHTML = html; },
   sig(st){ return ttsUsesTypecast(st) ? ['tc', st.tc.voice_id, st.tc.tempo, st.tc.pitch, st.tc.emotion].join(':') : ['oa', st.voice, st.model, st.speed, st.preset, st.custom].join(':'); },
   descOf(v){ const g = /^f/i.test(v.gender) ? '여성' : /^m/i.test(v.gender) ? '남성' : ''; return [g, TC_AGE[v.age] || v.age || ''].filter(Boolean).join(' · '); },
@@ -24026,8 +24034,8 @@ const VoiceSet = {
     const ptc = document.getElementById('vs-panel-tc'), poa = document.getElementById('vs-panel-oa'), oa = document.getElementById('vs-oa'), adv = document.getElementById('vs-adv-oa');
     if(ptc) ptc.hidden = !tc; if(poa) poa.hidden = tc;
     if(oa){ const home = tc ? adv : poa; if(home && oa.parentNode !== home) home.appendChild(oa); }   // OpenAI 설정: 타입캐스트면 '고급 설정 → 대신 읽기용'으로
-    const aw = document.getElementById('vs-adv-oa-wrap'); if(aw) aw.hidden = !tc;
-    const asum = document.getElementById('vs-adv-oa-sum'); if(asum) asum.hidden = !tc;
+    const aw = document.getElementById('vs-adv-oa-wrap'); if(aw) aw.hidden = true;   // 2026-11-03n OpenAI 대신 읽기 없음
+    const asum = document.getElementById('vs-adv-oa-sum'); if(asum) asum.hidden = true;
     if(tc && !this.voices && !this.loading && !this.err) this.load();
     this.renderList(); this.paintPick(); this.paintNow(); this.cost();
   },
@@ -24049,7 +24057,7 @@ const VoiceSet = {
   },
 
   /* ---- 1단계 ---- */
-  setEngine(v){ this.ui().provider = v === 'typecast' ? 'typecast' : 'openai'; this.stop(); this.paint(); },
+  setEngine(v){ this.ui().provider = 'typecast'; this.stop(); this.paint(); },   // 2026-11-03n 타입캐스트만
 
   /* ---- 2단계: 타입캐스트 목록 ---- */
   need(on){ const el = document.getElementById('tc-need'); if(el) el.hidden = !on; ['vs-toolbar','vs-list','vs-list-note'].forEach(id=>{ const x = document.getElementById(id); if(x) x.hidden = on; }); },
@@ -24330,7 +24338,7 @@ const TcCredit = {
           <div class="tcc-right"><span>회사 전체 사용 <b>${f(used)}</b> (${pct}%)</span><span>동시 처리 ${this.sub.concurrency_limit || '-'}건</span><span>꼬리질문으로 약 <b>${f(left / 40)}</b>개 더 (1개 40자 기준)</span></div>
         </div>
         <div class="tcc-bar ${lvl}"><i style="width:${pct}%"></i></div>
-        ${lvl ? `<div class="tcc-warn">${lvl === 'bad' ? '크레딧이 거의 다 떨어졌어요. 떨어지면 면접관 목소리는 OpenAI 목소리로 대신 읽어요.' : '크레딧이 20% 아래로 남았어요. 전체 다시 녹음은 다음 달로 미루는 게 좋아요.'}</div>` : ''}`;
+        ${lvl ? `<div class="tcc-warn">${lvl === 'bad' ? '크레딧이 거의 다 떨어졌어요. 떨어지면 면접관 목소리 대신 브라우저 목소리(또는 글자만)로 진행돼요.' : '크레딧이 20% 아래로 남았어요. 전체 다시 녹음은 다음 달로 미루는 게 좋아요.'}</div>` : ''}`;
     }else if(this.err === 'no_key'){
       top = '<div class="tcc-err">타입캐스트 키(TYPECAST_API_KEY)가 아직 연결되지 않았어요.</div>';
     }else if(this.err){
@@ -24422,8 +24430,8 @@ const TcGuard = {
     const fb = (TcCredit.usage || []).filter(r=>r.provider === 'openai' && r.kind === 'live' && /^안전장치/.test(r.note || '') && new Date(r.created_at).getTime() >= monthStartKst()).length;
     const k = new Date(Date.now() + 9 * 3600000);
     return `<div class="tcg">
-      <div class="tcg-head"><b>크레딧 안전장치</b><span class="tcg-state ${!g.enabled ? 'off' : st.hit ? 'hit' : ''}">${!g.enabled ? '꺼짐' : st.hit ? '작동 중 · OpenAI 목소리로 읽는 중' : '켜짐 · 타입캐스트로 읽는 중'}</span></div>
-      <div class="pipe-hint">아래 선을 넘으면 면접 중 목소리를 <b>OpenAI 목소리로 자동으로 바꿔</b> 회사 다른 프로그램이 쓸 크레딧을 지켜요. 질문 녹음·관리자 시험 듣기는 막지 않아요.</div>
+      <div class="tcg-head"><b>크레딧 안전장치</b><span class="tcg-state ${!g.enabled ? 'off' : st.hit ? 'hit' : ''}">${!g.enabled ? '꺼짐' : st.hit ? '작동 중 · 브라우저 목소리로 대신하는 중' : '켜짐 · 타입캐스트로 읽는 중'}</span></div>
+      <div class="pipe-hint">아래 선을 넘으면 면접 중 목소리를 <b>타입캐스트를 멈추고 브라우저 목소리(또는 글자만)로 바꿔</b> 회사 다른 프로그램이 쓸 크레딧을 지켜요. 질문 녹음·관리자 시험 듣기는 막지 않아요.</div>
       ${g.month_cap ? `<div class="tcg-meter ${st.hitMonth ? 'hit' : ''}"><i style="width:${pct}%"></i></div>
       <div class="pipe-hint">${k.getUTCMonth() + 1}월 면접 중 목소리 <b>${f(st.used)}</b> / ${f(g.month_cap)}크레딧 (${pct}%)${st.leftPct != null ? ` · 회사 전체 남은 크레딧 ${Math.round(st.leftPct)}%` : ''}</div>` : ''}
       ${st.hit && g.enabled ? `<div class="tcg-hit">${st.hitMonth ? `이번 달 한도 ${f(g.month_cap)}크레딧에 닿았어요.` : `회사 전체 남은 크레딧이 ${g.min_left_pct}% 아래예요.`} 지금은 면접 중 목소리를 OpenAI로 읽고 있어요${fb ? ` (이번 달 ${f(fb)}문장)` : ''}. 한도를 올리거나 다음 달 1일이 되면 다시 타입캐스트로 읽어요.</div>` : ''}
@@ -24466,15 +24474,15 @@ const TcGuard = {
       const avg = x.lines >= 3 ? x.used / x.lines : avgAll; const left = cap ? Math.max(0, cap - x.used) : 0; const more = avg ? Math.floor(left / avg) : 0;
       const right = x.exempt ? `<span class="tcu-left">한도 없음</span> · 이번 달 <b>${f(x.used)}</b>크레딧`
         : !cap ? `<span class="tcu-left">한도 없음</span> · 이번 달 <b>${f(x.used)}</b>크레딧`
-        : hit ? `<span class="tcu-left hit">한도 도달 · OpenAI 목소리로 읽는 중</span> · <b>${f(x.used)}</b> / ${f(cap)}`
+        : hit ? `<span class="tcu-left hit">한도 도달 · 브라우저 목소리로 대신하는 중</span> · <b>${f(x.used)}</b> / ${f(cap)}`
         : `<span class="tcu-left">질문 약 <b>${f(more)}</b>개 더</span> · 남은 ${f(left)} / ${f(cap)}크레딧`;
       return `<div class="tcu-row${hit ? ' hit' : near ? ' near' : ''}" title="이번 달 즉석 읽기 ${f(x.lines)}번 · 한 번에 평균 ${Math.round(x.lines ? x.used / x.lines : 0)}크레딧${x.fb ? ` · 한도 때문에 OpenAI로 ${f(x.fb)}번` : ''}"><span class="tcu-name">${escapeHtml(x.name)}${x.exempt ? ' <em>제외</em>' : TcCap.tagHtml(x.u)}</span>
         <span class="tcu-bar">${cap && !x.exempt ? `<i style="width:${pct}%"></i>` : ''}</span>
         <span class="tcu-num">${right}${x.fb ? ` · <span class="tcu-fb">OpenAI로 ${f(x.fb)}번</span>` : ''}${x.exempt || !x.u ? '' : ` <button type="button" class="tcu-edit" onclick="TcCap.open('${x.id}')">한도 조정</button>`}</span></div>`;
     }).join('') : '<div class="pipe-hint">이번 달에는 아직 면접 중 목소리를 쓴 사람이 없어요.</div>';
     return `<div class="tcg tcu">
-      <div class="tcg-head"><b>1인당 한 달 한도</b><span class="tcg-state ${!cap ? 'off' : hitN ? 'hit' : ''}">${!cap ? '꺼짐' : hitN ? `${hitN}명 한도 도달 · 그 사람만 OpenAI 목소리` : `켜짐 · 1인 ${f(cap)}크레딧`}</span></div>
-      <div class="pipe-hint">한 사람이 이번 달 면접 중 목소리로 쓴 크레딧이 한도에 닿으면 <b>그 사람만</b> OpenAI 목소리로 읽어요. 면접은 끊기지 않고, 다른 사람은 계속 타입캐스트로 들어요. 관리자·직원은 세지 않아요. 매달 1일에 다시 시작해요.</div>
+      <div class="tcg-head"><b>1인당 한 달 한도</b><span class="tcg-state ${!cap ? 'off' : hitN ? 'hit' : ''}">${!cap ? '꺼짐' : hitN ? `${hitN}명 한도 도달 · 그 사람만 브라우저 목소리` : `켜짐 · 1인 ${f(cap)}크레딧`}</span></div>
+      <div class="pipe-hint">한 사람이 이번 달 면접 중 목소리로 쓴 크레딧이 한도에 닿으면 <b>그 사람만</b> 브라우저 목소리(또는 글자만)로 읽어요. 면접은 끊기지 않고, 다른 사람은 계속 타입캐스트로 들어요. 관리자·직원은 세지 않아요. 매달 1일에 다시 시작해요.</div>
       <div class="tcg-row">
         <label>1인당 한 달 최대 <span class="nw"><input type="number" id="tg-ucap" class="pipe-input" min="0" max="100000" step="100" value="${cap}"> 크레딧</span></label>
         <button class="btn btn-solid pipe-btn" onclick="TcGuard.save(this)" style="flex:0 0 auto;padding:7px 16px;">저장</button>
@@ -24795,7 +24803,7 @@ function pipeInit(){
   ttsFillUI(); aiFillUI(); if(!Rec.status) recStatus(true);
   pipeRenderStatus();
   const vs = document.getElementById('loop-voice');
-  if(vs && !vs._wired){ vs._wired=true; vs.addEventListener('change', ()=>{ document.getElementById('loop-openai-voice-wrap').style.display = vs.value==='openai' ? '' : 'none'; }); }
+  if(vs && !vs._wired){ vs._wired=true; vs.addEventListener('change', ()=>{ document.getElementById('loop-openai-voice-wrap').style.display = 'none'; }); }
   const sel = document.getElementById('pipe-field');
   if(!sel || sel.options.length) return;
   sel.innerHTML = FIELDS.map(f=>`<option value="${f.id}"${f.id==='court'?' selected':''}>${f.name}</option>`).join('');
