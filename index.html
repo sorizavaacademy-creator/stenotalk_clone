@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-04b';
+var APP_VERSION = '2026-11-04d';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -21652,24 +21652,52 @@ const AiQuota = {
 };
 /* 2026-11-02q 면접실: 면접 준비 창에서 고른 면접관 명단과 회사 카드. 본 질문은 진행 면접관, 꼬리질문은 다른 면접관이 차례로 이어서 함 */
 const IvPanel = {
-  fu:0, cur:-1, defNotice:null,
+  fu:0, cur:-1, qn:0, ask:0, spoken:{}, curQ:null, _fuKey:null, _fuPick:null, defNotice:null,
   people(){ const fc = state.flowCtx; const ids = fc && Array.isArray(fc.interviewers) ? fc.interviewers : []; return ids.map(id=>StartFlow.PEOPLE.find(x=>x.id === id)).filter(Boolean); },
   setup(){
-    const ppl = this.people(), r = document.getElementById('iv-roster'); this.fu = 0; this.cur = -1;
+    const ppl = this.people(), r = document.getElementById('iv-roster'); this.fu = 0; this.cur = -1; this.qn = 0; this.ask = 0; this.spoken = {}; this.curQ = null; this._fuKey = null;
     if(r){ r.hidden = !ppl.length; r.innerHTML = ppl.map((x,i)=>`<span class="iv-rp" role="listitem" data-k="${i}"><i style="background:${x.c}"></i>${escapeHtml(x.n)}${i === 0 ? ' · 진행' : ''}<em>대기</em></span>`).join(''); }
     const p = CompanyData.active(), box = document.getElementById('iv-co');
     if(box){ box.hidden = !p; box.open = false;
       if(p){ const t = p.talent; document.getElementById('iv-co-sum').textContent = `${t.name} · 인재상 ${(t.keywords||[]).length && t.verify_status !== '미확인' ? t.keywords.slice(0,3).map(k=>CompanyCard.flat(k)).join(' · ') : '정보 없음'}`; document.getElementById('iv-co-card').innerHTML = CompanyCard.html(p, false); } }
   },
-  speak(k){
+  speak(k, why){
     const ppl = this.people(); if(!ppl.length) return; k = Math.max(0, Math.min(k, ppl.length - 1));
-    document.querySelectorAll('#iv-roster .iv-rp').forEach((el,i)=>{ el.classList.toggle('on', i === k); const em = el.querySelector('em'); if(em) em.textContent = i === k ? '말하는 중' : '대기'; });
+    document.querySelectorAll('#iv-roster .iv-rp').forEach((el,i)=>{ el.classList.toggle('on', i === k); const em = el.querySelector('em'); if(em) em.textContent = i === k ? ('말하는 중' + (why ? ' · ' + why : '')) : '대기'; });
     const x = ppl[k], nm = document.querySelector('#live-interviewer .lv3-li-name'); if(nm) nm.textContent = `AI 면접관 · ${x.n}`;
     if(k !== this.cur){ const tile = document.getElementById('live-interviewer'); if(tile && this.cur >= 0){ tile.classList.remove('spk-in'); void tile.offsetWidth; tile.classList.add('spk-in'); } }
     this.cur = k;
   },
+  /* 2026-11-04d 질문 내용에 맞는 면접관이 말함: 질문 유형(자기소개·경험·상황·가치관 …)과 낱말(청렴·수치·인재상 …)로 고른 면접관 중 가장 어울리는 사람을 고름.
+     첫 질문(자기소개)·마지막 질문은 진행 면접관. 한 사람만 계속 말하지 않게, 많이 말한 사람·방금 말한 사람은 점수를 조금 뺌 */
+  FIT:{ intro:{ hr:3, senior:2, exec:1 }, closing:{ hr:3, exec:2 }, motive:{ value:3, hr:2, exec:2 }, personality:{ hr:3, senior:2, press:1 },
+    situation:{ press:3, logic:2, ethics:1 }, experience:{ lead:3, data:2, senior:1, quiet:1 }, plan:{ exec:3, senior:1, value:1 },
+    knowledge:{ lead:2, logic:2 }, value:{ ethics:2, exec:2, value:1, logic:1 }, method:{ logic:2, lead:2, data:1 }, general:{ logic:1, hr:1, quiet:1 } },
+  KW:[ [/(청렴|공정|부정|비리|원칙|규정|윤리|공공성|민원|이해\s*충돌)/, 'ethics', 3, '청렴·원칙'], [/(수치|숫자|성과|결과|데이터|매출|지표|퍼센트|%|몇\s*(명|건|개|번|시간))/, 'data', 3, '성과·수치'],
+    [/(인재상|핵심\s*가치|기업\s*문화|비전|우리 (회사|기관))/, 'value', 3, '인재상'], [/(갈등|반대|실패|약점|단점|비판|스트레스|불만|거절|압박)/, 'press', 2, '약점·갈등'],
+    [/(왜|이유|근거|판단)/, 'logic', 1, '판단 근거'], [/(팀|협업|동료|적응|조직|선배)/, 'senior', 1, '협업·적응'], [/(직무|업무|실무|프로젝트|전공|과목|현장)/, 'lead', 2, '직무 경험'] ],
+  TYPE_KO:{ intro:'자기소개', closing:'마무리', motive:'지원 동기', personality:'인성', situation:'상황 대처', experience:'경험', plan:'입사 후 포부', knowledge:'직무 지식', value:'가치관', method:'일하는 방법', general:'' },
+  FU_BONUS:{ press:2, logic:2, data:1.5, lead:1, quiet:0.5 },   // 꼬리질문을 잘 하는 면접관
+  qtype(q){ let t = 'general'; try{ t = Rubric.detectType((q && q.q) || ''); }catch(_){}
+    if(t === 'situation' && /(했던|했는지|익혔|겪었|맡았|해 봤|했나요|있나요)/.test(String((q && q.q) || ''))) t = 'experience';   // "맡았을 때 어떻게 익혔는지"는 지난 경험 질문
+    return t; },
+  fit(pid, q){ const t = this.qtype(q), s = String((q && q.q) || ''); let v = (this.FIT[t] || {})[pid] || 0, why = this.TYPE_KO[t] || '';
+    this.KW.forEach(([re, id, w, lab])=>{ if(id === pid && re.test(s)){ v += w; why = lab; } });
+    if(q && q.co && pid === 'value'){ v += 3; why = '인재상'; }
+    return { v, why }; },
+  pick(q, exclude, fu){ const ppl = this.people(); let best = -1, bs = -1e9, bw = '';
+    ppl.forEach((p, k)=>{ if(k === exclude) return; const f = this.fit(p.id, q);
+      const sc = (fu ? f.v * 0.5 + (this.FU_BONUS[p.id] || 0) : f.v) - (this.spoken[k] || 0) * 0.7 - (k === this.cur ? 1.5 : 0) - k * 0.01;   // 성격 맞춤이 먼저, 고르게 나누기는 그다음
+      if(sc > bs){ bs = sc; best = k; bw = fu ? (p.id === 'press' ? '파고들기' : p.id === 'logic' ? '판단 근거' : p.id === 'data' ? '성과·수치' : (f.why || '꼬리질문')) : f.why; } });
+    return { k: best < 0 ? 0 : best, why: bw }; },
+  askerFor(q){ const n = this.people().length; const last = q && typeof HALLYM_QA !== 'undefined' && HALLYM_QA.last && q.q === HALLYM_QA.last.q;
+    if(n < 2) return { k:0, why:'' }; if(this.qn === 0 || last) return { k:0, why: this.qn === 0 ? '진행 · 첫 질문' : '진행 · 마무리' };
+    return this.pick(q, -1, false); },
+  /** 꼬리질문을 할 면접관: 방금 질문한 면접관이 아닌 사람 중 이 질문·꼬리질문에 어울리는 사람 (같은 차례에선 늘 같은 답) */
+  nextFu(){ const n = this.people().length; if(n < 2) return { k:0, why:'' }; const key = this.qn + ':' + this.fu;
+    if(this._fuKey !== key){ this._fuKey = key; this._fuPick = this.pick(this.curQ, this.ask, true); } return this._fuPick; },
   onQuestion(q){
-    this.speak(0);   // 2026-11-04b 기본 질문은 진행 면접관. 꼬리질문 차례(fu)는 면접 내내 이어서 돌아감 (질문마다 처음으로 돌리면 늘 두 번째 면접관만 물었음)
+    this.curQ = q || null; const a = this.askerFor(q); this.ask = a.k; this.qn++; this.spoken[a.k] = (this.spoken[a.k] || 0) + 1; this.speak(a.k, a.why);
     const n = document.getElementById('iv-question-notice'); if(!n) return;
     if(this.defNotice == null) this.defNotice = n.textContent;
     const h = document.getElementById('iv-co-hint');
@@ -21679,13 +21707,13 @@ const IvPanel = {
         : `<b>힌트</b> · 이 질문은 <b>${escapeHtml(CompanyCard.flat(q.co.lk))}</b>을(를) 확인해요. ${escapeHtml(q.co.ev)} <span style="color:#8a8a90">(연습용 질문 · 실제 기출 아님)</span>`; } }
     else { n.textContent = this.defNotice; if(h){ h.hidden = true; h.textContent = ''; } }
   },
-  onFollowup(){ const n = this.people().length; this.speak(n > 1 ? 1 + (this.fu++ % (n - 1)) : 0); },
+  onFollowup(){ const f = this.nextFu(); this.spoken[f.k] = (this.spoken[f.k] || 0) + 1; this.fu++; this.speak(f.k, f.why); },
 };
 /* 2026-11-03a ⑧ 면접관 개성: 면접 준비 창에서 고른 면접관이 꼬리질문을 할 때 그 유형의 말투와 관점으로 바꿈 (AI 면접관을 붙이면 같은 정보를 프롬프트로 넘김)
-   꼬리질문을 할 면접관은 IvPanel과 같은 순서(진행 면접관 다음부터 차례로) */
+   꼬리질문을 할 면접관은 IvPanel.nextFu()와 같은 사람(방금 질문한 면접관이 아닌 사람 중 질문·성격에 맞는 사람) */
 const PersonaTalk = {
   one(arr){ return arr[Math.floor(Math.random() * arr.length)]; },
-  next(){ try{ const ppl = IvPanel.people(); if(!ppl.length) return null; const n = ppl.length; return ppl[n > 1 ? 1 + (IvPanel.fu % (n - 1)) : 0]; }catch(_){ return null; } },
+  next(){ try{ const ppl = IvPanel.people(); if(!ppl.length) return null; return ppl[IvPanel.nextFu().k] || null; }catch(_){ return null; } },   // 꼬리질문을 할 면접관 (IvPanel.nextFu와 같은 차례)
   core(t){ return String(t || '').replace(/^\s*(네[,.]?\s*|좋습니다[,.]?\s*|괜찮습니다[,.]?\s*|잘 들었습니다[,.]?\s*|알겠습니다[,.]?\s*)+/, '').trim(); },
   tune(fu, answer){
     if(!fu || !fu.followup) return fu;
@@ -21777,7 +21805,7 @@ const StenoDialog = {
                   cv_summary: state.cvText ? state.cvText.slice(0, 1500) : null,
                   doc_focus: (typeof DocQ !== 'undefined') ? DocQ.srcOf(root) : null,
                   recent_followups: this.recentFollowups(),
-                  interview_id: state.demoResult ? null : String(state.startTime || ''), ...aiCtx() },
+                  interview_id: state.demoResult ? null : String(state.startTime || ''), ...aiCtx(), ...(()=>{ try{ const nx = PersonaTalk.next(); return nx ? { persona: nx.id } : {}; }catch(_){ return {}; } })() },   // 2026-11-04c 꼬리질문을 할 면접관의 말투로
         });
         const timeout = new Promise((_, rej)=>setTimeout(()=>rej(new Error('응답 시간 초과 ('+(STEP1.followupTimeoutMs/1000)+'초)')), STEP1.followupTimeoutMs));
         const { data, error } = await Promise.race([invoke, timeout]);
