@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-03k';
+var APP_VERSION = '2026-11-03m';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5584,59 +5584,105 @@ body.schl-noscroll{overflow:hidden;} .schl-drawer[hidden],.schl-drawer-bg[hidden
 @media(max-width:960px){ .schl-two{grid-template-columns:1fr;} .schl-kpis{grid-template-columns:repeat(2,minmax(0,1fr));} .schl-re-roles{grid-template-columns:repeat(2,minmax(0,1fr));} }
 @media(max-width:560px){ .schl-mini{grid-template-columns:repeat(2,minmax(0,1fr));} .schl-help li{grid-template-columns:1fr;gap:3px;} .schl-log li{grid-template-columns:1fr;gap:2px;} }
 /* 2026-11-03c 면접관 10명 목소리 (관리자) */
-.ivv-load{color:var(--slate-400);font-size:14px;}
-.ivv-stat{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 14px;}
-.ivv-stat > span{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid #E3E8F0;border-radius:999px;background:#fff;font-size:13px;color:#3b4252;}
-.ivv-stat > span.warn{border-color:#F2C48D;background:#FFF8EE;color:#8a4b00;}
-.ivv-api i{width:8px;height:8px;border-radius:50%;background:#9AA3B2;} .ivv-api.ok i{background:#2E7D4F;} .ivv-api.off i{background:#D08A1E;} .ivv-api small{color:#77808f;font-size:12px;}
-.ivv-warn{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#FFF8EE;border:1px solid #F2D3A8;color:#7a4300;font-size:13px;line-height:1.55;}
-.ivv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
-.ivv-card{display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid #E3E8F0;border-radius:14px;background:#fff;transition:border-color .15s, box-shadow .15s;}
-.ivv-card.on{border-color:#1c2a44;box-shadow:0 0 0 2px rgba(28,42,68,.12);} .ivv-card.off{opacity:.6;} .ivv-card.spk{border-color:#C8441C;box-shadow:0 0 0 3px rgba(200,68,28,.18);}
-.ivv-who{display:flex;align-items:center;gap:10px;} .ivv-who b{display:block;font-size:14.5px;} .ivv-who small{display:block;font-size:12px;color:#77808f;}
-.ivv-av{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;}
-.ivv-v b{display:block;font-size:13.5px;} .ivv-v b.none{color:#9AA3B2;font-weight:600;} .ivv-v small{display:block;font-size:12px;color:#77808f;margin-top:1px;}
-.ivv-chips{display:flex;flex-wrap:wrap;gap:4px;} .ivv-chips span{font-size:11.5px;padding:2px 7px;border-radius:6px;background:#F2F4F8;color:#4a5263;}
-.ivv-flags{display:flex;flex-wrap:wrap;gap:4px;min-height:0;} .ivv-flags:empty{display:none;}
-.ivv-flags span{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;} .f-ch{background:#E9EEFB;color:#2B4AA0;} .f-dup{background:#FFF1E0;color:#9A5300;} .f-off{background:#EEE;color:#666;} .f-ok{background:#EAF5EE;color:#2E7D4F;}
-.ivv-acts{display:flex;gap:6px;margin-top:auto;} .ivv-acts .btn-manage{flex:1;padding:7px 10px;font-size:13px;} .ivv-acts .btn-manage.on{background:#1c2a44;color:#fff;border-color:#1c2a44;}
-.ivv-edit{margin-top:14px;border:1px solid #1c2a44;border-radius:16px;background:#FBFCFE;padding:16px;}
-.ivv-edit header{display:flex;align-items:center;gap:10px;margin-bottom:12px;} .ivv-edit h3{margin:0;font-size:16px;} .ivv-edit header p{margin:2px 0 0;font-size:12.5px;color:#77808f;}
-.ivv-cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;}
-.ivv-filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;} .ivv-filter select,.ivv-filter input[type=search]{padding:7px 9px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;font-size:13px;background:#fff;min-width:0;} .ivv-filter input[type=search]{flex:1;min-width:120px;}
-.ivv-rec{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:#4a5263;}
-.ivv-list{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto;border:1px solid #E3E8F0;border-radius:10px;background:#fff;}
-.ivv-list li{display:flex;align-items:stretch;border-top:1px solid #EEF1F6;} .ivv-list li:first-child{border-top:0;} .ivv-list li.on{background:#EEF3FF;}
-.ivv-li{flex:1;text-align:left;border:0;background:none;padding:9px 12px;font:inherit;cursor:pointer;min-width:0;} .ivv-li b{display:block;font-size:13.5px;} .ivv-li small{display:block;font-size:12px;color:#77808f;} .ivv-li em{display:inline-block;margin-top:3px;font-style:normal;font-size:11.5px;color:#9A5300;background:#FFF1E0;border-radius:6px;padding:1px 6px;}
-.ivv-sm{border:0;border-left:1px solid #EEF1F6;background:none;width:44px;cursor:pointer;color:#1c2a44;font-size:13px;}
-.ivv-empty{padding:14px;color:#9AA3B2;font-size:13px;} .ivv-note{margin:8px 0 0;font-size:12.5px;color:#8a6d3b;}
-.ivv-tune{display:flex;flex-direction:column;gap:12px;}
-.ivv-row{display:flex;flex-direction:column;gap:5px;font-size:13px;} .ivv-row label,.ivv-row .lbl{font-weight:700;color:#2b3242;display:flex;justify-content:space-between;} .ivv-row b{font-weight:700;color:#2B4AA0;}
-.ivv-row input[type=range]{width:100%;accent-color:#1c2a44;} .ivv-row select,.ivv-row textarea{padding:8px 9px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;font-size:13px;background:#fff;}
-.ivv-emos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;} .ivv-emos label{display:flex;flex-direction:column;gap:3px;font-weight:600;font-size:12px;color:#4a5263;}
-.ivv-use{display:flex;align-items:center;gap:6px;font-size:13px;}
-.ivv-play{display:flex;flex-wrap:wrap;gap:6px;} .ivv-src{margin:0;font-size:12px;color:#77808f;}
-.ivv-bar{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding:12px 14px;border:1px solid #E3E8F0;border-radius:14px;background:#fff;box-shadow:0 -4px 16px rgba(20,30,50,.06);}
-.ivv-bar.on{border-color:#2B4AA0;} .ivv-bar-t{flex:1;min-width:220px;font-size:13.5px;} .ivv-bar-t small{display:block;margin-top:3px;color:#5b6474;font-size:12.5px;line-height:1.5;}
-.ivv-bar input{flex:0 1 220px;padding:8px 10px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;font-size:13px;min-width:0;}
-.ivv-bar .btn-manage.primary{background:#1c2a44;color:#fff;border-color:#1c2a44;} .ivv-bar .btn-manage:disabled{opacity:.45;cursor:not-allowed;}
-.ivv-more{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
-.ivv-sec{border:1px solid #E3E8F0;border-radius:12px;background:#fff;padding:0 14px;} .ivv-sec > summary{cursor:pointer;padding:12px 0;font-weight:700;font-size:14px;list-style:none;} .ivv-sec > summary::-webkit-details-marker{display:none;} .ivv-sec > summary small{font-weight:500;color:#77808f;font-size:12.5px;margin-left:6px;} .ivv-sec[open] > summary{border-bottom:1px solid #EEF1F6;margin-bottom:10px;}
-.ivv-sec > *:last-child{margin-bottom:14px;}
-.ivv-sub{margin:0 0 10px;font-size:12.5px;color:#5b6474;line-height:1.55;}
-.ivv-lex{display:flex;flex-direction:column;gap:6px;} .ivv-lx{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px;} .ivv-lx i{color:#9AA3B2;font-style:normal;} .ivv-lx input{padding:7px 9px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;font-size:13px;min-width:0;}
-.ivv-lx-acts{display:flex;gap:6px;margin-top:10px;}
-.ivv-bud{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:13px;} .ivv-bud input{width:120px;padding:7px 9px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;} #ivv-warn{width:64px;}
-.ivv-log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;} .ivv-log li{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid #EEF1F6;font-size:13px;} .ivv-log li:first-child{border-top:0;} .ivv-log time{color:#9AA3B2;font-size:12px;white-space:nowrap;} .ivv-log em{color:#5b6474;}
-.ivv-acts2{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
-.ivv-ck{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px;} .ivv-ck th{text-align:left;font-size:12px;color:#77808f;font-weight:600;padding:6px 8px;border-bottom:1px solid #E3E8F0;} .ivv-ck td{padding:7px 8px;border-bottom:1px solid #F0F2F5;vertical-align:top;} .ivv-ck td small{display:block;color:#77808f;font-size:11.5px;margin-top:3px;word-break:break-all;} .ivv-ck code{font-size:12px;}
-.ivv-st{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:#F0F2F5;color:#5b6474;} .ivv-st.ok{background:#EAF5EE;color:#2E7D4F;} .ivv-st.off{background:#F0F2F5;color:#77808f;} .ivv-st.warn{background:#FFF4E2;color:#9A5300;} .ivv-st.bad{background:#FDECEC;color:#A12B2B;}
+/* 면접관 10명 목소리 (2026-11-03m: 글자 크게·대비 높게, 10명 표 + 오른쪽 설정 창) */
+#ivv-root,#ivv-dr-host{--iv-ink:#172033;--iv-sub:#4A5466;--iv-line:#DDE3EC;--iv-blue:#2346A0;--iv-navy:#1c2a44;font-size:15px;color:var(--iv-ink);}
+.ivv-load{color:var(--iv-sub);font-size:15px;}
+.ivv-stat{display:flex;flex-wrap:wrap;gap:8px;margin:-6px 0 18px;}
+.ivv-stat > span{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--iv-line);border-radius:999px;background:#fff;font-size:14px;color:var(--iv-ink);}
+.ivv-stat > span.warn{border-color:#F2C48D;background:#FFF8EE;color:#7a4300;} .ivv-stat small{color:var(--iv-sub);font-size:13px;}
+.ivv-api i{width:9px;height:9px;border-radius:50%;background:#9AA3B2;} .ivv-api.ok i{background:#2E7D4F;} .ivv-api.off i{background:#D08A1E;}
+.ivv-warn{margin:0;padding:11px 14px;border-radius:10px;background:#FFF8EE;border:1px solid #F2D3A8;color:#6a3a00;font-size:14px;line-height:1.6;}
+.ivv-av{width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;} .ivv-av.lg{width:50px;height:50px;font-size:20px;}
+/* 재생 버튼: 누르면 ■ 멈춤 */
+:is(#ivv-root,#ivv-dr-host) .pi{font-style:normal;display:inline-grid;place-items:center;flex:none;} :is(#ivv-root,#ivv-dr-host) .pi::before{content:'▶';font-size:.78em;} :is(#ivv-root,#ivv-dr-host) .playing .pi::before{content:'■';font-size:.9em;}
+:is(#ivv-root,#ivv-dr-host) .l2{display:none;} :is(#ivv-root,#ivv-dr-host) .playing .l1{display:none;} :is(#ivv-root,#ivv-dr-host) .playing .l2{display:inline;}
+:is(#ivv-root,#ivv-dr-host) .playing{border-color:#C8441C !important;color:#B23A12 !important;background:#FFF2EC !important;}
+.ivv-pbtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:0 15px;border:1.5px solid #C5CEDC;border-radius:10px;background:#fff;color:var(--iv-navy);font:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.ivv-pbtn:hover{border-color:var(--iv-navy);} .ivv-pbtn.sm{min-height:34px;padding:0 11px;font-size:13px;} .ivv-pbtn.hl{border-color:var(--iv-blue);color:var(--iv-blue);}
+.ivv-save{min-height:42px;padding:0 20px;border:0;border-radius:10px;background:var(--iv-navy);color:#fff;font:inherit;font-size:15px;font-weight:800;cursor:pointer;} .ivv-save:disabled{opacity:.6;cursor:wait;}
+.ivv-link{border:0;background:none;padding:4px 0;font:inherit;font-size:14px;font-weight:700;color:var(--iv-blue);cursor:pointer;} .ivv-link:hover{text-decoration:underline;}
+.ivv-tag{flex:none;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;} .ivv-tag.ok{background:#E3F3E9;color:#21633C;} .ivv-tag.ch{background:#E2E9FB;color:var(--iv-blue);} .ivv-tag.dup{background:#FFEBD2;color:#8A4A00;} .ivv-tag.def{background:#EEF1F5;color:var(--iv-sub);}
+.ivv-tbl{border:1px solid var(--iv-line);border-radius:16px;background:#fff;overflow:hidden;}
+.ivv-side-h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #EAEEF4;font-size:15px;}
+.ivv-thead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) 92px 84px;gap:14px;padding:9px 18px;background:#F6F8FB;border-bottom:1px solid #EAEEF4;font-size:12.5px;font-weight:700;color:var(--iv-sub);}
+.ivv-people{list-style:none;margin:0;padding:0;}
+.ivv-p{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) 92px 84px;gap:14px;align-items:center;padding:12px 18px;border:0;border-top:1px solid #EEF1F6;border-radius:0;margin:0;} .ivv-p:first-child{border-top:0;}
+.ivv-p:hover{background:#FAFBFD;} .ivv-p.on{background:#EDF2FF;} .ivv-p.spk{background:#FFF4EF;box-shadow:inset 4px 0 0 #C8441C;}
+.ivv-c-who{display:flex;align-items:center;gap:11px;min-width:0;} .ivv-c-who b{display:block;font-size:15px;} .ivv-c-who small{display:block;font-size:13px;color:var(--iv-sub);}
+.ivv-c-v{display:flex;align-items:center;gap:8px;min-width:0;} .ivv-c-v b{font-size:14.5px;color:var(--iv-blue);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .ivv-c-v b.def{color:var(--iv-sub);font-weight:500;}
+.ivv-go{min-height:40px;border:0;border-radius:10px;background:var(--iv-navy);color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer;}
+html.ivv-dr-open{overflow:hidden;}
+.ivv-drawer{position:fixed;inset:0;z-index:3000;display:flex;justify-content:flex-end;}
+.ivv-dr-bg{position:absolute;inset:0;border:0;background:rgba(15,23,42,.45);cursor:pointer;}
+.ivv-dr{position:relative;width:min(680px,100%);height:100%;background:#F4F6FA;display:flex;flex-direction:column;box-shadow:-14px 0 40px rgba(0,0,0,.2);}
+.ivv-dr-h{display:flex;align-items:center;gap:8px;padding:12px 16px;background:#fff;border-bottom:1px solid var(--iv-line);} .ivv-dr-h b{flex:1;text-align:center;font-size:14px;color:var(--iv-sub);}
+.ivv-x{width:40px;height:40px;border:0;border-radius:10px;background:#EEF1F5;font-size:16px;cursor:pointer;color:var(--iv-ink);}
+.ivv-dr-b{flex:1;overflow:auto;padding:16px;}
+.ivv-dr .ivv-bar{position:static;margin:0;border-radius:0;border-width:1px 0 0;box-shadow:none;}
+.ivv-dr .ivv-bar-t{flex-basis:100%;min-width:0;} .ivv-dr .ivv-bar input{flex:1 1 160px;}
+.ivv-dr-f{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:#fff;border-top:1px solid var(--iv-line);font-size:14px;color:var(--iv-sub);}
+/* 오른쪽 설정 칸 */
+.ivv-panel{scroll-margin-top:80px;border:1px solid var(--iv-line);border-radius:16px;background:#fff;padding:22px;display:flex;flex-direction:column;gap:18px;min-width:0;}
+.ivv-ph{display:flex;align-items:center;gap:13px;} .ivv-ph h3{margin:0;font-size:20px;line-height:1.3;} .ivv-ph p{margin:3px 0 0;font-size:14px;color:var(--iv-sub);}
+.ivv-now{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 16px;border-radius:12px;background:#F2F4F8;border:1px solid #E6EAF0;}
+.ivv-now.set{background:#EDF2FF;border-color:#CCD8F6;} .ivv-now-t{flex:1;min-width:220px;}
+.ivv-now .lbl{display:block;font-size:12.5px;font-weight:700;color:var(--iv-sub);} .ivv-now .lbl em{font-style:normal;margin-left:6px;padding:1px 7px;border-radius:999px;background:#E2E9FB;color:var(--iv-blue);}
+.ivv-now b{display:block;font-size:18px;margin-top:2px;} .ivv-now small{display:block;font-size:13.5px;color:var(--iv-sub);margin-top:3px;line-height:1.5;}
+.ivv-now-b{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.ivv-step{border-top:1px solid #EAEEF4;padding-top:16px;}
+.ivv-step h4,.ivv-step > summary{margin:0 0 12px;font-size:16px;font-weight:800;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.ivv-step h4 i,.ivv-step > summary i{font-style:normal;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--iv-navy);color:#fff;font-size:13px;}
+.ivv-step h4 small,.ivv-step > summary small{font-weight:500;font-size:13.5px;color:var(--iv-sub);}
+.ivv-adv > summary{cursor:pointer;list-style:none;margin:0;} .ivv-adv > summary::-webkit-details-marker{display:none;} .ivv-adv > summary::after{content:'펼치기 ▼';margin-left:auto;font-size:13.5px;font-weight:700;color:var(--iv-blue);} .ivv-adv[open] > summary::after{content:'접기 ▲';} .ivv-adv[open] > summary{margin-bottom:14px;}
+.ivv-lead{margin:0 0 8px;font-size:13.5px;font-weight:700;color:var(--iv-sub);}
+.ivv-recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.ivv-rc{display:flex;flex-direction:column;gap:12px;padding:14px;border:1.5px solid var(--iv-line);border-radius:12px;background:#fff;}
+.ivv-rc.on{border-color:var(--iv-blue);background:#F2F6FF;box-shadow:0 0 0 2px rgba(35,70,160,.12);}
+.ivv-rc-t b{display:block;font-size:16px;} .ivv-rc-t small{display:block;font-size:13px;color:var(--iv-sub);margin-top:2px;}
+.ivv-rc-t em,.ivv-li em{display:inline-block;margin-top:5px;font-style:normal;font-size:12px;font-weight:700;color:#8A4A00;background:#FFEBD2;border-radius:6px;padding:2px 7px;}
+.ivv-rc-b{display:flex;gap:6px;margin-top:auto;} .ivv-rc-b > *{flex:1;}
+.ivv-pick{min-height:40px;min-width:84px;padding:0 12px;border:1.5px solid var(--iv-navy);border-radius:10px;background:#fff;color:var(--iv-navy);font:inherit;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;} .ivv-pick.on{background:var(--iv-navy);color:#fff;}
+.ivv-find-btn{display:block;width:100%;margin-top:12px;padding:12px;border:1.5px dashed #BCC6D6;border-radius:12px;background:#fff;font:inherit;font-size:14.5px;font-weight:700;color:var(--iv-blue);cursor:pointer;} .ivv-find-btn small{font-weight:500;color:var(--iv-sub);} .ivv-find-btn:hover{border-style:solid;}
+.ivv-find{margin-top:12px;}
+.ivv-filter{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;} .ivv-filter select,.ivv-filter input[type=search]{min-height:40px;padding:0 10px;border:1.5px solid #CFD7E3;border-radius:10px;font:inherit;font-size:14px;background:#fff;min-width:0;color:var(--iv-ink);} .ivv-filter input[type=search]{flex:1;min-width:150px;}
+.ivv-seg{display:inline-flex;border:1.5px solid #CFD7E3;border-radius:10px;overflow:hidden;} .ivv-seg button{border:0;background:#fff;min-height:37px;padding:0 14px;font:inherit;font-size:14px;cursor:pointer;color:var(--iv-ink);} .ivv-seg button + button{border-left:1px solid #CFD7E3;} .ivv-seg button.on{background:var(--iv-navy);color:#fff;font-weight:700;}
+.ivv-cnt{margin:0 0 6px;font-size:13px;color:var(--iv-sub);}
+.ivv-list{list-style:none;margin:0;padding:0;max-height:420px;overflow:auto;border:1px solid var(--iv-line);border-radius:12px;background:#fff;}
+.ivv-list li{display:flex;align-items:center;gap:8px;padding-right:10px;border-top:1px solid #EEF1F6;} .ivv-list li:first-child{border-top:0;} .ivv-list li.on{background:#EDF2FF;}
+.ivv-li{flex:1;min-width:0;display:flex;align-items:center;gap:11px;text-align:left;border:0 !important;background:none;padding:10px 4px 10px 12px;font:inherit;cursor:pointer;color:inherit;}
+.ivv-li .pi{width:34px;height:34px;border-radius:50%;border:1.5px solid #C5CEDC;color:var(--iv-navy);background:#fff;} .ivv-li:hover .pi{border-color:var(--iv-navy);} .ivv-li.playing{background:#FFF2EC !important;} .ivv-li.playing .pi{border-color:#C8441C;color:#B23A12;}
+.ivv-li-t{flex:1;min-width:0;} .ivv-li b{display:block;font-size:15px;} .ivv-li small{display:block;font-size:13px;color:var(--iv-sub);}
+.ivv-more-btn{display:block;width:100%;margin-top:8px;padding:11px;border:1.5px dashed #BCC6D6;border-radius:12px;background:#fff;font:inherit;font-size:14px;font-weight:700;color:var(--iv-blue);cursor:pointer;} .ivv-more-btn small{font-weight:500;color:var(--iv-sub);}
+.ivv-empty{padding:14px;color:var(--iv-sub);font-size:14px;} .ivv-note{margin:10px 0 0;font-size:13.5px;color:#7a5a1e;}
+.ivv-step textarea{width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #CFD7E3;border-radius:10px;font:inherit;font-size:15px;line-height:1.55;resize:vertical;margin-bottom:10px;color:var(--iv-ink);}
+.ivv-play{display:flex;flex-wrap:wrap;gap:8px;} .ivv-src{margin:10px 0 0;font-size:13px;color:var(--iv-sub);line-height:1.5;}
+.ivv-tune{display:flex;flex-direction:column;gap:14px;}
+.ivv-row{display:flex;flex-direction:column;gap:6px;font-size:14px;} .ivv-row label,.ivv-row .lbl{font-weight:700;color:var(--iv-ink);display:flex;justify-content:space-between;} .ivv-row b{font-weight:800;color:var(--iv-blue);}
+.ivv-row input[type=range]{width:100%;accent-color:var(--iv-navy);} .ivv-row select{min-height:40px;padding:0 10px;border:1.5px solid #CFD7E3;border-radius:10px;font:inherit;font-size:14px;background:#fff;}
+.ivv-emos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;} .ivv-emos label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:13px;color:var(--iv-sub);}
+.ivv-use{display:flex;align-items:center;gap:8px;font-size:14px;}
+/* 저장 막대 */
+.ivv-bar{position:sticky;bottom:12px;z-index:3;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;padding:12px 16px;border:1.5px solid var(--iv-blue);border-radius:14px;background:#fff;box-shadow:0 6px 24px rgba(20,30,50,.14);}
+.ivv-bar-t{flex:1;min-width:240px;font-size:15px;} .ivv-bar-t small{display:block;margin-top:3px;color:var(--iv-sub);font-size:13px;line-height:1.5;}
+.ivv-bar input{flex:0 1 200px;min-height:40px;padding:0 10px;border:1.5px solid #CFD7E3;border-radius:10px;font:inherit;font-size:14px;min-width:0;}
+.ivv-more{display:flex;flex-direction:column;gap:8px;margin-top:18px;}
+.ivv-sec{border:1px solid var(--iv-line);border-radius:12px;background:#fff;padding:0 16px;} .ivv-sec > summary{cursor:pointer;padding:13px 0;font-weight:700;font-size:15px;list-style:none;} .ivv-sec > summary::-webkit-details-marker{display:none;} .ivv-sec > summary small{font-weight:500;color:var(--iv-sub);font-size:13px;margin-left:6px;} .ivv-sec[open] > summary{border-bottom:1px solid #EEF1F6;margin-bottom:12px;}
+.ivv-sec > *:last-child{margin-bottom:16px;}
+.ivv-sub{margin:0 0 10px;font-size:13.5px;color:var(--iv-sub);line-height:1.6;}
+.ivv-lex{display:flex;flex-direction:column;gap:6px;} .ivv-lx{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:8px;align-items:center;font-size:14px;} .ivv-lx i{color:#9AA3B2;font-style:normal;} .ivv-lx input{min-height:38px;padding:0 10px;border:1.5px solid #CFD7E3;border-radius:10px;font:inherit;font-size:14px;min-width:0;}
+.ivv-lx-acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
 .ivv-check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
-.ivv-check li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:start;padding:9px 0;border-top:1px solid #EEF1F6;font-size:13px;} .ivv-check li:first-child{border-top:0;}
+.ivv-check li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 0;border-top:1px solid #EEF1F6;font-size:14px;} .ivv-check li:first-child{border-top:0;}
 .ivv-check i{font-style:normal;font-weight:800;text-align:center;} .ivv-check li.ok i{color:#2E7D4F;} .ivv-check li.todo i{color:#C27A12;}
-.ivv-check b{display:block;} .ivv-check small{display:block;color:#5b6474;font-size:12.5px;line-height:1.5;margin-top:2px;}
-.ivv-check span{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap;} .ivv-check li.ok span{background:#EAF5EE;color:#2E7D4F;} .ivv-check li.todo span{background:#FFF4E2;color:#9A5300;}
-@media(max-width:860px){ .ivv-cols{grid-template-columns:1fr;} .ivv-emos{grid-template-columns:1fr;} .ivv-log li{grid-template-columns:1fr;gap:2px;} }
+.ivv-check b{display:block;} .ivv-check small{display:block;color:var(--iv-sub);font-size:13px;line-height:1.5;margin-top:2px;}
+.ivv-check span{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap;} .ivv-check li.ok span{background:#E3F3E9;color:#21633C;} .ivv-check li.todo span{background:#FFF1DC;color:#8A4A00;}
+@media(max-width:860px){
+  .ivv-thead{display:none;}
+  .ivv-p{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"who play go" "v v v";gap:8px 8px;padding:12px 14px;}
+  .ivv-c-who{grid-area:who;} .ivv-c-v{grid-area:v;padding-left:49px;} .ivv-p .ivv-pbtn{grid-area:play;} .ivv-go{grid-area:go;padding:0 14px;}
+  .ivv-panel{padding:16px;gap:16px;} .ivv-recs{grid-template-columns:1fr;} .ivv-rc{flex-direction:row;align-items:center;gap:10px;} .ivv-rc-b{margin-top:0;flex:none;} .ivv-rc-t{flex:1;min-width:0;}
+  .ivv-emos{grid-template-columns:1fr;} .ivv-dr-b{padding:10px;} .ivv-bar{padding:10px 12px;gap:8px;} .ivv-bar-t{min-width:0;flex-basis:100%;font-size:14px;} .ivv-bar-t small,.ivv-bar input{display:none;} .ivv-bar .ivv-pbtn,.ivv-bar .ivv-save{flex:1;}
+}
 /* 2026-11-03c 커리어 인바디 (마이페이지·결과) */
 .mp-inbody{margin-top:22px;} .mp-inbody .mp-sec-t small{display:block;margin-top:2px;}
 .ib-load,.ib-empty{margin:0;font-size:13px;color:#6b6b72;} .ib-empty{padding:10px 12px;border:1px dashed #E3E1DB;border-radius:10px;background:#FAFAF8;}
@@ -8974,6 +9020,7 @@ const ScrollLock = {
   },
 };
 function showScreen(id){
+  try{ if(typeof IvVoice !== 'undefined') IvVoice.closeDrawer(); }catch(_){}   // 2026-11-03m 목소리 설정 창은 body에 붙어 있어서 화면을 바꾸면 닫음
   // 승인 대기 계정은 로그인 화면과 승인 대기 화면만 (2026-10-15)
   // 2026-10-16a: 이용 기간이 끝난 계정도 같은 화면(기간 종료 모드: 실제 면접 질문 남기기·결과 알려 주기만)
   if(id !== 'screen-login' && typeof isPendingUser === 'function' && (isPendingUser() || isClosedExpired())){ id = 'screen-pending'; try{ renderPendingScreen(); }catch(_){} }
@@ -13175,7 +13222,7 @@ function showAdminView(view){
   if(view === 'beta') loadBetaView();
   if(view === 'questions') qmLoad();
   if(view === 'ivvoice') IvVoice.load();
-  else if(typeof IvVoice !== 'undefined') IvVoice.stop();
+  else if(typeof IvVoice !== 'undefined'){ IvVoice.stop(); IvVoice.closeDrawer(); }
   if(view === 'realset') loadRealSetView();
   if(view === 'hardq') loadHardQ();
   if(view === 'approvals') ApprovalAdmin.load(true);
@@ -23629,7 +23676,8 @@ const AiCheck = {
 };
 const IvVoice = {
   rows:{}, draft:{}, catalog:null, api:null, apiWhy:'', sel:null, log:[], lex:[], budget:{ monthly:0, warn:80 }, map:null, lexMap:null,
-  f:{ g:'', age:'', q:'', rec:true }, _seq:0, _cache:new Map(), _audio:null, serverOff: !DEMO_TTS_SERVER,
+  f:{ g:'', age:'', q:'' }, _seq:0, _cache:new Map(), _audio:null, _pk:null, serverOff: !DEMO_TTS_SERVER,
+  find:false, drawer:false, shown:30,
   people(){ return StartFlow.PEOPLE; },
   /* 타입캐스트 목소리를 아직 안 고른 면접관이 서버로 말할 때 쓰는 OpenAI 목소리 (gpt-4o-mini-tts, 성별·성격에 맞춤) */
   OA:{ hr:'coral', lead:'ash', exec:'onyx', senior:'nova', press:'echo', data:'sage', value:'shimmer', logic:'verse', quiet:'cedar', ethics:'marin' },
@@ -23700,156 +23748,211 @@ const IvVoice = {
     try{
       const res = await Promise.race([tcFetch({ action:'voices' }), new Promise((_, rej)=>setTimeout(()=>rej(new Error('응답 없음 (8초)')), 8000))]);
       const d = await res.json();
-      this.catalog = (d.voices || []).filter(v=>v.voice_id).map(v=>({ voice_id:v.voice_id, name:v.name || v.voice_id, gender:String(v.gender || '').toLowerCase(), age:v.age || '', emotions:(v.emotions && v.emotions.length) ? v.emotions : ['normal'], preview_url:v.preview_url || '', tone:(v.use_cases || []).slice(0, 2).join('·') }));
+      this.catalog = (d.voices || []).filter(v=>v.voice_id).map(v=>({ voice_id:v.voice_id, name:v.name || v.voice_id, gender:String(v.gender || '').toLowerCase(), age:v.age || '', emotions:(v.emotions && v.emotions.length) ? v.emotions : ['normal'], preview_url:v.preview_url || '', uses:v.use_cases || [], tone:(v.use_cases || []).map(u=>this.USE_KO[u]).filter(Boolean).slice(0, 2).join('·') }));
       this.api = this.catalog.length > 0; this.apiWhy = this.api ? '' : '목소리 목록이 비어 있어요';
       if(!this.api) this.catalog = IV_VOICE_SAMPLE;
     }catch(e){ this.api = false; this.apiWhy = e.code === 'no_key' ? '타입캐스트 API 키가 클론 서버에 없어요 (Supabase › Edge Functions › Secrets의 TYPECAST_API_KEY)' : e.status === 404 ? '타입캐스트 서버 함수가 클론에 배포되지 않았어요' : e.status === 403 || e.status === 401 ? '관리자 로그인이 필요해요' : ('연결 실패: ' + (e.message || e)); this.catalog = IV_VOICE_SAMPLE; }
   },
   dups(){ const by = {}; this.people().forEach(p=>{ const c = this.cur(p.id); if(c && c.enabled !== false && c.voice_id) (by[c.voice_id] = by[c.voice_id] || []).push(p.id); }); return Object.values(by).filter(a=>a.length > 1); },
   dupOf(pid){ const g = this.dups().find(a=>a.includes(pid)); return g ? g.filter(x=>x !== pid) : []; },
-  qChars(){
-    if(this._qc) return this._qc; const set = new Set();
-    try{ [HALLYM_QA.first, HALLYM_QA.last].concat(HALLYM_QA.common, HALLYM_QA.major).forEach(x=>x && set.add(x.q));
-      FIELDS.forEach(f=>(HALLYM_QA[f.id] || []).forEach(x=>set.add(x.q)));
-      Object.values(HALLYM_ROLEQ || {}).forEach(g=>Object.values(g).forEach(list=>(list || []).forEach(x=>set.add(x.q)))); }catch(_){}
-    let n = 0; set.forEach(q=>{ n += String(q).length; }); return (this._qc = { n: set.size, chars: n + 400 });
-  },
-  estimate(){ const ids = this.people().filter(p=>this.soundChanged(p.id) && (this.cur(p.id) || {}).voice_id).map(p=>p.id); const q = this.qChars(); return { ids, sents: q.n * ids.length, credits: q.chars * ids.length }; },
+  /* 2026-11-03m 쓰기 편하게: 10명 표 → '바꾸기'로 오른쪽 설정 창 · 추천 5개 먼저 · 재생 중 표시 · 한국어 설명 · 바꾸기 전과 비교 */
+  USE_KO:{ 'Conversational':'대화체', 'Announcer':'아나운서', 'News Reporter':'뉴스', 'E-learning/Explainer':'강의·설명', 'Documentary':'다큐', 'Audiobook/Storytelling':'낭독', 'Radio/Podcast':'라디오', 'Voicemail/Voice Assistant':'안내 음성', 'Ads/Promotion':'광고', 'TikTok/Reels/Shorts':'숏폼', 'Game':'게임', 'Anime':'애니', 'Rapper':'랩' },
   rec(pid){
     const w = IV_WANT[pid] || {}, used = new Set(this.people().filter(p=>p.id !== pid).map(p=>(this.cur(p.id) || {}).voice_id).filter(Boolean));
-    return (this.catalog || []).map(v=>({ v, sc: ((w.age || []).includes(v.age) ? 3 : 0) + ((v.emotions || []).includes(w.emo) ? 2 : 0) + (v.gender === w.g ? 1 : 0) + (used.has(v.voice_id) ? -4 : 0) })).sort((a, b)=>b.sc - a.sc);
+    const good = /Conversational|Announcer|News Reporter|E-learning|Documentary|Voicemail/, bad = /Anime|Game|Rapper/;
+    let h = 7; for(const ch of String(pid)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;   // 면접관마다 추천 순서가 조금씩 다르게
+    return (this.catalog || []).filter(v=>v.gender === 'male' || v.gender === 'female').map((v, i)=>{ const u = (v.uses || []).join(' ');
+      const sc = (v.gender === w.g ? 4 : 0) + ((w.age || []).includes(v.age) ? 3 : 0) + (good.test(u) ? 2 : 0) + (bad.test(u) ? -3 : 0) + (v.age === 'child' || v.age === 'teenager' ? -6 : 0) + (used.has(v.voice_id) ? -5 : 0) + (((h ^ Math.imul(i + 1, 2654435761)) >>> 0) % 997) / 10000;
+      return { v, sc }; }).sort((x, y)=>y.sc - x.sc);
   },
   meta(v){ return v ? [v.gender === 'male' ? '남성' : v.gender === 'female' ? '여성' : '', (typeof TC_AGE !== 'undefined' && TC_AGE[v.age]) || '', v.tone || ''].filter(Boolean).join(' · ') : ''; },
   emoName(e){ return (typeof TC_EMO !== 'undefined' && TC_EMO[e]) || e; },
-  card(p){
-    const c = this.cur(p.id), v = c && c.voice_id ? (this.voiceOf(c.voice_id) || { name: c.voice_name || c.voice_id, gender:(c.voice_meta || {}).gender, age:(c.voice_meta || {}).age }) : null;
-    const ch = this.changed(p.id), dup = this.dupOf(p.id), off = c && c.enabled === false, on = this.sel === p.id;
-    return `<article class="ivv-card${on ? ' on' : ''}${off ? ' off' : ''}" data-pid="${p.id}">
-      <div class="ivv-who"><span class="ivv-av" style="background:${p.c}">${escapeHtml(StartFlow.ini(p))}</span><div><b>${escapeHtml(p.n)}</b><small>${escapeHtml(p.m)}</small></div></div>
-      <div class="ivv-v">${v ? `<b>${escapeHtml(v.name)}</b><small>${escapeHtml(this.meta(v))}</small>` : '<b class="none">목소리 미지정</b><small>정하지 않으면 기본 소리(브라우저)로 읽어요</small>'}</div>
-      ${c && c.voice_id ? `<div class="ivv-chips"><span>속도 ${(+c.tempo || 1).toFixed(2)}배</span><span>높낮이 ${c.pitch > 0 ? '+' : ''}${c.pitch || 0}</span><span>질문 ${escapeHtml(this.emoName((c.emotions || {}).question || 'normal'))}</span><span>꼬리 ${escapeHtml(this.emoName((c.emotions || {}).followup || 'normal'))}</span></div>` : ''}
-      <div class="ivv-flags">${ch ? '<span class="f-ch">저장 안 함</span>' : ''}${dup.length ? `<span class="f-dup">${escapeHtml(DocQ._j(dup.map(x=>this.P(x).n).join('·'), '과/와'))} 같은 목소리</span>` : ''}${off ? '<span class="f-off">사용 안 함</span>' : ''}${c && c.voice_id && !ch ? `<span class="f-ok">v${(this.rows[p.id] || {}).version || 1}</span>` : ''}</div>
-      <div class="ivv-acts"><button type="button" class="btn-manage" data-play="${p.id}">▶ 듣기</button><button type="button" class="btn-manage ${on ? 'on' : ''}" data-pick="${p.id}">${on ? '닫기' : (c && c.voice_id ? '바꾸기' : '정하기')}</button></div>
-    </article>`;
+  defName(pid){ return DEMO_TTS_SERVER ? `기본 목소리 · OpenAI ${this.OA[pid] || 'onyx'}` : '기본 목소리 · 브라우저'; },
+  vOf(c){ return c && c.voice_id ? (this.voiceOf(c.voice_id) || { name: c.voice_name || c.voice_id, gender:(c.voice_meta || {}).gender, age:(c.voice_meta || {}).age }) : null; },
+  /** 재생 버튼 안쪽: 누르면 '■ 멈춤'으로 바뀜 */
+  pl(label){ return `<i class="pi" aria-hidden="true"></i><span class="l1">${label}</span><span class="l2">멈춤</span>`; },
+  row(p){
+    const c = this.cur(p.id), off = !!(c && c.enabled === false), v = off ? null : this.vOf(c), ch = this.changed(p.id), dup = this.dupOf(p.id).length, on = this.sel === p.id;
+    const line = v ? v.name : (off ? '꺼 둠 · ' : '') + (DEMO_TTS_SERVER ? 'OpenAI ' + (this.OA[p.id] || 'onyx') : '브라우저 목소리');
+    const tag = ch ? '<span class="ivv-tag ch">저장 전</span>' : dup ? '<span class="ivv-tag dup">겹침</span>' : v ? '<span class="ivv-tag ok">정함</span>' : '<span class="ivv-tag def">기본</span>';
+    const av = `<span class="ivv-av" style="background:${p.c}">${escapeHtml(StartFlow.ini(p))}</span>`;
+    return `<li class="ivv-p${on && this.drawer ? ' on' : ''}" data-pid="${p.id}">
+      <span class="ivv-c-who">${av}<span><b>${escapeHtml(p.n)}</b><small>${escapeHtml(p.m)}</small></span></span>
+      <span class="ivv-c-v"><b class="${v ? '' : 'def'}">${escapeHtml(line)}</b>${tag}</span>
+      <button type="button" class="ivv-pbtn" data-play="${p.id}" data-pk="p:${p.id}">${this.pl('듣기')}</button>
+      <button type="button" class="ivv-go" data-pick="${p.id}">바꾸기</button></li>`;
   },
   editor(pid){
-    const p = this.P(pid), d = this.edit(pid), cur = this.voiceOf(d.voice_id), f = this.f;
-    let list = this.f.rec ? this.rec(pid).map(x=>x.v) : (this.catalog || []).slice();
-    list = list.filter(v=>(!f.g || v.gender === f.g) && (!f.age || v.age === f.age) && (!f.q || (v.name + ' ' + (v.tone || '')).toLowerCase().includes(f.q.toLowerCase())));
-    const used = {}; this.people().forEach(x=>{ if(x.id !== pid){ const c = this.cur(x.id); if(c && c.voice_id) (used[c.voice_id] = used[c.voice_id] || []).push(x.n); } });
+    const p = this.P(pid), d = this.edit(pid), set = !!d.voice_id, off = d.enabled === false, live = set && !off, cv = this.vOf(d), cur = set ? this.voiceOf(d.voice_id) : null, f = this.f;
+    const all = this.rec(pid), recs = all.slice(0, 5).map(x=>x.v);
+    const used = {}; this.people().forEach(x=>{ if(x.id !== pid){ const c = this.cur(x.id); if(c && c.voice_id && c.enabled !== false) (used[c.voice_id] = used[c.voice_id] || []).push(x.n); } });
+    const usedTag = v=>used[v.voice_id] ? `<em>${escapeHtml(used[v.voice_id].join('·'))} 사용 중</em>` : '';
+    const pick = v=>{ const on = v.voice_id === d.voice_id; return `<button type="button" class="ivv-pick${on ? ' on' : ''}" data-voice="${escapeHtml(v.voice_id)}"${on ? ' aria-pressed="true"' : ''}>${on ? '✓ 선택됨' : '고르기'}</button>`; };
+    let list = [];
+    if(this.find){ list = all.map(x=>x.v).filter(v=>(!f.g || v.gender === f.g) && (!f.age || v.age === f.age) && (!f.q || (v.name + ' ' + (v.tone || '')).toLowerCase().includes(f.q.toLowerCase()))); }
+    const shown = this.shown || 30, more = list.length - shown;
     const emos = ['smart'].concat(cur && cur.emotions && cur.emotions.length ? cur.emotions : ['normal']);
-    const ages = [...new Set((this.catalog || []).map(v=>v.age).filter(Boolean))];
-    return `<section class="ivv-edit" aria-label="${escapeHtml(p.n)} 목소리 정하기">
-      <header><span class="ivv-av" style="background:${p.c}">${escapeHtml(StartFlow.ini(p))}</span><div><h3>${escapeHtml(p.n)} 목소리</h3><p>${escapeHtml(p.m)} · ${escapeHtml(p.q)}</p></div></header>
-      <div class="ivv-cols">
-        <div class="ivv-pick">
+    const order = typeof TC_AGE !== 'undefined' ? Object.keys(TC_AGE) : [];
+    const ages = [...new Set((this.catalog || []).map(v=>v.age).filter(Boolean))].sort((x, y)=>order.indexOf(x) - order.indexOf(y));
+    const dup = this.dupOf(pid), ch = this.changed(pid);
+    const nowMeta = live ? [this.meta(cv), `속도 ${(+d.tempo || 1).toFixed(2)}배`, `높낮이 ${d.pitch > 0 ? '+' : ''}${d.pitch || 0}`].filter(Boolean).join(' · ') : '';
+    return `<section class="ivv-panel" aria-label="${escapeHtml(p.n)} 목소리 정하기">
+      <header class="ivv-ph"><span class="ivv-av lg" style="background:${p.c}">${escapeHtml(StartFlow.ini(p))}</span>
+        <div class="ivv-ph-t"><h3>${escapeHtml(p.n)}</h3><p>${escapeHtml(p.m)} · ${escapeHtml(p.q)}</p></div></header>
+      <div class="ivv-now${live ? ' set' : ''}">
+        <div class="ivv-now-t"><span class="lbl">지금 목소리${ch ? ' <em>저장 전</em>' : ''}</span>
+          <b>${live ? escapeHtml(cv.name) : escapeHtml(this.defName(pid))}</b>
+          <small>${live ? escapeHtml(nowMeta) : off ? '고른 목소리를 꺼 두어서 기본 목소리로 읽어요.' : '아직 고르지 않아 면접관 성격에 맞춘 기본 목소리로 읽어요.'}</small></div>
+        <div class="ivv-now-b"><button type="button" class="ivv-pbtn" data-play="${pid}" data-pk="p:${pid}">${this.pl('들어 보기')}</button>${set ? '<button type="button" class="ivv-link" data-clear="1">기본 목소리로 되돌리기</button>' : ''}</div>
+      </div>
+      ${dup.length ? `<p class="ivv-warn">${escapeHtml(DocQ._j(dup.map(x=>this.P(x).n).join('·'), '과/와'))} 같은 목소리예요. 다대일 면접에서 누가 말하는지 헷갈릴 수 있어요. 다른 목소리를 고르거나 ③에서 높낮이·속도를 다르게 해 주세요.</p>` : ''}
+      <div class="ivv-step">
+        <h4><i>1</i>목소리 고르기 <small>▶로 샘플을 듣고, 마음에 들면 '고르기'</small></h4>
+        <p class="ivv-lead">이 면접관에게 어울리는 목소리 ${recs.length}개</p>
+        <div class="ivv-recs">${recs.map(v=>`<div class="ivv-rc${v.voice_id === d.voice_id ? ' on' : ''}">
+          <div class="ivv-rc-t"><b>${escapeHtml(v.name)}</b><small>${escapeHtml(this.meta(v))}</small>${usedTag(v)}</div>
+          <div class="ivv-rc-b"><button type="button" class="ivv-pbtn" data-sample="${escapeHtml(v.voice_id)}" data-pk="s:${escapeHtml(v.voice_id)}">${this.pl('샘플')}</button>${pick(v)}</div></div>`).join('') || '<p class="ivv-empty">목소리 목록이 없어요</p>'}</div>
+        <button type="button" class="ivv-find-btn" data-find="1" aria-expanded="${this.find}">${this.find ? '다른 목소리 목록 접기 ▲' : `마음에 드는 게 없으면 다른 목소리 찾기 <small>(${all.length.toLocaleString()}개) ▼</small>`}</button>
+        ${this.find ? `<div class="ivv-find">
           <div class="ivv-filter">
-            <select data-f="g" aria-label="성별"><option value="">성별 전체</option><option value="male"${f.g === 'male' ? ' selected' : ''}>남성</option><option value="female"${f.g === 'female' ? ' selected' : ''}>여성</option></select>
-            <select data-f="age" aria-label="나이"><option value="">나이 전체</option>${ages.map(a=>`<option value="${a}"${f.age === a ? ' selected' : ''}>${escapeHtml((typeof TC_AGE !== 'undefined' && TC_AGE[a]) || a)}</option>`).join('')}</select>
-            <input data-f="q" type="search" placeholder="이름·느낌 검색" value="${escapeHtml(f.q)}" aria-label="목소리 검색">
-            <label class="ivv-rec"><input type="checkbox" data-f="rec"${f.rec ? ' checked' : ''}> 이 면접관에 어울리는 순</label>
+            <div class="ivv-seg" role="group" aria-label="성별">${[['', '전체'], ['male', '남성'], ['female', '여성']].map(([k, l])=>`<button type="button" data-fg="${k}" class="${f.g === k ? 'on' : ''}" aria-pressed="${f.g === k}">${l}</button>`).join('')}</div>
+            <select data-f="age" aria-label="나이"><option value="">나이 전체</option>${ages.map(a=>`<option value="${escapeHtml(a)}"${f.age === a ? ' selected' : ''}>${escapeHtml((typeof TC_AGE !== 'undefined' && TC_AGE[a]) || a)}</option>`).join('')}</select>
+            <input data-f="q" type="search" placeholder="이름·느낌 검색 (예: 아나운서)" value="${escapeHtml(f.q)}" aria-label="목소리 검색">
           </div>
-          <ul class="ivv-list" role="listbox" aria-label="목소리 목록">${list.map(v=>`<li role="option" aria-selected="${v.voice_id === d.voice_id}" class="${v.voice_id === d.voice_id ? 'on' : ''}">
-            <button type="button" class="ivv-li" data-voice="${escapeHtml(v.voice_id)}"><b>${escapeHtml(v.name)}</b><small>${escapeHtml(this.meta(v))}</small>${used[v.voice_id] ? `<em>${escapeHtml(used[v.voice_id].join('·'))} 사용 중</em>` : ''}</button>
-            <button type="button" class="ivv-sm" data-sample="${escapeHtml(v.voice_id)}" aria-label="${escapeHtml(v.name)} 샘플 듣기">▶</button></li>`).join('') || '<li class="ivv-empty">조건에 맞는 목소리가 없어요</li>'}</ul>
-          ${this.api ? '' : '<p class="ivv-note">예시 목록이에요. 타입캐스트를 연결하면 실제 목소리 목록(샘플 포함)으로 바뀌고, 고른 설정은 그대로 남아요.</p>'}
-        </div>
-        <div class="ivv-tune">
+          <p class="ivv-cnt">${list.length.toLocaleString()}개 · 어울리는 순</p>
+          <ul class="ivv-list" aria-label="목소리 목록">${list.slice(0, shown).map(v=>`<li class="${v.voice_id === d.voice_id ? 'on' : ''}">
+            <button type="button" class="ivv-li" data-sample="${escapeHtml(v.voice_id)}" data-pk="s:${escapeHtml(v.voice_id)}" aria-label="${escapeHtml(v.name)} 샘플 듣기"><i class="pi" aria-hidden="true"></i><span class="ivv-li-t"><b>${escapeHtml(v.name)}</b><small>${escapeHtml(this.meta(v))}</small></span>${usedTag(v)}</button>
+            ${pick(v)}</li>`).join('') || '<li class="ivv-empty">조건에 맞는 목소리가 없어요</li>'}</ul>
+          ${more > 0 ? `<button type="button" class="ivv-more-btn" data-more="1">${Math.min(30, more)}개 더 보기 <small>(남은 ${more.toLocaleString()}개)</small></button>` : ''}
+        </div>` : ''}
+        ${this.api ? '' : '<p class="ivv-note">예시 목록이에요. 타입캐스트가 연결되면 실제 목소리 목록(샘플 포함)으로 바뀌어요.</p>'}
+      </div>
+      <div class="ivv-step">
+        <h4><i>2</i>들어 보기 <small>면접에서 이렇게 들려요</small></h4>
+        <textarea id="ivv-line" rows="2" maxlength="160" aria-label="들어 볼 문장">${escapeHtml(IV_LINES[pid] || '')}</textarea>
+        <div class="ivv-play">
+          <button type="button" class="ivv-pbtn" data-try="question" data-pk="t:question">${this.pl('질문 말투')}</button>
+          <button type="button" class="ivv-pbtn" data-try="followup" data-pk="t:followup">${this.pl('꼬리질문 말투')}</button>
+          ${ch ? `<button type="button" class="ivv-pbtn hl" data-ba="1" data-pk="ba">${this.pl('바꾸기 전 → 후 비교')}</button>` : ''}
+          <button type="button" class="ivv-pbtn" data-cmp="1" data-pk="cmp">${this.pl(dup.length ? '겹치는 면접관과 번갈아' : '다른 면접관과 번갈아')}</button></div>
+        <p class="ivv-src" id="ivv-src">${live ? (this.api ? '타입캐스트로 만든 소리예요. 같은 문장·설정은 다시 들어도 크레딧이 들지 않아요.' : '지금은 브라우저 임시 목소리로 들려요.') : DEMO_TTS_SERVER ? `OpenAI ${escapeHtml(this.OA[pid] || 'onyx')} 목소리로 들려요 (면접 때와 같은 소리).` : '브라우저 목소리로 들려요.'}${ch ? ' · 비교는 바꾸기 전 → 바꾼 뒤 순서로 들려요.' : ''}</p>
+      </div>
+      <details class="ivv-step ivv-adv"${this.advOpen ? ' open' : ''}>
+        <summary><i>3</i>세부 조절 <small>선택 · 속도·높낮이·상황별 감정</small></summary>
+        ${set ? `<div class="ivv-tune">
           <div class="ivv-row"><label for="ivv-tempo">속도 <b id="ivv-tempo-v">${(+d.tempo || 1).toFixed(2)}배</b></label><input id="ivv-tempo" type="range" min="0.8" max="1.3" step="0.05" value="${+d.tempo || 1}" data-t="tempo"></div>
           <div class="ivv-row"><label for="ivv-pitch">높낮이 <b id="ivv-pitch-v">${d.pitch > 0 ? '+' : ''}${d.pitch || 0}</b></label><input id="ivv-pitch" type="range" min="-6" max="6" step="1" value="${d.pitch || 0}" data-t="pitch"></div>
           <div class="ivv-row"><span class="lbl">상황별 감정</span><div class="ivv-emos">${IV_EMO_KIND.map(([k, l])=>`<label>${l}<select data-emo="${k}">${emos.map(e=>`<option value="${e}"${(d.emotions || {})[k] === e ? ' selected' : ''}>${escapeHtml(this.emoName(e))}</option>`).join('')}</select></label>`).join('')}</div></div>
-          <div class="ivv-row"><label for="ivv-fb">타입캐스트가 안 될 때</label><select id="ivv-fb" data-t="fallback"><option value="browser"${d.fallback === 'browser' ? ' selected' : ''}>브라우저 목소리로 읽기 (이 설정의 성별·높낮이)</option><option value="openai"${d.fallback === 'openai' ? ' selected' : ''}>OpenAI 목소리로 읽기 (크레딧 듦)</option><option value="text"${d.fallback === 'text' ? ' selected' : ''}>소리 없이 글자로만</option></select></div>
-          <label class="ivv-use"><input type="checkbox" data-t="enabled"${d.enabled !== false ? ' checked' : ''}> 이 면접관 목소리 사용 (끄면 기본 목소리로 읽어요)</label>
-          <div class="ivv-row"><label for="ivv-line">들어 볼 문장</label><textarea id="ivv-line" rows="2" maxlength="160">${escapeHtml(IV_LINES[pid] || '')}</textarea></div>
-          <div class="ivv-play"><button type="button" class="btn-manage" data-try="question">▶ 질문 말투로</button><button type="button" class="btn-manage" data-try="followup">▶ 꼬리질문 말투로</button>${(this.dupOf(pid)[0] || this.people()[0].id !== pid) ? `<button type="button" class="btn-manage" data-cmp="1">▶ 다른 면접관과 번갈아</button>` : ''}</div>
-          <p class="ivv-src" id="ivv-src">${this.api ? '타입캐스트로 만든 소리예요. 같은 문장·설정은 다시 들어도 크레딧이 들지 않아요.' : '지금은 브라우저 임시 목소리로 들려요 (성별·속도·높낮이·감정만 흉내). 타입캐스트를 연결하면 실제 목소리로 들려요.'}</p>
-          ${this.soundChanged(pid) && this.rows[pid] && this.rows[pid].voice_id ? `<p class="ivv-warn">저장하면 이 면접관의 녹음본(질문 약 ${this.qChars().n}개)을 새 목소리로 다시 만들어야 해요.</p>` : ''}
-        </div>
-      </div>
+          <div class="ivv-row"><label for="ivv-fb">타입캐스트가 안 될 때</label><select id="ivv-fb" data-t="fallback"><option value="browser"${d.fallback === 'browser' ? ' selected' : ''}>브라우저 목소리로 읽기</option><option value="openai"${d.fallback === 'openai' ? ' selected' : ''}>OpenAI 목소리로 읽기 (크레딧 듦)</option><option value="text"${d.fallback === 'text' ? ' selected' : ''}>소리 없이 글자로만</option></select></div>
+          <label class="ivv-use"><input type="checkbox" data-t="enabled"${!off ? ' checked' : ''}> 고른 목소리 사용 (끄면 기본 목소리로 읽어요)</label>
+        </div>` : '<p class="ivv-sub">①에서 목소리를 고르면 속도·높낮이·감정을 조절할 수 있어요. 기본 목소리는 면접관 성격에 맞춰 자동으로 읽어요.</p>'}
+      </details>
     </section>`;
+  },
+  bar(ch){
+    return ch.length ? `<div class="ivv-bar on" role="region" aria-label="저장">
+      <div class="ivv-bar-t"><b>${escapeHtml(ch.map(p=>p.n).join(', '))}</b> · 저장 전 ${ch.length}명<small>저장하면 새로 시작하는 면접부터 이 목소리로 읽어요. 진행 중인 면접은 그대로예요.</small></div>
+      <input type="text" id="ivv-note" maxlength="80" placeholder="바꾼 이유 (선택)" aria-label="바꾼 이유">
+      <button type="button" class="ivv-pbtn" data-reset="1">되돌리기</button>
+      <button type="button" class="ivv-save" data-save="1">저장하고 적용</button></div>` : '';
   },
   render(){
     const root = document.getElementById('ivv-root'); if(!root) return;
-    const ppl = this.people(), set = ppl.filter(p=>(this.cur(p.id) || {}).voice_id).length, dups = this.dups(), ch = ppl.filter(p=>this.changed(p.id)), est = this.estimate();
-    const bud = +this.budget.monthly || 0, pct = bud ? Math.round(est.credits / bud * 100) : null;
+    const ppl = this.people(); if(!this.sel || !this.P(this.sel)) this.sel = ppl[0] && ppl[0].id;
+    const keep = this._painted === this.sel, sc = sel=>{ const e = document.querySelector('#ivv-dr-host ' + sel) || root.querySelector(sel); return keep && e ? e.scrollTop : 0; };
+    const lsTop = sc('.ivv-list'), drE = document.querySelector('#ivv-dr-host .ivv-dr-b'), drTop = keep && drE ? drE.scrollTop : 0;
+    const ch = ppl.filter(p=>this.changed(p.id)), dups = this.dups();
+    const set = ppl.filter(p=>{ const c = this.cur(p.id); return c && c.voice_id && c.enabled !== false; }).length, empty = ppl.filter(p=>!(this.cur(p.id) || {}).voice_id).length;
+    const head = `<div class="ivv-side-h"><b>면접관 10명</b><button type="button" class="ivv-pbtn sm" data-allplay="1" data-pk="all">${this.pl('차례로 듣기')}</button></div>`;
+    const i = ppl.findIndex(p=>p.id === this.sel), P = ppl[i];
     root.innerHTML = `
       <div class="admin-view-head"><div><h2>면접관 10명 목소리</h2>
-        <p>면접관마다 어떤 목소리로 말할지 정해요. 저장하면 <b>새로 시작하는 면접부터</b> 적용되고, 진행 중인 면접은 시작할 때의 목소리를 그대로 써요.</p></div>
-        <div class="beta-head-btns">${typeof School !== 'undefined' && School.isOn() ? '<button type="button" class="btn-manage" onclick="School.open(\'overview\')">← 현황</button>' : ''}<button type="button" class="btn-manage" data-auto="1">빈 칸 추천으로 채우기</button><button type="button" class="btn-manage" data-allplay="1">▶ 10명 차례로 듣기</button></div></div>
+        <p>면접관마다 '바꾸기'를 눌러 목소리를 정해요. 저장하면 <b>새로 시작하는 면접부터</b> 적용돼요.</p></div>
+        <div class="beta-head-btns">${typeof School !== 'undefined' && School.isOn() ? '<button type="button" class="btn-manage" onclick="School.open(\'overview\')">← 현황</button>' : ''}${this.api && empty ? `<button type="button" class="btn-manage" data-auto="1">빈 ${empty}명 추천으로 채우기</button>` : ''}</div></div>
       <div class="ivv-stat">
-        <span class="ivv-api ${this.api ? 'ok' : 'off'}"><i></i>${this.api ? '타입캐스트 연결됨' : '타입캐스트 연결 전'}<small>${escapeHtml(this.api ? `목소리 ${this.catalog.length}개 · 면접 중 서버 목소리 ${DEMO_TTS_SERVER ? '켜짐' : '꺼짐 (지금은 브라우저 목소리)'}` : this.apiWhy)}</small></span>
-        <span>지정 <b>${set}/10</b></span><span class="${dups.length ? 'warn' : ''}">겹침 <b>${dups.length}쌍</b></span><span class="${ch.length ? 'warn' : ''}">저장 안 함 <b>${ch.length}명</b></span>
+        <span class="ivv-api ${this.api ? 'ok' : 'off'}"><i></i>${this.api ? `타입캐스트 연결됨 <small>목소리 ${this.catalog.filter(v=>v.gender === 'male' || v.gender === 'female').length}개</small>` : `타입캐스트 연결 전 <small>${escapeHtml(this.apiWhy)}</small>`}</span>
+        <span>목소리 정함 <b>${set}/10명</b>${set < 10 ? ` <small>나머지는 기본 목소리</small>` : ''}</span>
+        ${dups.length ? `<span class="warn">목소리 겹침 <b>${dups.length}쌍</b></span>` : ''}
       </div>
       ${this.loadErr ? `<p class="ivv-warn">설정 표를 읽지 못했어요: ${escapeHtml(this.loadErr)} (supabase/clone/009_interviewer_voices.sql 적용 확인)</p>` : ''}
-      ${dups.length ? `<p class="ivv-warn">같은 목소리를 쓰는 면접관이 있어요: ${dups.map(g=>g.map(x=>this.P(x).n).join('·')).join(', ')}. 다대일 면접에서 누가 말하는지 헷갈릴 수 있어요. 목소리를 바꾸거나 높낮이·속도를 다르게 해 주세요.</p>` : ''}
-      <div class="ivv-grid">${ppl.map(p=>this.card(p)).join('')}</div>
-      ${this.sel ? this.editor(this.sel) : ''}
-      <div class="ivv-bar${ch.length ? ' on' : ''}">
-        <div class="ivv-bar-t">${ch.length ? `<b>${ch.map(p=>p.n).join(', ')}</b> 변경 ${ch.length}건` : '바뀐 것이 없어요'}
-          ${est.ids.length ? `<small>다시 녹음할 질문 약 ${est.sents.toLocaleString()}문장 · 약 ${est.credits.toLocaleString()}크레딧 (1글자 1크레딧 기준${pct != null ? ` · 한 달 예산의 ${pct}%` : ''}). 실제로는 그 면접관이 맡는 질문만 녹음하면 돼서 이보다 적어요.</small>` : ''}</div>
-        <input type="text" id="ivv-note" maxlength="80" placeholder="바꾼 이유 (기록에 남아요)" ${ch.length ? '' : 'disabled'}>
-        <button type="button" class="btn-manage" data-reset="1" ${ch.length ? '' : 'disabled'}>되돌리기</button>
-        <button type="button" class="btn-manage primary" data-save="1" ${ch.length ? '' : 'disabled'}>저장하고 적용</button>
-      </div>
+      <div class="ivv-tbl">${head}<div class="ivv-thead"><span>면접관</span><span>지금 목소리</span><span></span><span></span></div><ul class="ivv-people">${ppl.map(p=>this.row(p)).join('')}</ul></div>
+      ${this.drawer ? '' : this.bar(ch)}
       <div class="ivv-more">
         <details class="ivv-sec"><summary>발음 사전 <small>${this.lex.length}개 · 기관 이름·영문 약어를 읽는 법</small></summary>
           <p class="ivv-sub">면접관이 읽을 때 왼쪽 말을 오른쪽처럼 읽어요. 예) LH → 엘에이치, KOTRA → 코트라. 모든 면접관에 똑같이 적용돼요.</p>
-          <div class="ivv-lex">${this.lex.map((x, i)=>`<div class="ivv-lx"><span>${escapeHtml(x.t)}</span><i>→</i><span>${escapeHtml(x.s)}</span><button type="button" class="fl-del" data-lexdel="${i}">지우기</button></div>`).join('')}
-            <div class="ivv-lx add"><input id="ivv-lx-t" maxlength="30" placeholder="쓰인 말 (예: LH)"><i>→</i><input id="ivv-lx-s" maxlength="40" placeholder="읽는 법 (예: 엘에이치)"><button type="button" class="btn-manage" data-lexadd="1">추가</button></div></div>
-          <div class="ivv-lx-acts"><button type="button" class="btn-manage" data-lexsave="1">발음 사전 저장</button><button type="button" class="btn-manage" data-lextry="1">▶ 사전 적용해서 듣기</button></div></details>
-        <details class="ivv-sec"><summary>크레딧 예산 <small>${bud ? `한 달 ${bud.toLocaleString()}크레딧` : '정하지 않음'}</small></summary>
-          <p class="ivv-sub">목소리를 바꾸면 녹음본을 다시 만들어야 해서 크레딧이 들어요. 한 달 예산을 적어 두면 저장 전에 예상 사용량을 예산과 비교해 보여 줘요.</p>
-          <div class="ivv-bud"><label>한 달 예산 <input id="ivv-bud" type="number" min="0" step="1000" value="${bud || ''}" placeholder="예: 300000"> 크레딧</label><label>경고 기준 <input id="ivv-warn" type="number" min="10" max="100" value="${this.budget.warn || 80}">%</label><button type="button" class="btn-manage" data-budsave="1">예산 저장</button></div></details>
-        <details class="ivv-sec"><summary>타입캐스트 API를 붙일 때 필요한 것 <small>관리자 확인용</small></summary>${this.checklist()}</details>
-      </div>`;
-    this.bind(root);
+          <div class="ivv-lex">${this.lex.map((x, k)=>`<div class="ivv-lx"><span>${escapeHtml(x.t)}</span><i>→</i><span>${escapeHtml(x.s)}</span><button type="button" class="fl-del" data-lexdel="${k}">지우기</button></div>`).join('')}
+            <div class="ivv-lx add"><input id="ivv-lx-t" maxlength="30" placeholder="쓰인 말 (예: LH)"><i>→</i><input id="ivv-lx-s" maxlength="40" placeholder="읽는 법 (예: 엘에이치)"><button type="button" class="ivv-pbtn" data-lexadd="1">추가</button></div></div>
+          <div class="ivv-lx-acts"><button type="button" class="ivv-pbtn" data-lexsave="1">발음 사전 저장</button><button type="button" class="ivv-pbtn" data-lextry="1" data-pk="lex">${this.pl('사전 적용해서 듣기')}</button></div></details>
+        <details class="ivv-sec"><summary>연결 상태·남은 일 <small>관리자 확인용</small></summary>${this.checklist()}</details>
+      </div>
+`;
+    const drHtml = this.drawer && P ? `<div class="ivv-drawer" role="dialog" aria-modal="true" aria-label="${escapeHtml(P.n)} 목소리 정하기">
+        <button type="button" class="ivv-dr-bg" data-close="1" aria-label="닫기"></button>
+        <div class="ivv-dr">
+          <div class="ivv-dr-h"><button type="button" class="ivv-pbtn sm" data-nav="-1">← 이전</button><b>${i + 1} / ${ppl.length}</b><button type="button" class="ivv-pbtn sm" data-nav="1">다음 →</button><button type="button" class="ivv-x" data-close="1" aria-label="닫기">✕</button></div>
+          <div class="ivv-dr-b">${this.editor(this.sel)}</div>
+          ${this.bar(ch) || '<div class="ivv-dr-f"><span>바뀐 것이 없어요</span><button type="button" class="ivv-save" data-close="1">닫기</button></div>'}
+        </div></div>` : '';
+    const host = this.host(); host.innerHTML = drHtml; document.documentElement.classList.toggle('ivv-dr-open', !!drHtml);
+    this._painted = this.sel;
+    const nl = root.querySelector('.ivv-list'); if(nl && lsTop) nl.scrollTop = lsTop;
+    const db = host.querySelector('.ivv-dr-b'); if(db && drTop) db.scrollTop = drTop;
+    const nl2 = host.querySelector('.ivv-list'); if(nl2 && lsTop) nl2.scrollTop = lsTop;
+    this.bind(root); if(drHtml) this.bind(host); this.mark(this._pk);
   },
+  host(){ let h = document.getElementById('ivv-dr-host'); if(!h){ h = document.createElement('div'); h.id = 'ivv-dr-host'; document.body.appendChild(h); } return h; },
+  closeDrawer(){ const h = document.getElementById('ivv-dr-host'); this.drawer = false; if(h && h.innerHTML){ h.innerHTML = ''; document.documentElement.classList.remove('ivv-dr-open'); } },
   checklist(){
     const L = [
       ['ok', '면접관별 설정 저장·기록·되돌리기', '이 화면과 interviewer_voices·interviewer_voice_log 표. 저장하면 새 면접부터 적용'],
       ['ok', '진행 중인 면접 보호', '면접을 시작할 때 설정을 한 번 읽어 고정 → 중간에 바꿔도 그 면접은 같은 목소리'],
       ['ok', '목소리 겹침 검사', '두 면접관이 같은 목소리면 경고 (다대일 면접에서 누가 말하는지 헷갈림)'],
-      ['ok', '예비 목소리', '타입캐스트가 안 될 때 면접관마다 브라우저·OpenAI·글자만 중에서 고름. 지금 클론은 브라우저 목소리로 면접관마다 다르게 읽음'],
-      ['ok', '다시 녹음 예상량', '목소리를 바꾸면 그 면접관 녹음본만 다시 만들도록 문장 수·크레딧을 저장 전에 보여 줌'],
-      ['ok', '발음 사전', 'LH·KOTRA 같은 말 읽는 법. 지금은 브라우저 목소리에 적용, 서버가 생기면 타입캐스트 요청 전에 같은 사전으로 바꿈'],
-      ['todo', 'API 키는 서버에만', '클론 Supabase에 typecast-tts·speak-text 함수를 배포하고 키는 시크릿에 저장 → index.html의 DEMO_TTS_SERVER = true. 운영 프로젝트에는 배포하지 않음'],
-      ['todo', '목소리 목록 받아 오기', '연결되면 이 화면이 예시 목록 대신 실제 목록(성별·나이·감정·무료 샘플)을 보여 줌. 지금 고른 예시 목소리는 실제 목소리로 다시 골라야 함'],
-      ['todo', '면접관별 녹음본 보관', '녹음 파일을 "면접관 + 목소리 버전(v번호)"별로 따로 저장 (예: tts/hr/v3/문장.mp3). 지금 녹음 도구는 목소리 1개 기준이라 면접관별로 나눠야 함'],
-      ['todo', '즉석 문장 지연 줄이기', '꼬리질문은 그때그때 만들어 1~2초 늦음 → 자주 쓰는 맞장구·연결 문장("네, 다음 질문입니다")은 면접관별로 미리 녹음'],
-      ['todo', '한 달 사용량·한도', '면접관 10명 × 학생 수만큼 즉석 문장이 늘어남 → 예산 경고, 한도를 넘으면 예비 목소리로 자동 전환'],
+      ['ok', '기본 목소리', '타입캐스트 목소리를 안 고른 면접관은 OpenAI 목소리로 면접관마다 다르게 읽음. 서버가 안 되면 브라우저 목소리'],
+      ['ok', 'API 키는 서버에만', '클론 Supabase에 typecast-tts·speak-text 함수 배포, 키는 시크릿에 저장. 운영 프로젝트에는 배포하지 않음'],
+      ['ok', '목소리 목록', '타입캐스트 실제 목록(성별·나이·무료 샘플)을 받아 와서 면접관마다 어울리는 순으로 보여 줌'],
+      ['ok', '발음 사전', 'LH·KOTRA 같은 말 읽는 법. 목소리를 만들기 전에 같은 사전으로 바꿈'],
+      ['todo', '면접관별 녹음본 보관', '자주 나오는 질문을 "면접관 + 목소리 버전"별로 미리 녹음해 두면 면접 중 지연과 크레딧이 줄어듦'],
+      ['todo', '한 달 사용량·한도', '면접관 10명 × 학생 수만큼 즉석 문장이 늘어남 → 한도를 넘으면 기본 목소리로 자동 전환'],
       ['todo', '사용권 확인', '학교 납품·상업 이용이 되는 요금제인지, 목소리별 이용 조건을 계약서로 확인'],
     ];
-    return `<ul class="ivv-check">${L.map(([st, t, d])=>`<li class="${st}"><i>${st === 'ok' ? '✓' : '○'}</i><div><b>${t}</b><small>${d}</small></div><span>${st === 'ok' ? '이 화면에 있음' : 'API 연결 때'}</span></li>`).join('')}</ul>`;
+    return `<ul class="ivv-check">${L.map(([st, t, d])=>`<li class="${st}"><i>${st === 'ok' ? '✓' : '○'}</i><div><b>${t}</b><small>${d}</small></div><span>${st === 'ok' ? '됨' : '남은 일'}</span></li>`).join('')}</ul>`;
   },
   bind(root){
-    root.querySelectorAll('[data-aicheck]').forEach(b=>b.onclick = ()=>AiCheck.run(b.dataset.aicheck === 'live'));
-    root.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ this.sel = this.sel === b.dataset.pick ? null : b.dataset.pick; this.stop(); this.render(); if(this.sel){ const e = root.querySelector('.ivv-edit'); if(e) e.scrollIntoView({ block:'nearest', behavior:'smooth' }); } });
-    root.querySelectorAll('[data-play]').forEach(b=>b.onclick = ()=>this.play(b.dataset.play, IV_LINES[b.dataset.play], 'question'));
-    root.querySelectorAll('[data-voice]').forEach(b=>b.onclick = ()=>{ const v = this.voiceOf(b.dataset.voice), d = this.edit(this.sel), w = IV_WANT[this.sel] || {};
-      const fresh = !d.voice_id; d.voice_id = v.voice_id; d.voice_name = v.name; d.voice_meta = { gender:v.gender, age:v.age }; d.provider = 'typecast';
+    const q = (sel, fn)=>root.querySelectorAll(sel).forEach(fn), line = ()=>(document.getElementById('ivv-line') || {}).value || IV_LINES[this.sel];
+    const go = id=>{ this.sel = id; this.shown = 30; this.find = false; this.stop(); this.render(); };
+    q('[data-pick]', b=>b.onclick = ()=>{ this.drawer = true; go(b.dataset.pick); const x = document.querySelector('#ivv-dr-host .ivv-x'); if(x) x.focus(); });
+    q('[data-close]', b=>b.onclick = ()=>{ this.drawer = false; this.stop(); this.render(); });
+    q('[data-nav]', b=>b.onclick = ()=>{ const ppl = this.people(), i = ppl.findIndex(p=>p.id === this.sel); go(ppl[(i + +b.dataset.nav + ppl.length) % ppl.length].id); });
+    if(!this._esc){ this._esc = e=>{ if(e.key === 'Escape' && this.drawer && document.querySelector('#ivv-dr-host .ivv-drawer')){ this.drawer = false; this.stop(); this.render(); } }; document.addEventListener('keydown', this._esc); }
+    q('[data-play]', b=>b.onclick = ()=>{ const pid = b.dataset.play; this.toggle('p:' + pid, done=>this.play(pid, IV_LINES[pid], 'question', done)); });
+    q('[data-sample]', b=>b.onclick = ()=>{ const id = b.dataset.sample; this.toggle('s:' + id, done=>this.sample(id, done)); });
+    q('[data-voice]', b=>b.onclick = ()=>{ const v = this.voiceOf(b.dataset.voice), d = this.edit(this.sel), w = IV_WANT[this.sel] || {}; if(!v) return;
+      const fresh = !d.voice_id; d.voice_id = v.voice_id; d.voice_name = v.name; d.voice_meta = { gender:v.gender, age:v.age }; d.provider = 'typecast'; d.enabled = true;
       const ok = e=>(['smart'].concat(v.emotions || [])).includes(e), pickE = (cur, want)=>(!fresh && ok(cur)) ? cur : ok(want) ? want : ok(cur) ? cur : 'normal';   // 처음 고를 때는 이 면접관에 어울리는 감정으로
       d.emotions = { question: pickE(d.emotions.question, w.emo), followup: pickE(d.emotions.followup, w.fu), press: pickE(d.emotions.press, 'toneup') };
-      this.render(); this.play(this.sel, IV_LINES[this.sel], 'question'); });
-    root.querySelectorAll('[data-sample]').forEach(b=>b.onclick = ()=>{ const v = this.voiceOf(b.dataset.sample); if(!v) return; if(v.preview_url){ this.stop(); const a = new Audio(v.preview_url); this._audio = a; a.play().catch(()=>{}); return; }
-      this.say(this.sel, IV_LINES[this.sel] || VS_SAMPLE_LINE, 'question', Object.assign({}, this.edit(this.sel), { voice_id:v.voice_id, voice_meta:{ gender:v.gender, age:v.age } })); });
-    root.querySelectorAll('[data-f]').forEach(el=>{ const k = el.dataset.f; const fn = ()=>{ this.f[k] = el.type === 'checkbox' ? el.checked : el.value; const pos = el.selectionStart; this.render(); const n = root.querySelector(`[data-f="${k}"]`); if(n && k === 'q'){ n.focus(); try{ n.setSelectionRange(pos, pos); }catch(_){} } };
+      this.render(); });
+    q('[data-find]', b=>b.onclick = ()=>{ this.find = !this.find; this.shown = 30; this.render(); });
+    q('[data-fg]', b=>b.onclick = ()=>{ this.f.g = b.dataset.fg; this.shown = 30; this.render(); });
+    q('[data-more]', b=>b.onclick = ()=>{ this.shown = (this.shown || 30) + 30; this.render(); });
+    q('[data-clear]', b=>b.onclick = ()=>{ const d = this.edit(this.sel); d.voice_id = ''; d.voice_name = ''; d.voice_meta = {}; this.render(); });
+    const adv = root.querySelector('.ivv-adv'); if(adv) adv.ontoggle = ()=>{ this.advOpen = adv.open; };
+    q('[data-f]', el=>{ const k = el.dataset.f; const fn = ()=>{ this.f[k] = el.value; this.shown = 30; const pos = el.selectionStart; this.render(); const n = root.querySelector(`[data-f="${k}"]`); if(n && k === 'q'){ n.focus(); try{ n.setSelectionRange(pos, pos); }catch(_){} } };
       if(k === 'q') el.oninput = ()=>{ clearTimeout(this._ft); this._ft = setTimeout(fn, 250); }; else el.onchange = fn; });
-    root.querySelectorAll('[data-t]').forEach(el=>{ const k = el.dataset.t, d = ()=>this.edit(this.sel);
+    q('[data-t]', el=>{ const k = el.dataset.t, d = ()=>this.edit(this.sel);
       if(el.type === 'range') el.oninput = ()=>{ const v = k === 'tempo' ? +(+el.value).toFixed(2) : +el.value; d()[k] = v; const lab = document.getElementById('ivv-' + k + '-v'); if(lab) lab.textContent = k === 'tempo' ? v.toFixed(2) + '배' : (v > 0 ? '+' : '') + v; };
       el.onchange = ()=>{ d()[k] = el.type === 'checkbox' ? el.checked : el.type === 'range' ? +el.value : el.value; this.render(); }; });
-    root.querySelectorAll('[data-emo]').forEach(el=>el.onchange = ()=>{ const d = this.edit(this.sel); d.emotions = Object.assign({}, d.emotions, { [el.dataset.emo]: el.value }); this.render(); });
-    root.querySelectorAll('[data-try]').forEach(b=>b.onclick = ()=>{ const t = (document.getElementById('ivv-line') || {}).value || IV_LINES[this.sel]; this.play(this.sel, b.dataset.try === 'followup' ? IV_FU_LINE : t, b.dataset.try); });
-    root.querySelectorAll('[data-cmp]').forEach(b=>b.onclick = ()=>{ const other = this.dupOf(this.sel)[0] || this.people().find(p=>p.id !== this.sel).id; this.chain([[this.sel, IV_LINES[this.sel]], [other, IV_LINES[other]]]); });
-    root.querySelectorAll('[data-allplay]').forEach(b=>b.onclick = ()=>this.chain(this.people().map(p=>[p.id, `${p.n}입니다. ` + IV_LINES[p.id].split(/(?<=[.?])\s/)[0]])));
-    root.querySelectorAll('[data-auto]').forEach(b=>b.onclick = ()=>this.autoFill());
-    root.querySelectorAll('[data-reset]').forEach(b=>b.onclick = ()=>{ this.draft = {}; this.render(); });
-    root.querySelectorAll('[data-save]').forEach(b=>b.onclick = ()=>this.save());
-    root.querySelectorAll('[data-undo]').forEach(b=>b.onclick = ()=>{ const l = this.log.find(x=>String(x.id) === b.dataset.undo); if(!l || !l.before) return; this.draft[l.persona_id] = Object.assign(this.blank(l.persona_id), l.before); this.sel = l.persona_id; this.render(); showToast(`${this.P(l.persona_id).n} 설정을 그때로 되돌려 놓았어요. '저장하고 적용'을 눌러야 반영돼요.`, 'info'); });
-    root.querySelectorAll('[data-lexadd]').forEach(b=>b.onclick = ()=>{ const t = document.getElementById('ivv-lx-t').value.trim(), sv = document.getElementById('ivv-lx-s').value.trim(); if(!t || !sv) return showToast('쓰인 말과 읽는 법을 모두 적어 주세요'); this.lex = this.lex.filter(x=>x.t !== t).concat([{ t, s: sv }]); this.render(); const d = root.querySelector('.ivv-sec'); if(d) d.open = true; });
-    root.querySelectorAll('[data-lexdel]').forEach(b=>b.onclick = ()=>{ this.lex.splice(+b.dataset.lexdel, 1); this.render(); const d = root.querySelector('.ivv-sec'); if(d) d.open = true; });
-    root.querySelectorAll('[data-lexsave]').forEach(b=>b.onclick = ()=>this.saveSetting('tts_lexicon', this.lex, '발음 사전을 저장했어요'));
-    root.querySelectorAll('[data-lextry]').forEach(b=>b.onclick = ()=>{ const ex = this.lex.length ? this.lex.map(x=>x.t).join(', ') + ' 지원 동기를 말씀해 주세요.' : 'LH와 KOTRA 가운데 어디에 지원하셨나요?'; this.play(this.sel || 'hr', ex, 'question'); });
-    root.querySelectorAll('[data-budsave]').forEach(b=>b.onclick = ()=>{ this.budget = { monthly: Math.max(0, +document.getElementById('ivv-bud').value || 0), warn: Math.min(100, Math.max(10, +document.getElementById('ivv-warn').value || 80)) }; this.saveSetting('tts_budget', this.budget, '크레딧 예산을 저장했어요'); });
+    q('[data-emo]', el=>el.onchange = ()=>{ const d = this.edit(this.sel); d.emotions = Object.assign({}, d.emotions, { [el.dataset.emo]: el.value }); this.render(); });
+    q('[data-try]', b=>b.onclick = ()=>{ const k = b.dataset.try; this.toggle('t:' + k, done=>this.play(this.sel, k === 'followup' ? IV_FU_LINE : line(), k, done)); });
+    q('[data-ba]', b=>b.onclick = ()=>this.toggle('ba', done=>{ const pid = this.sel, t = line(); this.chain([[pid, t, this.rows[pid] ? Object.assign({}, this.rows[pid]) : this.blank(pid)], [pid, t, this.edit(pid)]], done); }));
+    q('[data-cmp]', b=>b.onclick = ()=>this.toggle('cmp', done=>{ const other = this.dupOf(this.sel)[0] || this.people().find(p=>p.id !== this.sel).id; this.chain([[this.sel, IV_LINES[this.sel]], [other, IV_LINES[other]]], done); }));
+    q('[data-allplay]', b=>b.onclick = ()=>this.toggle('all', done=>this.chain(this.people().map(p=>[p.id, `${p.n}입니다. ` + IV_LINES[p.id].split(/(?<=[.?])\s/)[0]]), done)));
+    q('[data-auto]', b=>b.onclick = ()=>this.autoFill());
+    q('[data-reset]', b=>b.onclick = ()=>{ this.draft = {}; this.render(); });
+    q('[data-save]', b=>b.onclick = ()=>this.save());
+    q('[data-lexadd]', b=>b.onclick = ()=>{ const t = document.getElementById('ivv-lx-t').value.trim(), sv = document.getElementById('ivv-lx-s').value.trim(); if(!t || !sv) return showToast('쓰인 말과 읽는 법을 모두 적어 주세요'); this.lex = this.lex.filter(x=>x.t !== t).concat([{ t, s: sv }]); this.render(); const d = root.querySelector('.ivv-sec'); if(d) d.open = true; });
+    q('[data-lexdel]', b=>b.onclick = ()=>{ this.lex.splice(+b.dataset.lexdel, 1); this.render(); const d = root.querySelector('.ivv-sec'); if(d) d.open = true; });
+    q('[data-lexsave]', b=>b.onclick = ()=>this.saveSetting('tts_lexicon', this.lex, '발음 사전을 저장했어요'));
+    q('[data-lextry]', b=>b.onclick = ()=>this.toggle('lex', done=>{ const ex = this.lex.length ? this.lex.map(x=>x.t).join(', ') + ' 지원 동기를 말씀해 주세요.' : 'LH와 KOTRA 가운데 어디에 지원하셨나요?'; this.play(this.sel || 'hr', ex, 'question', done); }));
   },
   async saveSetting(key, value, msg){
     const { error } = await sb.from('app_settings').upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict:'key' });
@@ -23859,40 +23962,54 @@ const IvVoice = {
   autoFill(){
     let n = 0;
     this.people().forEach(p=>{ if((this.cur(p.id) || {}).voice_id) return; const best = this.rec(p.id)[0]; if(!best) return; const d = this.edit(p.id), v = best.v, w = IV_WANT[p.id] || {};
-      d.voice_id = v.voice_id; d.voice_name = v.name; d.voice_meta = { gender:v.gender, age:v.age }; d.tempo = w.tempo || 1; d.pitch = w.pitch || 0;
+      d.voice_id = v.voice_id; d.voice_name = v.name; d.voice_meta = { gender:v.gender, age:v.age }; d.tempo = w.tempo || 1; d.pitch = w.pitch || 0; d.enabled = true;
       const ok = e=>(['smart'].concat(v.emotions || [])).includes(e); d.emotions = { question: ok(w.emo) ? w.emo : 'normal', followup: ok(w.fu) ? w.fu : 'normal', press: ok('toneup') ? 'toneup' : 'normal' }; n++; });
     this.render(); showToast(n ? `${n}명을 어울리는 목소리로 채웠어요. 들어 보고 '저장하고 적용'을 눌러 주세요.` : '비어 있는 면접관이 없어요.', 'info');
   },
   async save(){
-    const ids = this.people().filter(p=>this.changed(p.id)).map(p=>p.id); if(!ids.length) return;
-    const est = this.estimate(), bud = +this.budget.monthly || 0;
-    if(est.ids.length && !confirm(`${ids.map(x=>this.P(x).n).join(', ')}의 목소리 설정을 저장할까요?\n\n새로 시작하는 면접부터 적용돼요.${est.ids.length ? `\n소리가 바뀐 면접관 ${est.ids.length}명은 녹음본을 다시 만들어야 해요 (약 ${est.credits.toLocaleString()}크레딧${bud ? `, 한 달 예산의 ${Math.round(est.credits / bud * 100)}%` : ''}).` : ''}`)) return;
+    const ids = this.people().filter(p=>this.changed(p.id)).map(p=>p.id); if(!ids.length) return; this.stop();
+    const sound = ids.filter(x=>this.soundChanged(x));
     const rows = ids.map(pid=>{ const d = this.draft[pid]; return { persona_id: pid, provider: d.provider || 'typecast', voice_id: d.voice_id || '', voice_name: d.voice_name || '', voice_meta: d.voice_meta || {}, tempo: +d.tempo || 1, pitch: d.pitch || 0, emotions: d.emotions || {}, fallback: d.fallback || 'browser', enabled: d.enabled !== false }; });
     const note = (document.getElementById('ivv-note') || {}).value || '';
+    const btn = document.querySelector('#ivv-root [data-save]'); if(btn){ btn.disabled = true; btn.textContent = '저장하는 중…'; }
     const { data, error } = await sb.rpc('set_interviewer_voices', { p_rows: rows, p_note: note });
-    if(error){ showToast('저장하지 못했어요. ' + friendlyErr(error), 'warn'); return; }
+    if(error){ if(btn){ btn.disabled = false; btn.textContent = '저장하고 적용'; } showToast('저장하지 못했어요. ' + friendlyErr(error), 'warn'); return; }
     this.draft = {}; showToast(`면접관 ${data || ids.length}명의 목소리를 저장했어요. 새 면접부터 적용돼요.`, 'ok');
-    try{ Activity.log('iv_voice_save', { personas: ids, sound: est.ids }); }catch(_){}
+    try{ Activity.log('iv_voice_save', { personas: ids, sound }); }catch(_){}
     await this.load();
   },
-  stop(){ this._seq++; if(this._audio){ try{ this._audio.pause(); }catch(_){} this._audio = null; } try{ window.speechSynthesis.cancel(); }catch(_){} },
-  play(pid, text, kind){ const d = this.cur(pid) || this.blank(pid); this.say(pid, text, kind, d); },
-  /** 미리 듣기: 타입캐스트가 붙어 있으면 그 목소리로(같은 문장·설정은 다시 만들지 않음), 아니면 브라우저 목소리로 흉내 */
+  /* ── 재생 (누르면 ■ 멈춤 표시, 다시 누르면 멈춤) ── */
+  mark(key){ this._pk = key || null; document.querySelectorAll('#ivv-root [data-pk], #ivv-dr-host [data-pk]').forEach(el=>{ const on = !!key && el.dataset.pk === key; el.classList.toggle('playing', on); if(el.hasAttribute('aria-pressed') || on) el.setAttribute('aria-pressed', String(on)); }); },
+  toggle(key, fn){ if(this._pk === key){ this.stop(); return; } this.stop(); this.mark(key); const my = this._seq; fn(()=>{ if(my === this._seq) this.mark(null); }); },
+  spk(pid){ document.querySelectorAll('#ivv-root .ivv-p.spk').forEach(c=>c.classList.remove('spk')); if(pid){ const c = document.querySelector(`#ivv-root .ivv-p[data-pid="${pid}"]`); if(c) c.classList.add('spk'); } },
+  stop(){ this._seq++; if(this._audio){ try{ this._audio.pause(); }catch(_){} this._audio = null; } try{ window.speechSynthesis.cancel(); }catch(_){} this.spk(null); this.mark(null); },
+  play(pid, text, kind, done){ const d = this.cur(pid) || this.blank(pid); this.say(pid, text, kind, d, done, true); },
+  sample(id, done){ const v = this.voiceOf(id); if(!v){ if(done) done(); return; }
+    if(v.preview_url){ const my = this._seq; let fired = false; const fin = ()=>{ if(fired) return; fired = true; if(my === this._seq && done) done(); }; const a = new Audio(v.preview_url); this._audio = a; a.onended = fin; a.onerror = fin; a.play().catch(fin); return; }
+    this.say(this.sel, IV_LINES[this.sel] || VS_SAMPLE_LINE, 'question', Object.assign({}, this.edit(this.sel), { voice_id:v.voice_id, enabled:true, voice_meta:{ gender:v.gender, age:v.age } }), done, true); },
+  blobFor(key, mk){ let pr = this._cache.get(key); if(!pr){ pr = mk(); this._cache.set(key, pr); pr.catch(()=>this._cache.delete(key)); } return pr; },   // 같은 문장은 한 번만 만들기 (만드는 중이어도 같이 기다림)
+  /** 미리 듣기: 고른 타입캐스트 목소리 → 없으면 면접 때와 같은 OpenAI 기본 목소리 → 안 되면 브라우저 목소리. 같은 문장·설정은 다시 만들지 않음 */
   async say(pid, text, kind, setting, onDone, keep){
-    if(!keep) this.stop(); const my = this._seq;
-    const src = document.getElementById('ivv-src');
-    if(this.api && setting && setting.voice_id && !String(setting.voice_id).startsWith('sample-')){
+    if(!keep) this.stop(); const my = this._seq; let fired = false; const fin = ()=>{ if(fired) return; fired = true; if(my === this._seq && onDone) onDone(); };   // 끝남·오류가 함께 와도 한 번만
+    const src = document.getElementById('ivv-src'), t = this.lexApply(text, this.lex);
+    const playBlob = async blob=>{ if(my !== this._seq) return; const a = new Audio(URL.createObjectURL(blob)); this._audio = a; a.onended = fin; a.onerror = fin; await a.play(); };
+    const tc = !!(setting && setting.voice_id && setting.enabled !== false && !String(setting.voice_id).startsWith('sample-'));
+    if(this.api && tc){
       const e = setting.emotions || {}, eng = { provider:'typecast', tc:{ voice_id:setting.voice_id, tempo:+setting.tempo || 1, pitch:setting.pitch || 0, emotion: e[kind] || e.question || 'normal' } };
-      const key = JSON.stringify(eng) + '|' + text;
-      try{ let blob = this._cache.get(key); if(!blob){ blob = await fetchSpeechBlob(this.lexApply(text, this.lex), 'onyx', 1, 'gpt-4o-mini-tts', '', eng, { purpose:'admin_test' }); this._cache.set(key, blob); }
-        if(my !== this._seq) return; const a = new Audio(URL.createObjectURL(blob)); this._audio = a; a.onended = ()=>{ if(onDone) onDone(); }; await a.play(); return; }
+      const key = JSON.stringify(eng) + '|' + t;
+      try{ await playBlob(await this.blobFor(key, ()=>fetchSpeechBlob(t, 'onyx', 1, 'gpt-4o-mini-tts', '', eng, { purpose:'admin_test' }))); return; }
       catch(err){ if(src) src.textContent = '타입캐스트로 만들지 못해 브라우저 목소리로 들려 드려요: ' + (err.message || err); }
+    } else if(!tc && !this.serverOff && pid){   // 안 고른 면접관은 면접 때처럼 OpenAI 기본 목소리로
+      const o = this.openaiFor(pid), key = ['oa', o.voice, o.speed, o.instructions, t].join('|');
+      try{ await playBlob(await this.blobFor(key, ()=>fetchSpeechBlob(t, o.voice, o.speed, 'gpt-4o-mini-tts', o.instructions, null, { purpose:'admin_test' }))); return; }
+      catch(err){ if(src) src.textContent = 'OpenAI 목소리를 만들지 못해 브라우저 목소리로 들려 드려요: ' + (err.message || err); }
     }
-    this.speakBrowser(this.lexApply(text, this.lex), ()=>{ if(my === this._seq && onDone) onDone(); }, pid, kind, setting);
+    if(my !== this._seq) return;
+    this.speakBrowser(t, fin, pid, kind, setting);
   },
-  chain(list){ this.stop(); const my = this._seq; const next = i=>{ if(i >= list.length || my !== this._seq) return; const [pid, t] = list[i]; const card = document.querySelector(`.ivv-card[data-pid="${pid}"]`);
-    document.querySelectorAll('.ivv-card.spk').forEach(c=>c.classList.remove('spk')); if(card) card.classList.add('spk');
-    const d = this.cur(pid) || this.blank(pid); this.say(pid, t, 'question', d, ()=>{ if(card) card.classList.remove('spk'); setTimeout(()=>{ if(my === this._seq) next(i + 1); }, 250); }, true); };
+  /** 여러 문장을 차례로: [면접관, 문장, (설정)] */
+  chain(list, done){ const my = this._seq; const next = i=>{ if(my !== this._seq) return; if(i >= list.length){ this.spk(null); if(done) done(); return; }
+    const [pid, t, st] = list[i]; this.spk(pid); this.say(pid, t, 'question', st || this.cur(pid) || this.blank(pid), ()=>setTimeout(()=>next(i + 1), 300), true); };
     next(0); },
 };
 const VoiceSet = {
