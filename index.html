@@ -5061,6 +5061,7 @@ body.v3-ui #screen-admin .score-pill:not(.hi):not(.mid):not(.low), body.v3-ui .r
 #screen-admin .admin-menu-btn[data-group="questions"],#screen-admin[data-ag="questions"]{--g:#7C3AED;--g-soft:#EFE7FD;--g-ink:#6D28D9;}
 #screen-admin .admin-menu-btn[data-group="talk"],#screen-admin[data-ag="talk"]{--g:#0891B2;--g-soft:#DDF3F8;--g-ink:#0E7490;}
 #screen-admin .admin-menu-btn[data-group="settings"],#screen-admin[data-ag="settings"]{--g:#D97706;--g-soft:#FCF0DA;--g-ink:#B45309;}
+#screen-admin .admin-menu-btn[data-group="roles"],#screen-admin[data-ag="roles"]{--g:#BE185D;--g-soft:#FCE7F3;--g-ink:#9D174D;}
 #screen-admin.v3 .admin-sidebar{padding:10px;}
 #screen-admin.v3 .admin-sidebar-title{font-size:12.5px;font-weight:700;color:#55555b;letter-spacing:.02em;}
 #screen-admin.v3 .admin-menu-btn{gap:12px;margin:2px 0;padding:9px 10px !important;border-radius:12px;color:#1c1c1e;}
@@ -6778,9 +6779,9 @@ body.schl-noscroll{overflow:hidden;} .schl-drawer[hidden],.schl-drawer-bg[hidden
           <section class="sf-card">
             <h3>바로잡기 목록 <small id="sf-count"></small></h3>
             <div class="sf-add">
-              <label><span>잘못 들린 말</span><input id="sf-wrong" type="text" maxlength="30" placeholder="예: 쏙기록"></label>
+              <label><span>잘못 들린 말</span><input id="sf-wrong" type="text" maxlength="30" placeholder="예: 인재생"></label>
               <span class="sf-arrow" aria-hidden="true">→</span>
-              <label><span>바른 말</span><input id="sf-right" type="text" maxlength="30" placeholder="예: 속기록"></label>
+              <label><span>바른 말</span><input id="sf-right" type="text" maxlength="30" placeholder="예: 인재상"></label>
               <button type="button" class="btn btn-solid" id="sf-add-btn" onclick="SttAdmin.add()">넣기</button>
             </div>
             <p class="sf-hint" id="sf-add-msg">띄어쓰기는 달라도 맞춰 줘요. 프로그램 안에 기본 규칙 <b id="sf-base-n"></b>개가 따로 들어 있어요.</p>
@@ -6788,7 +6789,7 @@ body.schl-noscroll{overflow:hidden;} .schl-drawer[hidden],.schl-drawer-bg[hidden
           </section>
           <section class="sf-card">
             <h3>자동으로 찾은 후보 <small id="sf-sug-sub"></small></h3>
-            <p class="sf-hint">최근 60일 답변에서 속기·면접 용어와 한 글자만 다른 낱말이에요(문제은행·모범답안에 나오는 말은 뺐어요). 맞는 것을 골라(<b>전체 선택</b>도 돼요) '<b>선택한 것 한꺼번에 넣기</b>'를 누르면 한 번에 들어가요. 바른 말은 넣기 전에 고칠 수 있어요.</p>
+            <p class="sf-hint">최근 60일 답변에서 면접 용어와 한 글자만 다른 낱말이에요(문제은행·모범답안에 나오는 말은 뺐어요). 맞는 것을 골라(<b>전체 선택</b>도 돼요) '<b>선택한 것 한꺼번에 넣기</b>'를 누르면 한 번에 들어가요. 바른 말은 넣기 전에 고칠 수 있어요.</p>
             <div class="sf-bulk" id="sf-bulk"></div>
             <div class="sf-list" id="sf-sug"></div>
           </section>
@@ -6799,7 +6800,7 @@ body.schl-noscroll{overflow:hidden;} .schl-drawer[hidden],.schl-drawer-bg[hidden
           </section>
           <section class="sf-card sf-test">
             <h3>시험해 보기</h3>
-            <textarea id="sf-test-in" rows="3" placeholder="받아 적힌 문장을 붙여 넣어 보세요. 예: 한글 조끼 1급을 따고 법문 과정에서 확인하겠습니다" oninput="SttAdmin.test()"></textarea>
+            <textarea id="sf-test-in" rows="3" placeholder="받아 적힌 문장을 붙여 넣어 보세요. 예: 컴활 일급을 따고 마캐팅 직무에서 활용하겠습니다" oninput="SttAdmin.test()"></textarea>
             <div class="sf-test-out" id="sf-test-out"></div>
           </section>
         </div>
@@ -12146,18 +12147,20 @@ const School = {
     const G = ADMIN_GROUPS;
     if(!this._adapted){ this._adapted = true;
       G.today.label = '현황'; G.today.views = [['sch-overview','현황'],['overview','할 일 · 요약'],['live','지금 접속 · 접속 기록']];
-      G.users.label = '학생'; G.users.views = [['sch-students','학생'],['users','계정 관리'],['expired','기간 끝난 사람'],['beta','연습 진행표'],['approvals','서류 합격 승인']];
+      G.users.label = '학생'; G.users.views = [['sch-students','학생'],['users','계정 관리'],['expired','기간 끝난 사람'],['beta','연습 진행표']];   // 한림대는 가입하면 바로 열려서 '서류 합격 승인' 없음
+      G.questions.views = G.questions.views.filter(([v])=>v !== 'reportcall' && v !== 'sttfix');   // '후기 부탁할 사람' 빼고, '음성 인식 바로잡기'는 AI · 비용으로
       G.results.views = [['sch-records','연습 기록'],['records','면접 기록 (자세히)'],['realset','실전 세트 · 자기소개'],['hardq','점수 낮은 질문'],['export','엑셀로 내려받기 (전체)']];
       G.talk.views = [['sch-talk','의견 · 공지'],['feedback','의견 · 오류 신고 (자세히)'],['notices','공지 보내기 (자세히)']];
       const st = G.settings; delete G.settings; G.roles = { label:'권한 관리', views:[['sch-roles','권한 관리']] }; G.settings = st;
+      { const k = st.views.findIndex(([v])=>v === 'devtest'); st.views.splice(k < 0 ? st.views.length : k, 0, ['sttfix','음성 인식 바로잡기']); }
       const side = document.querySelector('#screen-admin .admin-sidebar'), talk = side && side.querySelector('[data-group="talk"]'), set = side && side.querySelector('[data-group="settings"]');
       if(talk && set && !side.querySelector('[data-group="roles"]')){ const b = talk.cloneNode(true); b.dataset.group = 'roles'; b.classList.remove('active'); b.querySelectorAll('.menu-badge').forEach(x=>x.remove());
         const svg = b.querySelector('svg'); if(svg) svg.innerHTML = '<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'; side.insertBefore(b, set); }
     }
-    const TXT = !this.can('admin') ? { today:['현황','학과별 이용 · 연습 추이'], users:['학생','점수 추이 · 상담 메모 · 서류'], results:['연습 결과','기록 목록 · 엑셀 내려받기'], talk:['소통','학생 의견 답장 · 공지'] } : { today:['현황','학과별 이용 · 할 일 · 접속'], users:['학생','학생 상세 · 계정 · 기간 · 진행표'], results:['연습 결과','연습 기록 · 실전 세트 · 엑셀'], questions:['질문','질문 · 녹음 · 실제 후기'], talk:['소통','의견 · 공지'], roles:['권한 관리','관리자 · 교직원 · 학과 담당'], settings:['AI · 비용','AI · 크레딧 · 면접관 목소리'] };
+    const TXT = !this.can('admin') ? { today:['현황','학과별 이용 · 연습 추이'], users:['학생','점수 추이 · 상담 메모 · 서류'], results:['연습 결과','기록 목록 · 엑셀 내려받기'], talk:['소통','학생 의견 답장 · 공지'] } : { today:['현황','학과별 이용 · 할 일 · 접속'], users:['학생','학생 상세 · 계정<br>기간 · 진행표'], results:['연습 결과','연습 기록 · 실전 세트 · 엑셀'], questions:['질문','질문 · 녹음 · 실제 후기'], talk:['소통','의견 · 공지'], roles:['권한 관리','관리자 · 교직원 · 학과 담당'], settings:['AI · 비용','AI · 크레딧<br>면접관 목소리 · 음성 인식'] };
     document.querySelectorAll('#screen-admin .admin-menu-btn[data-group]').forEach(b=>{ const g = G[b.dataset.group], vs = g ? g.views.filter(([v])=>this.allowView(v)) : [];
       b.hidden = !vs.length; if(vs.length) b.onclick = ()=>showAdminView(vs[0][0]);
-      const t = TXT[b.dataset.group], nm = b.querySelector('.amb-name'), ds = b.querySelector('.amb-desc'); if(t && nm && nm.firstChild && nm.firstChild.nodeType === 3) nm.firstChild.nodeValue = t[0] + ' '; if(t && ds) ds.textContent = t[1]; });
+      const t = TXT[b.dataset.group], nm = b.querySelector('.amb-name'), ds = b.querySelector('.amb-desc'); if(t && nm && nm.firstChild && nm.firstChild.nodeType === 3) nm.firstChild.nodeValue = t[0] + ' '; if(t && ds) ds.innerHTML = t[1]; });
     const u = state.currentUser || {}, r = this.role(), tag = this.G('a3-role-tag'), sc = this.G('schl-scope');
     if(tag) tag.textContent = SC_ROLE[r] || '관리자';
     if(sc) sc.innerHTML = r === 'dept' ? `맡은 학과 <b>${escapeHtml((u.scopeDepts || []).join(', ') || '없음')}</b>` : r === 'staff' ? '모든 학과 학생' : '';
