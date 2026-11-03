@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-03a';
+var APP_VERSION = '2026-11-03c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5509,6 +5509,99 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 .pr-how li{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:#F5F4F0;font-size:13.5px;font-weight:600;color:#1c1c1e;}
 .pr-how li b{width:22px;height:22px;flex:0 0 22px;border-radius:50%;background:#1c1c1e;color:#fff;display:grid;place-items:center;font-size:12px;}
 .pr-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+/* 2026-11-03c 면접관 10명 목소리 (관리자) */
+.ivv-load{color:var(--slate-400);font-size:14px;}
+.ivv-stat{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 14px;}
+.ivv-stat > span{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid #E3E8F0;border-radius:999px;background:#fff;font-size:13px;color:#3b4252;}
+.ivv-stat > span.warn{border-color:#F2C48D;background:#FFF8EE;color:#8a4b00;}
+.ivv-api i{width:8px;height:8px;border-radius:50%;background:#9AA3B2;} .ivv-api.ok i{background:#2E7D4F;} .ivv-api.off i{background:#D08A1E;} .ivv-api small{color:#77808f;font-size:12px;}
+.ivv-warn{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#FFF8EE;border:1px solid #F2D3A8;color:#7a4300;font-size:13px;line-height:1.55;}
+.ivv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.ivv-card{display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid #E3E8F0;border-radius:14px;background:#fff;transition:border-color .15s, box-shadow .15s;}
+.ivv-card.on{border-color:#1c2a44;box-shadow:0 0 0 2px rgba(28,42,68,.12);} .ivv-card.off{opacity:.6;} .ivv-card.spk{border-color:#C8441C;box-shadow:0 0 0 3px rgba(200,68,28,.18);}
+.ivv-who{display:flex;align-items:center;gap:10px;} .ivv-who b{display:block;font-size:14.5px;} .ivv-who small{display:block;font-size:12px;color:#77808f;}
+.ivv-av{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;}
+.ivv-v b{display:block;font-size:13.5px;} .ivv-v b.none{color:#9AA3B2;font-weight:600;} .ivv-v small{display:block;font-size:12px;color:#77808f;margin-top:1px;}
+.ivv-chips{display:flex;flex-wrap:wrap;gap:4px;} .ivv-chips span{font-size:11.5px;padding:2px 7px;border-radius:6px;background:#F2F4F8;color:#4a5263;}
+.ivv-flags{display:flex;flex-wrap:wrap;gap:4px;min-height:0;} .ivv-flags:empty{display:none;}
+.ivv-flags span{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;} .f-ch{background:#E9EEFB;color:#2B4AA0;} .f-dup{background:#FFF1E0;color:#9A5300;} .f-off{background:#EEE;color:#666;} .f-ok{background:#EAF5EE;color:#2E7D4F;}
+.ivv-acts{display:flex;gap:6px;margin-top:auto;} .ivv-acts .btn-manage{flex:1;padding:7px 10px;font-size:13px;} .ivv-acts .btn-manage.on{background:#1c2a44;color:#fff;border-color:#1c2a44;}
+.ivv-edit{margin-top:14px;border:1px solid #1c2a44;border-radius:16px;background:#FBFCFE;padding:16px;}
+.ivv-edit header{display:flex;align-items:center;gap:10px;margin-bottom:12px;} .ivv-edit h3{margin:0;font-size:16px;} .ivv-edit header p{margin:2px 0 0;font-size:12.5px;color:#77808f;}
+.ivv-cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;}
+.ivv-filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;} .ivv-filter select,.ivv-filter input[type=search]{padding:7px 9px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;font-size:13px;background:#fff;min-width:0;} .ivv-filter input[type=search]{flex:1;min-width:120px;}
+.ivv-rec{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:#4a5263;}
+.ivv-list{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto;border:1px solid #E3E8F0;border-radius:10px;background:#fff;}
+.ivv-list li{display:flex;align-items:stretch;border-top:1px solid #EEF1F6;} .ivv-list li:first-child{border-top:0;} .ivv-list li.on{background:#EEF3FF;}
+.ivv-li{flex:1;text-align:left;border:0;background:none;padding:9px 12px;font:inherit;cursor:pointer;min-width:0;} .ivv-li b{display:block;font-size:13.5px;} .ivv-li small{display:block;font-size:12px;color:#77808f;} .ivv-li em{display:inline-block;margin-top:3px;font-style:normal;font-size:11.5px;color:#9A5300;background:#FFF1E0;border-radius:6px;padding:1px 6px;}
+.ivv-sm{border:0;border-left:1px solid #EEF1F6;background:none;width:44px;cursor:pointer;color:#1c2a44;font-size:13px;}
+.ivv-empty{padding:14px;color:#9AA3B2;font-size:13px;} .ivv-note{margin:8px 0 0;font-size:12.5px;color:#8a6d3b;}
+.ivv-tune{display:flex;flex-direction:column;gap:12px;}
+.ivv-row{display:flex;flex-direction:column;gap:5px;font-size:13px;} .ivv-row label,.ivv-row .lbl{font-weight:700;color:#2b3242;display:flex;justify-content:space-between;} .ivv-row b{font-weight:700;color:#2B4AA0;}
+.ivv-row input[type=range]{width:100%;accent-color:#1c2a44;} .ivv-row select,.ivv-row textarea{padding:8px 9px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;font-size:13px;background:#fff;}
+.ivv-emos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;} .ivv-emos label{display:flex;flex-direction:column;gap:3px;font-weight:600;font-size:12px;color:#4a5263;}
+.ivv-use{display:flex;align-items:center;gap:6px;font-size:13px;}
+.ivv-play{display:flex;flex-wrap:wrap;gap:6px;} .ivv-src{margin:0;font-size:12px;color:#77808f;}
+.ivv-bar{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding:12px 14px;border:1px solid #E3E8F0;border-radius:14px;background:#fff;box-shadow:0 -4px 16px rgba(20,30,50,.06);}
+.ivv-bar.on{border-color:#2B4AA0;} .ivv-bar-t{flex:1;min-width:220px;font-size:13.5px;} .ivv-bar-t small{display:block;margin-top:3px;color:#5b6474;font-size:12.5px;line-height:1.5;}
+.ivv-bar input{flex:0 1 220px;padding:8px 10px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;font-size:13px;min-width:0;}
+.ivv-bar .btn-manage.primary{background:#1c2a44;color:#fff;border-color:#1c2a44;} .ivv-bar .btn-manage:disabled{opacity:.45;cursor:not-allowed;}
+.ivv-more{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+.ivv-sec{border:1px solid #E3E8F0;border-radius:12px;background:#fff;padding:0 14px;} .ivv-sec > summary{cursor:pointer;padding:12px 0;font-weight:700;font-size:14px;list-style:none;} .ivv-sec > summary::-webkit-details-marker{display:none;} .ivv-sec > summary small{font-weight:500;color:#77808f;font-size:12.5px;margin-left:6px;} .ivv-sec[open] > summary{border-bottom:1px solid #EEF1F6;margin-bottom:10px;}
+.ivv-sec > *:last-child{margin-bottom:14px;}
+.ivv-sub{margin:0 0 10px;font-size:12.5px;color:#5b6474;line-height:1.55;}
+.ivv-lex{display:flex;flex-direction:column;gap:6px;} .ivv-lx{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px;} .ivv-lx i{color:#9AA3B2;font-style:normal;} .ivv-lx input{padding:7px 9px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;font-size:13px;min-width:0;}
+.ivv-lx-acts{display:flex;gap:6px;margin-top:10px;}
+.ivv-bud{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:13px;} .ivv-bud input{width:120px;padding:7px 9px;border:1px solid #DCE4EF;border-radius:8px;font:inherit;} #ivv-warn{width:64px;}
+.ivv-log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;} .ivv-log li{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid #EEF1F6;font-size:13px;} .ivv-log li:first-child{border-top:0;} .ivv-log time{color:#9AA3B2;font-size:12px;white-space:nowrap;} .ivv-log em{color:#5b6474;}
+.ivv-check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+.ivv-check li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:start;padding:9px 0;border-top:1px solid #EEF1F6;font-size:13px;} .ivv-check li:first-child{border-top:0;}
+.ivv-check i{font-style:normal;font-weight:800;text-align:center;} .ivv-check li.ok i{color:#2E7D4F;} .ivv-check li.todo i{color:#C27A12;}
+.ivv-check b{display:block;} .ivv-check small{display:block;color:#5b6474;font-size:12.5px;line-height:1.5;margin-top:2px;}
+.ivv-check span{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap;} .ivv-check li.ok span{background:#EAF5EE;color:#2E7D4F;} .ivv-check li.todo span{background:#FFF4E2;color:#9A5300;}
+@media(max-width:860px){ .ivv-cols{grid-template-columns:1fr;} .ivv-emos{grid-template-columns:1fr;} .ivv-log li{grid-template-columns:1fr;gap:2px;} }
+/* 2026-11-03c 커리어 인바디 (마이페이지·결과) */
+.mp-inbody{margin-top:22px;} .mp-inbody .mp-sec-t small{display:block;margin-top:2px;}
+.ib-load,.ib-empty{margin:0;font-size:13px;color:#6b6b72;} .ib-empty{padding:10px 12px;border:1px dashed #E3E1DB;border-radius:10px;background:#FAFAF8;}
+.ib-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.ib-f{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:#4a4a52;min-width:0;} .ib-f small{font-weight:400;color:#8a8a90;}
+.ib-f input,.ib-f select{padding:8px 10px;border:1px solid #E3E1DB;border-radius:9px;background:#fff;font:inherit;font-size:14px;font-weight:400;color:#1c1c1e;min-width:0;width:100%;box-sizing:border-box;}
+.ib-gpa{display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:6px;} .ib-u{display:flex;align-items:center;gap:6px;min-width:0;} .ib-u input{flex:1 1 auto;width:auto;min-width:0;} .ib-u i{font-style:normal;font-weight:400;color:#6b6b72;white-space:nowrap;}
+.ib-certs{margin-top:12px;display:flex;flex-direction:column;gap:6px;} .ib-lbl{font-size:12.5px;font-weight:700;color:#4a4a52;}
+.ib-chips{display:flex;flex-wrap:wrap;gap:6px;} .ib-chips:empty{display:none;} .ib-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 6px 4px 10px;border-radius:999px;background:#F5F4F0;font-size:13px;} .ib-chip button{border:0;background:none;cursor:pointer;color:#8a8a90;font-size:15px;line-height:1;padding:0 4px;}
+.ib-cadd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;} #modal-mypage .ib-cadd .btn{width:auto;} .ib-cadd input{padding:8px 10px;border:1px solid #E3E1DB;border-radius:9px;font:inherit;font-size:14px;min-width:0;}
+.mp-inbody .doc-share{margin-top:12px;}
+.ib-acts{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:10px;} #modal-mypage .ib-acts .btn{width:auto;flex:0 0 auto;padding:9px 18px;} .ib-st{font-size:13px;color:#4a4a52;} .ib-st.ok{color:#2E7D4F;} .ib-st.warn{color:#a15c00;}
+.ib-out{margin-top:14px;display:flex;flex-direction:column;gap:12px;}
+.ib-cmp{border:1px solid #E3E1DB;border-radius:12px;padding:14px;background:#fff;display:flex;flex-direction:column;gap:12px;}
+.ib-cmp-h{margin:0;font-size:14px;} .ib-cmp-h small{margin-left:6px;color:#8a8a90;font-size:12px;}
+.ib-band-h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;} .ib-band-h strong{color:#C8441C;} .ib-band-h em{font-style:normal;color:#9a9aa0;}
+.ib-track{position:relative;height:10px;border-radius:5px;background:#F0EEE8;margin:7px 0 4px;}
+.ib-track i{position:absolute;top:0;height:100%;} .ib-track i.mid{background:#D9D4C7;border-radius:5px;} .ib-track i.med{width:2px;background:#77767D;} .ib-track i.me{width:14px;height:14px;top:-2px;margin-left:-7px;border-radius:50%;background:#C8441C;border:2px solid #fff;box-shadow:0 0 0 1px #C8441C;}
+.ib-band-f{display:flex;justify-content:space-between;font-size:12px;color:#8a8a90;}
+.ib-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;} .ib-stats span{display:flex;flex-direction:column;gap:1px;padding:9px 10px;border-radius:10px;background:#FAFAF8;font-size:12.5px;color:#4a4a52;} .ib-stats b{font-size:16px;color:#1c1c1e;} .ib-stats small{color:#8a8a90;}
+.ib-certs-top{margin:0;font-size:12.5px;color:#4a4a52;display:flex;flex-wrap:wrap;gap:6px;align-items:center;} .ib-certs-top span{padding:2px 8px;border-radius:999px;background:#F5F4F0;} .ib-certs-top span.has{background:#EAF5EE;color:#2E7D4F;font-weight:700;}
+.ib-adv,.ib-qs{border:1px solid #f0d2c6;background:#FDF5F1;border-radius:12px;padding:12px 14px;font-size:13.5px;} .ib-qs{border-color:#E3E1DB;background:#fff;}
+.ib-adv ul,.ib-qs ol{margin:8px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px;} .ib-qs ol{padding-left:18px;list-style:decimal;}
+.ib-adv li span{display:inline-block;margin-right:6px;font-size:11.5px;font-weight:800;color:#b3361a;} .ib-qs li small{display:block;color:#8a8a90;font-size:12px;} .ib-qs p{margin:8px 0 0;font-size:12.5px;color:#6b6b72;}
+.ib-res .ib-r-h{margin:0 0 8px;font-size:16px;} .ib-res .ib-r-h small{font-size:12px;font-weight:500;color:#8a8a90;margin-left:6px;} .ib-r-peer{margin:0 0 6px;font-size:14px;} .ib-r-list{margin:0;padding-left:18px;font-size:14px;line-height:1.6;}
+@media(max-width:640px){ .ib-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+/* 2026-11-03b 서류 칸 (면접 준비 흐름·마이페이지) */
+.fl-doc-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.fl-doc{display:flex;flex-direction:column;gap:6px;padding:12px;border:1px dashed #D9D6CE;border-radius:12px;background:#FAFAF8;min-width:0;}
+.fl-doc.has{border-style:solid;border-color:#E3E1DB;background:#fff;}
+.fl-doc-h{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;} .fl-doc-h b{font-size:14px;} .fl-doc-h small{font-size:12px;color:#8a8a90;}
+.fl-doc-n{margin:0;display:flex;flex-direction:column;gap:2px;font-size:13px;min-width:0;} .fl-doc-n.none{color:#8a8a90;}
+.fl-doc-n .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .fl-doc-n .ok{color:#2E7D4F;font-weight:700;font-size:12.5px;} .fl-doc-n .warn{color:#a15c00;font-weight:700;font-size:12.5px;}
+.fl-doc-a{display:flex;align-items:center;gap:8px;} #modal-flow .fl-doc-a .btn{width:auto;flex:0 0 auto;min-width:0;padding:7px 14px;font-size:13px;}
+.fl-doc-st{margin:0;font-size:13px;color:#4a4a52;min-height:0;} .fl-doc-st:empty{display:none;} .fl-doc-st.ok{color:#2E7D4F;} .fl-doc-st.warn{color:#a15c00;}
+.doc-share{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid #E3E1DB;border-radius:10px;background:#fff;cursor:pointer;font-size:13px;}
+.doc-share input{margin-top:3px;width:16px;height:16px;flex:none;accent-color:#1c1c1e;} .doc-share span{display:flex;flex-direction:column;gap:2px;} .doc-share small{color:#6b6b72;font-size:12.5px;}
+#modal-mypage .doc-share{margin-top:14px;}
+.pr-src{font-size:13.5px;line-height:1.6;} .pr-src small{display:block;margin-top:2px;font-size:12px;color:#8a8a90;}
+.pr-fu{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:2px;}
+.pr-nodoc{margin:0;padding:10px 12px;border:1px dashed #E3E1DB;border-radius:10px;font-size:13px;color:#6b6b72;background:#FAFAF8;}
+@media(max-width:640px){ .fl-doc-row{grid-template-columns:1fr;} }
 .pr-tabs{display:flex;gap:4px;flex-wrap:wrap;}
 .pr-tab{padding:6px 12px;border-radius:999px;border:0;background:transparent;font:inherit;font-size:13.5px;cursor:pointer;color:#77767D;}
 .pr-tab[aria-pressed="true"]{background:#1c1c1e;color:#fff;font-weight:700;}
@@ -6466,6 +6559,9 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
         <div class="admin-count-line"><span class="admin-toolbar-count" id="qm-count"></span></div>
         <div class="qm-list" id="qm-list"></div>
       </div>
+
+      <!-- 면접관 10명 목소리 (2026-11-03c) -->
+      <div class="admin-view" id="admin-view-ivvoice"><div id="ivv-root"></div></div>
 
       <!-- 베타 현황 (2026-10-07) -->
       <div class="admin-view" id="admin-view-beta">
@@ -7464,6 +7560,7 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 
     <p class="result-print-foot">ZAVAPASS × 한림대학교 AI 모의면접 리포트 — 질문 유형별 면접 기준과 모범답안 요점으로 채점한 참고 결과예요. 실제 면접에서는 내 경험과 생각을 진솔하게 전하는 것이 가장 중요해요.</p>
     <div class="panel co-res" id="co-result" hidden></div>
+    <div class="panel ib-res" id="ib-result" hidden></div>
     <div class="panel set-review-panel" id="set-review-panel" hidden>
       <div class="section-title"><span>면접관 종합 의견 <small class="sr-tag" id="sr-tag">실전 세트</small></span><span class="sr-src" id="sr-src"></span></div>
       <p class="sr-headline" id="sr-headline"></p>
@@ -7612,12 +7709,12 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 
       <section class="setup-sec">
         <h3 class="setup-sec-title">자기소개서·이력서 <span class="sec-tag">선택 사항</span></h3>
-        <p class="setup-sec-sub">서류를 첨부하면 내용을 참고한 맞춤 질문이 함께 나오고, AI 꼬리질문이 켜져 있으면 면접관이 서류 내용과 답변을 연결해 되물어요. 첨부하지 않아도 면접을 시작할 수 있어요.<br>각각 PDF 1개 · 글자를 선택할 수 있는 PDF만 읽을 수 있어요(스캔 이미지 제외). 한 번 올리면 계정에 저장돼 다음 면접에도 쓰여요.</p>
+        <p class="setup-sec-sub">서류에 적은 문장·경력으로 맞춤 질문을 만들어 면접 중간에 넣고, 같은 서류 내용으로 꼬리질문도 이어서 해요. 첨부하지 않아도 면접을 시작할 수 있어요.<br>각각 파일 1개 · PDF·한글(HWP·HWPX)·워드(DOCX·DOC)·사진(JPG·PNG). 스캔한 PDF와 사진은 글자를 읽어서 써요. 한 번 올리면 계정에 저장돼 다음 면접에도 쓰여요.</p>
         <div class="doc-slot-lbl">자기소개서</div>
         <label class="resume-drop" for="resume-file" id="resume-drop"
           ondragover="handleResumeDragOver(event)" ondragleave="handleResumeDragLeave(event)" ondrop="handleResumeDrop(event)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
-          <span id="resume-drop-label">PDF 파일을 여기로 끌어다 놓거나 클릭해서 올려주세요</span>
+          <span id="resume-drop-label">파일을 끌어다 놓거나 눌러서 올려 주세요 (PDF·한글·워드·사진)</span>
         </label>
         <div class="resume-card" id="resume-card" style="display:none;">
           <span class="rc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span>
@@ -7626,22 +7723,22 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
           <button type="button" class="btn-manage" onclick="document.getElementById('resume-file').click()">교체</button>
           <button type="button" class="rc-del" onclick="removeResume()">삭제</button>
         </div>
-        <input type="file" id="resume-file" accept=".pdf,.hwp,.doc,.docx" style="display:none;" onchange="handleResumeUpload(event)">
+        <input type="file" id="resume-file" accept=".pdf,.hwp,.hwpx,.docx,.doc,.jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleResumeUpload(event)">
         <div id="resume-status" class="resume-status" style="display:none;"></div>
         <div class="doc-slot-lbl">이력서 <small>학력·경력·자격증</small></div>
         <label class="resume-drop" for="cv-file" id="cv-drop"
           ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleCvDrop(event)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
-          <span id="cv-drop-label">이력서 PDF를 여기로 끌어다 놓거나 클릭해서 올려주세요</span>
+          <span id="cv-drop-label">이력서 파일을 끌어다 놓거나 눌러서 올려 주세요 (PDF·한글·워드·사진)</span>
         </label>
         <div class="resume-card" id="cv-card" style="display:none;">
           <span class="rc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span>
           <div class="rc-text"><b id="cv-card-name"></b><small id="cv-card-meta"></small></div>
-          <span class="rc-badge ok" id="cv-card-badge">✓ AI 꼬리질문에 활용</span>
+          <span class="rc-badge ok" id="cv-card-badge">✓ 맞춤 질문에 활용</span>
           <button type="button" class="btn-manage" onclick="document.getElementById('cv-file').click()">교체</button>
           <button type="button" class="rc-del" onclick="removeCv()">삭제</button>
         </div>
-        <input type="file" id="cv-file" accept=".pdf" style="display:none;" onchange="handleCvUpload(event)">
+        <input type="file" id="cv-file" accept=".pdf,.hwp,.hwpx,.docx,.doc,.jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleCvUpload(event)">
         <div id="cv-status" class="resume-status" style="display:none;"></div>
       </section>
     </div>
@@ -8019,19 +8116,24 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
       <div class="subhead">자기소개서</div>
       <div id="mp-resume" class="mp-resume"></div>
       <div class="mp-resume-actions">
-        <label class="btn btn-outline mp-upload-btn" for="mp-resume-file">새 PDF 올리기</label>
-        <input type="file" id="mp-resume-file" accept=".pdf" style="display:none;" onchange="handleMyPageResumeUpload(event)">
+        <label class="btn btn-outline mp-upload-btn" for="mp-resume-file">자기소개서 올리기</label>
+        <input type="file" id="mp-resume-file" accept=".pdf,.hwp,.hwpx,.docx,.doc,.jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleMyPageResumeUpload(event)">
         <button class="btn btn-outline mp-delete-btn" id="mp-resume-delete" onclick="deleteSavedResumeFromMyPage()">저장된 자기소개서 삭제</button>
       </div>
       <div id="mp-resume-status" class="resume-status" style="display:none;"></div>
       <div class="subhead" style="margin-top:16px;">이력서</div>
       <div id="mp-cv" class="mp-resume"></div>
       <div class="mp-resume-actions">
-        <label class="btn btn-outline mp-upload-btn" for="mp-cv-file">이력서 PDF 올리기</label>
-        <input type="file" id="mp-cv-file" accept=".pdf" style="display:none;" onchange="handleMyPageCvUpload(event)">
+        <label class="btn btn-outline mp-upload-btn" for="mp-cv-file">이력서 올리기</label>
+        <input type="file" id="mp-cv-file" accept=".pdf,.hwp,.hwpx,.docx,.doc,.jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleMyPageCvUpload(event)">
         <button class="btn btn-outline mp-delete-btn" id="mp-cv-delete" onclick="removeCvFromMyPage()">저장된 이력서 삭제</button>
       </div>
       <div id="mp-cv-status" class="resume-status" style="display:none;"></div>
+      <label class="doc-share" id="mp-share-row"><input type="checkbox" id="mp-share" onchange="DocBox.setShare(this.checked)"><span><b>학교 교직원과 서류 함께 보기</b><small>켜 두면 취업지원센터 교직원·학과 담당이 내 자기소개서·이력서를 보고 상담과 첨삭에 써요. 끄면 바로 볼 수 없게 돼요.</small></span></label>
+      </section>
+      <section class="mp-inbody" aria-labelledby="mp-ib-t">
+        <h3 class="mp-sec-t" id="mp-ib-t">커리어 인바디 <small>학점·어학·자격·경험을 적어 두면 면접 예상 질문과 결과 조언에 써요. 학교 커리어 인바디와 연동되면 자동으로 채워져요</small></h3>
+        <div id="mp-ib"></div>
       </section>
       <h3 class="mp-sec-t mp-sec-info">내 정보</h3>
       <div class="mp-info-grid">
@@ -11537,17 +11639,22 @@ const PrepRoom = {
     const uid = (state.currentUser && state.currentUser.id) || 'me';
     this.key = `zp_prep_${uid}_${c.companyId || (c.kind === 'major' ? 'major' : c.fid)}`;
     const pack = c.companyId ? await CompanyData.pack(c.companyId) : null;
+    try{ await DocBox.ensure(); }catch(_){}
+    try{ await Inbody.ensure(); }catch(_){}
     if(!document.getElementById('pr-body')) return;   // 그사이 다른 단계로 넘어감
     this.pack = pack;
     const items = [];
     if(pack) (pack.questions || []).forEach(q=>items.push({ grp:'co', q:q.question, co:{ lk:q.linked_talent || '', ev:q.eval_point || '' } }));
+    // 2026-11-03b 내 서류(자기소개서 4 + 이력서 2)에서 만든 질문. 문장 표현은 매번 조금 달라서 메모는 근거 문장으로 묶음
+    try{ DocQ.fromResume(DocBox.text('resume')).slice(0, 4).concat(DocQ.fromCv(DocBox.text('cv')).slice(0, 2)).forEach(x=>items.push({ grp:'doc', q:x.q, doc:x })); }catch(e){ console.warn('[서류 질문]', e); }
+    try{ Inbody.questions().forEach(x=>items.push({ grp:'ib', q:x.q, ib:x })); }catch(e){ console.warn('[인바디 질문]', e); }
     items.push({ grp:'base', q:HALLYM_QA.first.q }); items.push({ grp:'base', q:HALLYM_QA.last.q });
     this._rg = c.kind === 'job' ? hallymRoleGroup(c.fid, c.role) : null;   // 2026-11-03a 고른 직무의 직군 질문
     if(this._rg) this._rg.qs.forEach(x=>items.push({ grp:'role', q:x.q, diff:x.d }));
     (c.kind === 'major' ? HALLYM_QA.major : (HALLYM_QA[c.fid] || [])).forEach(x=>items.push({ grp:'field', q:x.q, diff:x.diff }));
     HALLYM_QA.common.forEach(x=>items.push({ grp:'common', q:x.q, diff:x.diff }));
-    items.forEach(it=>{ it.id = this.hash(it.q); try{ it.type = Rubric.detectType(it.q); }catch(_){ it.type = 'general'; } });
-    this.items = items; this.tab = 'all';
+    items.forEach(it=>{ it.id = this.hash(it.doc ? 'doc:' + DocQ.keyOf(it.doc) : it.ib ? 'ib:' + it.q : it.q); try{ it.type = Rubric.detectType(it.q); }catch(_){ it.type = 'general'; } if(it.doc && it.type === 'general') it.type = it.doc.kind === 'plan' ? 'plan' : it.doc.kind === 'motive' ? 'motive' : 'experience'; });
+    this.items = items; this.tab = 'all'; this.dirty = false;
     try{ Activity.log('prep_open', { company: c.companyId || null, field: c.fid, kind: c.kind }); }catch(_){}
     this.render();
   },
@@ -11559,6 +11666,14 @@ const PrepRoom = {
     personality:'단점을 장점처럼 포장하기', plan:'"열심히 배우겠습니다"처럼 방법이 없는 계획', value:'입장 없이 양쪽 다 맞다는 답', closing:'감사 인사만 하고 끝내기', general:'배경 설명부터 길게 하기' },
   /** 예시 답변: 기본 질문은 HALLYM_EX(가상의 학생 예시 + 좋은 이유), 기업 맞춤 질문은 평가포인트·연결 인재상을 넣은 '예시 답변 틀' */
   example(it){
+    if(it.ib){ return { title:'답변 틀 보기', time:'1분 안팎으로', whyTitle:'말할 때 챙길 점', note:'내 이력 수치로 만든 질문이라 정답 예시 대신 답변 틀을 보여 드려요.',
+        parts:[['사실 인정','수치를 숨기지 말고 짧게 인정하거나 확인해요. 예) "네, 맞습니다. ○○은 ○○입니다."'],['이유·과정','그 수치가 나온 과정과 그때의 판단을 한두 문장으로.'],['보여 줄 것','수치 뒤에 있는 경험 하나를 "제가" 한 일과 결과로.'],['지원한 일과 연결','그래서 입사 후 어떻게 쓸지(또는 채울지) 한 문장으로.']],
+        points:['수치에 대한 질문은 방어보다 "그래서 무엇을 했는지"를 보려는 거예요.', '학점·어학처럼 약한 부분은 1문장만 인정하고, 나머지 시간은 대신 한 일에 쓰세요.', '강점 수치는 자랑보다 "써 본 장면"으로 말하면 기억에 남아요.'] }; }
+    if(it.doc){ const cv = it.doc.doc === 'cv';
+      return { title:'답변 틀 보기', time:'1분 안팎으로', whyTitle:'말할 때 챙길 점', note:'내 서류 문장으로 만든 질문이라 정답 예시 대신 답변 틀을 보여 드려요. ○○ 자리에 서류와 같은 사실을 넣어 말해 보세요.',
+        parts: cv ? [['언제·어디서','이력서에 적은 기간·기관을 그대로. 예) "○○년 ○월부터 ○개월 동안 ○○에서 ○○을 맡았습니다."'],['맡은 일','내가 직접 한 일 두 가지. 예) "주로 ○○을 했고, 특히 ○○은 제가 혼자 맡았습니다."'],['어려움과 대처','가장 어려웠던 상황 하나와 어떻게 넘었는지.'],['결과·배운 점','숫자나 사실로 결과를 말하고, 지원한 일에서 어떻게 쓸지 한 문장으로.']]
+                  : [['서류와 같은 장면','서류에 쓴 장면을 한 문장으로 다시 꺼내요. 예) "네, 그 일은 ○학년 ○○ 때였습니다."'],['내가 한 행동','서류보다 한 단계 더 자세히, "제가" 한 일 두 가지와 그렇게 한 이유.'],['결과','서류에 적은 숫자·결과를 그대로 말하고, 어떻게 확인했는지 덧붙이기.'],['지원한 일과 연결','그 경험이 지원한 일에서 어떻게 쓰일지 한 문장으로 마무리.']],
+        points: ['면접관은 서류와 말이 같은지 확인해요. 숫자·기간·역할을 서류와 똑같이 말하세요.', '서류에 없던 내용을 덧붙일 때는 "서류에는 짧게 적었지만"으로 시작하면 자연스러워요.', '아래 "이어질 질문"까지 답을 준비해 두면 꼬리질문에 당황하지 않아요.'] }; }
     if(!it.co){ const ex = HALLYM_EX[it.q]; if(!ex) return null;
       const ph = ex.a.some(x=>/[○△□◇]/.test(x[1])), len = ex.a.reduce((n,x)=>n + x[1].replace(/\s/g,'').length, 0);
       return { title:'예시 답변 보기', parts: ex.a, points: ex.p, time: `말하면 약 ${Math.round(len / 5.2 / 10) * 10}초`,
@@ -11606,14 +11721,16 @@ const PrepRoom = {
       <dt>보는 것</dt><dd>${escapeHtml(it.co ? it.co.ev : (this.LOOK[it.type] || this.LOOK.general))}</dd>
       ${it.co ? `<dt>인재상</dt><dd>${tal}</dd>` : ''}
       ${(()=>{ const ev = hallymEval(it.q); return ev ? `<dt>평가 요소</dt><dd><ol class="pr-flow">${ev.map(e=>`<li>${escapeHtml(e[0])}</li>`).join('')}</ol></dd>` : `<dt>구성</dt><dd><ol class="pr-flow">${info.check.map(k=>`<li>${escapeHtml(this.tx(k.label).replace(/\(.*?\)/g, ''))}</li>`).join('')}</ol></dd>`; })()}
-      <dt>피할 말</dt><dd>${escapeHtml(this.AVOID[it.type] || this.AVOID.general)}</dd>
+      ${it.ib ? `<dt>내 이력</dt><dd class="pr-src">${escapeHtml(it.ib.why)}<small>마이페이지 커리어 인바디</small></dd><dt>답변 방향</dt><dd>${escapeHtml(it.ib.tip)}</dd>` : ''}
+      ${it.doc ? `<dt>내 서류</dt><dd class="pr-src">“${escapeHtml(String(it.doc.src || '').slice(0, 180))}”<small>${it.doc.doc === 'cv' ? '이력서' : '자기소개서'}${it.doc.section && it.doc.doc !== 'cv' ? ` · ${escapeHtml(it.doc.section)}` : ''}</small></dd>${(it.doc.follow || []).length ? `<dt>이어질 질문</dt><dd><ul class="pr-fu">${it.doc.follow.map(f=>`<li>${escapeHtml(f)}</li>`).join('')}</ul></dd>` : ''}` : ''}
+      <dt>피할 말</dt><dd>${escapeHtml(it.doc ? '서류와 다른 숫자·기간·역할 말하기' : (this.AVOID[it.type] || this.AVOID.general))}</dd>
       ${exps.length ? `<dt>내 경험</dt><dd>${exps.map(e=>escapeHtml(e.text)).join(' · ')}</dd>` : ''}
       ${(()=>{ const ex = this.example(it); return ex ? `<dt>예시</dt><dd><details class="pr-ex"><summary>${ex.title}<small>${escapeHtml(ex.time)}</small></summary><ol class="pr-exl">${ex.parts.map(([l,t])=>`<li><b>${escapeHtml(l)}</b><span>${escapeHtml(t)}</span></li>`).join('')}</ol>${ex.points && ex.points.length ? `<div class="pr-why"><b>${ex.whyTitle || '이 답변이 좋은 이유'}</b><ul>${ex.points.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>` : ''}<p class="pr-exn">${escapeHtml(ex.note)}</p></details></dd>` : ''; })()}
     </dl>`;
   },
   render(){
     const d = this.load(), all = this.items, done = all.filter(it=>d[it.id] && d[it.id].done).length;
-    const show = all.filter(it=>this.tab === 'all' || (this.tab === 'co' && it.grp === 'co') || (this.tab === 'field' && (it.grp === 'field' || it.grp === 'base' || it.grp === 'role')) || (this.tab === 'common' && it.grp === 'common') || (this.tab === 'todo' && !(d[it.id] && d[it.id].done)));
+    const show = all.filter(it=>this.tab === 'all' || (this.tab === 'co' && it.grp === 'co') || (this.tab === 'doc' && (it.grp === 'doc' || it.grp === 'ib')) || (this.tab === 'field' && (it.grp === 'field' || it.grp === 'base' || it.grp === 'role')) || (this.tab === 'common' && it.grp === 'common') || (this.tab === 'todo' && !(d[it.id] && d[it.id].done)));
     const pack = this.pack, c = this._c;
     const group = (g, title, note)=>{ const L = show.filter(it=>it.grp === g); if(!L.length) return '';
       return `<section class="pr-sec"><h3>${title}<small>${note}</small></h3><div class="pr-list">${L.map(it=>this.card(it, all.indexOf(it) + 1, d[it.id] || {})).join('')}</div></section>`; };
@@ -11622,17 +11739,20 @@ const PrepRoom = {
       <p class="fl-lead">본 면접에 나올 수 있는 질문이에요. 연습은 선택이라, 바로 '다음'으로 넘어가도 돼요.</p>
       <ol class="pr-how"><li><b>1</b>질문을 눌러 참고 보기</li><li><b>2</b>말할 거리 키워드 메모</li><li><b>3</b>소리 내어 시간 재기</li></ol>
       <div class="pr-tools">
-        <div class="pr-tabs" role="group" aria-label="질문 보기">${[['all','전체'],['co','기업 맞춤'],['field', c.kind === 'major' ? '전공·경험' : '직무'],['common','공통'],['todo','남은 질문']].filter(([k])=>k !== 'co' || pack).map(([k,l])=>`<button type="button" class="pr-tab" data-tab="${k}" aria-pressed="${this.tab === k}">${l}</button>`).join('')}</div>
+        <div class="pr-tabs" role="group" aria-label="질문 보기">${[['all','전체'],['co','기업 맞춤'],['doc','내 서류·이력'],['field', c.kind === 'major' ? '전공·경험' : '직무'],['common','공통'],['todo','남은 질문']].filter(([k])=>(k !== 'co' || pack) && (k !== 'doc' || all.some(it=>it.grp === 'doc' || it.grp === 'ib'))).map(([k,l])=>`<button type="button" class="pr-tab" data-tab="${k}" aria-pressed="${this.tab === k}">${l}</button>`).join('')}</div>
         <div class="pr-bar"><span class="pr-cnt">연습 ${done}/${all.length}</span><div class="pr-prog"><i style="width:${all.length ? Math.round(done / all.length * 100) : 0}%"></i></div></div>
       </div>
       ${group('co', pack ? `${escapeHtml(pack.talent.name)} 예상 질문` : '', '6개 중 2개 출제')}
       ${pack && show.some(it=>it.grp === 'co') ? `<details class="pr-co"><summary>${escapeHtml(pack.talent.name)} 인재상·면접 전형</summary>${CompanyCard.html(pack, false)}</details>` : ''}
+      ${group('doc', '내 서류에서 나온 질문', '본 면접에 1~2개 나와요')}
+      ${group('ib', '내 이력(인바디)에서 나올 질문', '마이페이지에 적은 학점·어학·자격·경험 기준')}
+      ${!all.some(it=>it.grp === 'doc' || it.grp === 'ib') && this.tab === 'all' ? `<p class="pr-nodoc">자기소개서·이력서를 올리거나 마이페이지에 커리어 인바디를 적으면, 내 서류·이력에서 나올 질문도 여기서 미리 연습할 수 있어요. <button type="button" class="d3-btn-text" data-goto-docs>서류 올리러 가기</button></p>` : ''}
       ${group('base', '꼭 나오는 질문', '첫 질문과 마지막 질문')}
       ${this._rg ? group('role', `${escapeHtml(this._rg.role)} 직무 질문`, `${escapeHtml(this._rg.name)} 직군 · 본 면접에 1~2개 나와요`) : ''}
       ${group('field', c.kind === 'major' ? '전공·경험 질문' : `${escapeHtml(c.field.name)} 질문`, '난이도에 맞춰 일부 출제')}
       ${group('common', '공통 질문', '난이도에 맞춰 일부 출제')}
       ${!show.length ? '<p class="cc-load">남은 질문이 없어요. 모두 연습했어요!</p>' : ''}
-      <p class="pr-foot">${pack ? '예상 질문은 인재상을 바탕으로 만든 연습용 질문이에요(실제 기출 아님). ' : ''}메모와 연습 기록은 이 기기에만 저장돼요.</p>`;
+      <p class="pr-foot">${pack ? '예상 질문은 인재상을 바탕으로 만든 연습용 질문이에요(실제 기출 아님). ' : ''}메모와 연습 기록은 내 계정에 저장돼 다른 기기에서도 이어서 볼 수 있어요.</p>`;
     this.bind();
   },
   card(it, no, rec){
@@ -11649,6 +11769,7 @@ const PrepRoom = {
     body.querySelectorAll('[data-memo]').forEach(t=>t.addEventListener('input', ()=>{ const d = this.load(); d[t.dataset.memo] = Object.assign({}, d[t.dataset.memo], { memo: t.value.slice(0, 200) }); this.save(d); }));
     body.querySelectorAll('[data-say]').forEach(b=>b.onclick = ()=>{ const it = this.items.find(x=>x.id === b.dataset.say); if(it) try{ speakQuestion(it.q, null); }catch(_){} });
     body.querySelectorAll('[data-time]').forEach(b=>b.onclick = ()=>this.toggle(b.dataset.time, b));
+    body.querySelectorAll('[data-goto-docs]').forEach(b=>b.onclick = ()=>{ this.stop(); StartFlow.s.step = 1; StartFlow.render(); setTimeout(()=>{ const d = document.getElementById('fl-docs'); if(d) d.scrollIntoView({ block:'center', behavior:'smooth' }); }, 60); });
   },
   toggle(id, btn){
     if(this.tq === id){ this.finishTimer(); return; }
@@ -11666,6 +11787,248 @@ const PrepRoom = {
     else showToast('5초 넘게 말하면 연습한 것으로 표시돼요.', 'info');
   },
   stop(){ if(this.timer){ clearInterval(this.timer); this.timer = null; } const b = this.tq !== -1 ? document.querySelector(`[data-time="${this.tq}"]`) : null; if(b) b.textContent = '연습 시작'; this.tq = -1; },
+};
+
+/* 2026-11-03b 면접 준비 흐름 '맞춤 준비' 단계의 서류 칸 (자기소개서·이력서). 올리면 계정에 저장하고 서류 질문을 바로 만듦.
+   교직원 열람 동의(user_resumes.share_staff)도 여기서·마이페이지에서 켜고 끔 */
+const DocBox = {
+  busy:'', msg:null, share:null, _loaded:false,
+  text(k){ return k === 'resume' ? (state.resumeFull || state.resumeText || '') : (state.cvFull || state.cvText || ''); },
+  name(k){ return k === 'resume' ? (state.resumeName || ((document.getElementById('resume-drop-label') || {}).textContent !== RESUME_DROP_DEFAULT && (document.getElementById('resume-drop-label') || {}).textContent) || '저장된 자기소개서') : (state.cvFileName || '저장된 이력서'); },
+  count(k){ try{ return k === 'resume' ? DocQ.fromResume(this.text(k)).length : DocQ.fromCv(this.text(k)).length; }catch(_){ return 0; } },
+  async ensure(){ if(this._loaded || !state.currentUser) return; this._loaded = true;
+    try{ if(!state.resumeFull && !state.cvFull) await loadSavedResume(); }catch(_){}
+    try{ await this.loadShare(); }catch(_){} },
+  slot(k, title, sub){
+    const has = !!this.text(k), n = has ? this.count(k) : 0, busy = this.busy === k, id = 'fl-doc-' + k;
+    return `<div class="fl-doc${has ? ' has' : ''}"><div class="fl-doc-h"><b>${title}</b><small>${sub}</small></div>
+      ${busy ? '<p class="fl-doc-n">읽는 중…</p>' : has ? `<p class="fl-doc-n"><span class="nm">${escapeHtml(this.name(k))}</span><span class="${n ? 'ok' : 'warn'}">${n ? `맞춤 질문 ${n}개` : '질문 재료를 못 찾음'}</span></p>` : '<p class="fl-doc-n none">아직 없어요</p>'}
+      <div class="fl-doc-a"><label class="btn btn-outline btn-sm" for="${id}">${has ? '바꾸기' : '파일 올리기'}</label><input type="file" id="${id}" data-doc="${k}" accept="${DocText.ACCEPT}" hidden ${busy ? 'disabled' : ''}>${has && !busy ? `<button type="button" class="fl-del" data-docdel="${k}">지우기</button>` : ''}</div></div>`;
+  },
+  html(){
+    const m = this.msg;
+    return `<div class="fl-row"><span class="fl-lbl">자기소개서·이력서</span><span class="fl-opt">(선택)</span></div>
+      <p class="fl-sub">올리면 서류에 적은 문장·경력으로 맞춤 질문을 만들어, 다음 '질문 미리 연습'과 본 면접에 함께 넣어요. PDF·한글(HWP)·워드·사진 모두 돼요.</p>
+      <div class="fl-doc-row">${this.slot('resume', '자기소개서', '지원 동기·경험·포부')}${this.slot('cv', '이력서', '경력·활동·수상·자격')}</div>
+      <p class="fl-doc-st${m ? ' ' + m[0] : ''}" id="fl-doc-st" role="status" aria-live="polite">${m ? escapeHtml(m[1]) : ''}</p>
+      <label class="doc-share"><input type="checkbox" id="fl-doc-share" ${this.share ? 'checked' : ''}><span><b>학교 교직원과 서류 함께 보기</b><small>켜 두면 취업지원센터 교직원·학과 담당이 내 서류를 보고 상담과 첨삭에 써요. 언제든 끌 수 있어요.</small></span></label>`;
+  },
+  mount(){
+    const box = document.getElementById('fl-docs'); if(!box) return;
+    box.innerHTML = this.html(); this.bind(box);
+    if(!this._loaded) this.ensure().then(()=>{ const b = document.getElementById('fl-docs'); if(b){ b.innerHTML = this.html(); this.bind(b); } });
+  },
+  bind(box){
+    box.querySelectorAll('input[data-doc]').forEach(inp=>inp.onchange = ()=>{ const f = inp.files && inp.files[0]; inp.value = ''; if(f) this.upload(inp.dataset.doc, f); });
+    box.querySelectorAll('[data-docdel]').forEach(b=>b.onclick = ()=>this.remove(b.dataset.docdel));
+    const sh = box.querySelector('#fl-doc-share'); if(sh) sh.onchange = ()=>this.setShare(sh.checked);
+  },
+  say(cls, msg){ this.msg = msg ? [cls, msg] : null; const el = document.getElementById('fl-doc-st'); if(el){ el.className = 'fl-doc-st' + (cls ? ' ' + cls : ''); el.textContent = msg || ''; } },
+  async upload(k, file){
+    if(this.busy) return;
+    this.busy = k; this.msg = ['', `${file.name} 읽는 중…`]; this.mount();
+    try{
+      const text = await DocText.extract(file, m=>this.say('', m));
+      let saved;
+      if(k === 'resume'){
+        state.resumeFull = text; state.resumeText = text.slice(0, 2000); state.resumeName = file.name; state.resumeFileSize = file.size;
+        saved = await saveResumeText(file.name, text);
+        const lbl = document.getElementById('resume-drop-label'); if(lbl) lbl.textContent = file.name;
+        const st = document.getElementById('resume-status'); if(st){ st.style.display = ''; st.className = 'resume-status ok'; st.textContent = `${file.name}을 면접 준비 흐름에서 올렸어요.`; }
+      }else{
+        state.cvFull = text; state.cvText = text.slice(0, 2000); state.cvFileName = file.name;
+        saved = await saveCvText(file.name, text);
+      }
+      try{ refreshDocQuestions(); }catch(_){}
+      try{ syncResumeCard(); syncCvCard(); }catch(_){}
+      try{ PrepRoom.dirty = true; }catch(_){}
+      const n = this.count(k);
+      this.busy = '';
+      this.msg = n ? ['ok', `${file.name}에서 맞춤 질문 ${n}개를 만들었어요. 다음 '질문 미리 연습'의 '내 서류' 칸에서 미리 연습할 수 있어요.${saved ? '' : ' (계정 저장은 실패해서 이번 면접에만 써요)'}`]
+                   : ['warn', `${file.name}을 읽었지만 경험·경력 문장을 찾지 못해 맞춤 질문은 만들지 못했어요. 항목(1. 지원 동기 …)이나 기간(2024.03 ~)이 적힌 서류면 잘 찾아요.`];
+      try{ Activity.log('doc_upload', { kind: k, ext: DocText.kind(file.name), questions: n, where: 'flow' }); }catch(_){}
+    }catch(e){ this.busy = ''; this.msg = ['warn', e && e.message ? e.message : '파일을 읽지 못했어요.']; }
+    this.mount();
+  },
+  async remove(k){
+    if(k === 'resume'){ await deleteSavedResume(); state.resumeName = ''; } else await removeCv();
+    try{ PrepRoom.dirty = true; }catch(_){}
+    this.msg = null; this.mount();
+  },
+  async loadShare(){
+    if(!state.currentUser) return;
+    const r = await sb.from('user_resumes').select('share_staff').eq('user_id', state.currentUser.id).maybeSingle();
+    if(r.error){ console.warn('[서류 공유 동의 읽기]', r.error.message); return; }
+    this.share = !!(r.data && r.data.share_staff);
+    const a = document.getElementById('fl-doc-share'), b = document.getElementById('mp-share'); if(a) a.checked = this.share; if(b) b.checked = this.share;
+  },
+  async setShare(on){
+    if(!state.currentUser) return;
+    const now = new Date().toISOString();
+    const { error } = await sb.from('user_resumes').upsert({ user_id: state.currentUser.id, share_staff: !!on, share_staff_at: on ? now : null, updated_at: now }, { onConflict: 'user_id' });
+    if(error){ showToast('동의를 저장하지 못했어요. ' + friendlyErr(error), 'warn'); const a = document.getElementById('fl-doc-share'), b = document.getElementById('mp-share'); if(a) a.checked = !!this.share; if(b) b.checked = !!this.share; return; }
+    this.share = !!on;
+    const a = document.getElementById('fl-doc-share'), b = document.getElementById('mp-share'); if(a) a.checked = this.share; if(b) b.checked = this.share;
+    showToast(on ? '교직원이 내 서류를 볼 수 있게 했어요.' : '교직원이 내 서류를 볼 수 없게 했어요.', 'ok');
+    try{ Activity.log('doc_share', { on: !!on }); }catch(_){}
+  },
+};
+
+/* ---------------- 2026-11-03c 커리어 인바디 (Inbody) ----------------
+ * 학생이 마이페이지에 학점·어학·자격·경험 수치를 적어 둠 (career_inbody 표). 학교 커리어 인바디가 연동되면 같은 칸을 자동으로 채움.
+ *  - 비슷한 학생 비교: inbody_peers() — 같은 목표 분야(가능하면 같은 학년) 학생이 5명 이상일 때만, 이름 없이 분포만. 내 수치를 보탠 학생만 볼 수 있음
+ *  - 예상 질문: 수치에서 실제 면접에 자주 나오는 질문을 만듦 → '질문 미리 연습'의 '내 서류·이력' 칸
+ *  - 결과 조언: 면접 답변에 내 강점(자격·인턴·어학)을 말했는지, 같은 분야 학생 연습 평균과 비교 */
+const OPIC_RANK = ['NL','NM','NH','IL','IM1','IM2','IM3','IH','AL'];
+const Inbody = {
+  d:null, peers:null, loaded:false, _p:null,
+  empty(){ return { grade:'', gpa:null, gpa_max:4.5, major_gpa:null, toeic:null, toeic_speaking:'', opic:'', other_lang:'', certs:[], intern_months:null, activities:null, awards:null, volunteer_hours:null, projects:null, target_field:'', target_role:'', share_stats:false }; },
+  ensure(){ if(this.loaded) return Promise.resolve(this.d); if(this._p) return this._p;
+    this._p = (async()=>{ try{ if(!state.currentUser) return null; const r = await sb.from('career_inbody').select('*').eq('user_id', state.currentUser.id).maybeSingle(); if(!r.error){ this.d = r.data || null; this.loaded = true; } }catch(_){} finally{ this._p = null; } return this.d; })();
+    return this._p; },
+  has(){ const d = this.d; return !!(d && (d.gpa != null || d.toeic != null || d.opic || (d.certs || []).length || d.intern_months != null || d.activities != null)); },
+  gpa45(d){ return d && d.gpa != null ? Math.round(d.gpa / (d.gpa_max || 4.5) * 4.5 * 100) / 100 : null; },
+  fieldName(id){ const f = FIELDS.find(x=>x.id === id); return f ? f.name : ''; },
+  /** 수치에서 나오는 예상 질문 (실제 면접에서 자주 묻는 것) */
+  questions(d){
+    d = d || this.d; if(!d) return []; const out = [], g = this.gpa45(d), certs = (d.certs || []).map(c=>c.name).filter(Boolean);
+    const add = (q, why, tip)=>out.push({ q, why, tip });
+    if(g != null && g < 3.3) add('학점이 높은 편은 아닌데, 그 이유와 대신 집중한 것은 무엇인가요?', `학점 ${d.gpa}/${d.gpa_max}`, '변명보다 "그 시간에 무엇을 했고 무엇이 남았는지"를 숫자로. 최근 학기 성적이 올랐다면 그 흐름을 말하세요.');
+    else if(g != null && g >= 4.0) add('학점 관리를 잘하셨는데, 공부 말고 따로 해 본 경험은 무엇인가요?', `학점 ${d.gpa}/${d.gpa_max}`, '"공부만 했다"로 보이지 않게, 팀으로 일한 경험 하나를 준비하세요.');
+    const lang = d.toeic >= 850 || OPIC_RANK.indexOf(d.opic) >= OPIC_RANK.indexOf('IH') || /Lv[6-8]/.test(d.toeic_speaking || '');
+    if(lang) add('어학 성적이 좋은데, 실제로 외국어를 써서 일하거나 문제를 해결한 경험이 있나요?', [d.toeic ? `TOEIC ${d.toeic}` : '', d.opic ? `OPIc ${d.opic}` : '', d.toeic_speaking ? `토익스피킹 ${d.toeic_speaking}` : ''].filter(Boolean).join(' · '), '점수보다 "써 본 장면"을 말하세요. 없으면 앞으로 직무에서 어떻게 쓸지 구체적으로.');
+    else if(d.toeic == null && !d.opic && !d.toeic_speaking && ['corp','pubcorp'].includes(d.target_field)) add('어학 점수가 없는데, 직무에 필요한 외국어 역량은 어떻게 준비하고 있나요?', '어학 기록 없음', '준비 계획을 날짜와 목표 점수로 말하면 성의 있게 들려요.');
+    if(certs.length) add(`${certs[0]} 자격을 딴 이유와, 그 지식을 직무에서 어떻게 쓸 수 있는지 말씀해 주세요.`, `자격 ${certs.slice(0, 3).join(', ')}`, '"왜 땄는지 → 공부하며 배운 것 → 직무의 어느 일에 쓰는지" 순서로.');
+    if(d.intern_months > 0) add(`인턴·현장실습 ${d.intern_months}개월 동안 맡은 일과 가장 크게 배운 점을 말씀해 주세요.`, `인턴 ${d.intern_months}개월`, '맡은 일 → 내가 바꾼 것 하나 → 결과. "보조 업무"라도 내가 한 판단을 찾으세요.');
+    else if(d.intern_months === 0 && !(d.projects > 0)) add('직무 관련 실무 경험이 없는데, 그 대신 어떤 준비를 해 왔나요?', '인턴·프로젝트 없음', '수업 과제·아르바이트·동아리에서 직무와 닮은 일을 골라 "이 직무의 ○○과 같다"고 연결하세요.');
+    if(d.projects > 0) add('가장 기억에 남는 프로젝트에서 본인이 맡은 역할과 결과를 말씀해 주세요.', `프로젝트 ${d.projects}개`, '팀 결과가 아니라 "제가" 한 일과 숫자 결과를 중심으로.');
+    if(d.volunteer_hours >= 50) add('봉사 활동을 꾸준히 하셨는데, 가장 기억에 남는 일과 거기서 배운 점은 무엇인가요?', `봉사 ${d.volunteer_hours}시간`, '시간보다 장면 하나를 생생하게. 지원한 일과 이어지는 배움으로 마무리.');
+    if(d.awards > 0) add('수상 경험 가운데 본인의 기여가 가장 컸던 것을 말씀해 주세요.', `수상 ${d.awards}번`, '상 이름보다 내가 맡은 부분과 어려움을 넘은 방법을.');
+    return out;
+  },
+  /* ── 마이페이지 ── */
+  async renderMy(){
+    const box = document.getElementById('mp-ib'); if(!box) return;
+    box.innerHTML = '<p class="ib-load">불러오는 중…</p>';
+    this.loaded = false; await this.ensure();
+    const d = Object.assign(this.empty(), this.d || {});
+    const num = (id, v, ph, step, min, max)=>`<input id="${id}" type="number" inputmode="decimal" ${step ? `step="${step}"` : ''} ${min != null ? `min="${min}"` : ''} ${max != null ? `max="${max}"` : ''} value="${v == null ? '' : v}" placeholder="${ph}">`;
+    box.innerHTML = `
+      <div class="ib-grid">
+        <label class="ib-f"><span>목표 분야</span><select id="ib-field"><option value="">고르기</option>${FIELDS.map(f=>`<option value="${f.id}"${d.target_field === f.id ? ' selected' : ''}>${escapeHtml(f.name)}</option>`).join('')}</select></label>
+        <label class="ib-f"><span>목표 직무</span><input id="ib-role" maxlength="40" value="${escapeHtml(d.target_role || '')}" placeholder="예: 마케팅"></label>
+        <label class="ib-f"><span>학년</span><select id="ib-grade"><option value="">고르기</option>${['1','2','3','4','졸업'].map(g=>`<option value="${g}"${d.grade === g ? ' selected' : ''}>${g === '졸업' ? '졸업(예정)' : g + '학년'}</option>`).join('')}</select></label>
+        <label class="ib-f"><span>전체 학점</span><div class="ib-gpa">${num('ib-gpa', d.gpa, '3.75', '0.01', 0, 4.5)}<select id="ib-gmax" aria-label="만점">${[4.5, 4.3, 4.0].map(x=>`<option value="${x}"${+d.gpa_max === x ? ' selected' : ''}>/ ${x}</option>`).join('')}</select></div></label>
+        <label class="ib-f"><span>전공 학점 <small>(선택)</small></span>${num('ib-mgpa', d.major_gpa, '3.90', '0.01', 0, 4.5)}</label>
+        <label class="ib-f"><span>TOEIC</span>${num('ib-toeic', d.toeic, '850', '5', 10, 990)}</label>
+        <label class="ib-f"><span>토익스피킹</span><select id="ib-ts"><option value="">없음</option>${['Lv1','Lv2','Lv3','Lv4','Lv5','Lv6','Lv7','Lv8'].map(x=>`<option${d.toeic_speaking === x ? ' selected' : ''}>${x}</option>`).join('')}</select></label>
+        <label class="ib-f"><span>OPIc</span><select id="ib-opic"><option value="">없음</option>${OPIC_RANK.map(x=>`<option${d.opic === x ? ' selected' : ''}>${x}</option>`).join('')}</select></label>
+        <label class="ib-f"><span>그 밖의 어학 <small>(선택)</small></span><input id="ib-olang" maxlength="60" value="${escapeHtml(d.other_lang || '')}" placeholder="예: JLPT N2"></label>
+        <label class="ib-f"><span>인턴·현장실습</span><div class="ib-u">${num('ib-intern', d.intern_months, '0', '1', 0, 60)}<i>개월</i></div></label>
+        <label class="ib-f"><span>프로젝트</span><div class="ib-u">${num('ib-proj', d.projects, '0', '1', 0, 50)}<i>개</i></div></label>
+        <label class="ib-f"><span>대외활동·동아리</span><div class="ib-u">${num('ib-act', d.activities, '0', '1', 0, 50)}<i>개</i></div></label>
+        <label class="ib-f"><span>수상</span><div class="ib-u">${num('ib-award', d.awards, '0', '1', 0, 50)}<i>번</i></div></label>
+        <label class="ib-f"><span>봉사</span><div class="ib-u">${num('ib-vol', d.volunteer_hours, '0', '1', 0, 5000)}<i>시간</i></div></label>
+      </div>
+      <div class="ib-certs"><span class="ib-lbl">자격증</span><div class="ib-chips" id="ib-chips">${(d.certs || []).map((c, i)=>`<span class="ib-chip">${escapeHtml(c.name)}<button type="button" data-cdel="${i}" aria-label="${escapeHtml(c.name)} 지우기">×</button></span>`).join('')}</div>
+        <div class="ib-cadd"><input id="ib-cert" maxlength="40" placeholder="예: 컴퓨터활용능력 1급" list="ib-cert-list"><datalist id="ib-cert-list">${['컴퓨터활용능력 1급','컴퓨터활용능력 2급','한국사능력검정 1급','한국사능력검정 2급','워드프로세서','사회조사분석사 2급','ADsP','SQLD','정보처리기사','유통관리사 2급','전산회계 1급','재경관리사','사회복지사 2급','GTQ 1급'].map(x=>`<option value="${x}">`).join('')}</datalist><button type="button" class="btn btn-outline btn-sm" id="ib-cadd">추가</button></div></div>
+      <label class="doc-share"><input type="checkbox" id="ib-share"${d.share_stats ? ' checked' : ''}><span><b>비슷한 학생 비교에 내 수치 보태기</b><small>이름 없이 수치만 합쳐서 같은 분야 학생들의 분포를 만들어요. 보탠 학생만 비교 결과를 볼 수 있고, 같은 분야 학생이 5명 이상일 때만 보여요.</small></span></label>
+      <div class="ib-acts"><span class="ib-st" id="ib-st" role="status"></span><button type="button" class="btn btn-solid btn-sm" id="ib-save">인바디 저장</button></div>
+      <div class="ib-out" id="ib-out"></div>`;
+    this._certs = (d.certs || []).slice();
+    const paintChips = ()=>{ const c = document.getElementById('ib-chips'); c.innerHTML = this._certs.map((x, i)=>`<span class="ib-chip">${escapeHtml(x.name)}<button type="button" data-cdel="${i}" aria-label="${escapeHtml(x.name)} 지우기">×</button></span>`).join(''); c.querySelectorAll('[data-cdel]').forEach(b=>b.onclick = ()=>{ this._certs.splice(+b.dataset.cdel, 1); paintChips(); }); };
+    paintChips();
+    const addC = ()=>{ const i = document.getElementById('ib-cert'), v = i.value.trim(); if(!v) return; if(this._certs.length >= 15) return showToast('자격증은 15개까지 적을 수 있어요'); if(!this._certs.some(x=>x.name === v)) this._certs.push({ name: v }); i.value = ''; paintChips(); i.focus(); };
+    document.getElementById('ib-cadd').onclick = addC;
+    document.getElementById('ib-cert').onkeydown = e=>{ if(e.key === 'Enter'){ e.preventDefault(); addC(); } };
+    document.getElementById('ib-save').onclick = ()=>this.save();
+    this.renderOut();
+  },
+  read(){
+    const v = id=>document.getElementById(id).value.trim(), n = id=>{ const x = v(id); return x === '' ? null : +x; };
+    return { grade: v('ib-grade') || null, gpa: n('ib-gpa'), gpa_max: +v('ib-gmax') || 4.5, major_gpa: n('ib-mgpa'), toeic: n('ib-toeic'), toeic_speaking: v('ib-ts') || null, opic: v('ib-opic') || null, other_lang: v('ib-olang') || null,
+      certs: this._certs.slice(), intern_months: n('ib-intern'), projects: n('ib-proj'), activities: n('ib-act'), awards: n('ib-award'), volunteer_hours: n('ib-vol'),
+      target_field: v('ib-field') || null, target_role: v('ib-role') || null, share_stats: document.getElementById('ib-share').checked };
+  },
+  check(r){
+    if(r.gpa != null && (r.gpa < 0 || r.gpa > r.gpa_max)) return `학점은 0~${r.gpa_max} 사이로 적어 주세요`;
+    if(r.major_gpa != null && (r.major_gpa < 0 || r.major_gpa > r.gpa_max)) return `전공 학점은 0~${r.gpa_max} 사이로 적어 주세요`;
+    if(r.toeic != null && (r.toeic < 10 || r.toeic > 990)) return 'TOEIC은 10~990 사이로 적어 주세요';
+    for(const [k, max, l] of [['intern_months', 60, '인턴 개월'], ['projects', 50, '프로젝트'], ['activities', 50, '대외활동'], ['awards', 50, '수상'], ['volunteer_hours', 5000, '봉사 시간']]) if(r[k] != null && (r[k] < 0 || r[k] > max || !Number.isInteger(r[k]))) return `${l}은(는) 0~${max} 사이 정수로 적어 주세요`;
+    return '';
+  },
+  async save(){
+    const st = document.getElementById('ib-st'), r = this.read(), why = this.check(r);
+    if(why){ st.className = 'ib-st warn'; st.textContent = why; return; }
+    st.className = 'ib-st'; st.textContent = '저장 중…';
+    const row = Object.assign({ user_id: state.currentUser.id, updated_at: new Date().toISOString() }, r);
+    const { error } = await sb.from('career_inbody').upsert(row, { onConflict:'user_id' });
+    if(error){ st.className = 'ib-st warn'; st.textContent = '저장하지 못했어요. ' + friendlyErr(error); return; }
+    this.d = Object.assign({}, this.d || {}, r); this.loaded = true; this.peers = null;
+    st.className = 'ib-st ok'; st.textContent = '저장했어요. 아래 비교와 예상 질문이 바뀌었어요.';
+    try{ Activity.log('inbody_save', { fields: Object.keys(r).filter(k=>r[k] != null && r[k] !== '' && !(Array.isArray(r[k]) && !r[k].length)).length, share: r.share_stats }); }catch(_){}
+    this.renderOut();
+  },
+  async loadPeers(){ try{ const { data, error } = await sb.rpc('inbody_peers', { p_field: null }); if(!error) this.peers = data; else this.peers = { status:'error', msg: error.message }; }catch(e){ this.peers = { status:'error', msg: e.message }; } return this.peers; },
+  band(label, my, p, fmt, unit){
+    if(!p || p.p25 == null || !p.k) return '';
+    const lo = Math.min(p.p25, my == null ? p.p25 : my), hi = Math.max(p.p75, my == null ? p.p75 : my), pad = (hi - lo) * 0.25 || 1, a = lo - pad, b = hi + pad, x = v=>Math.max(0, Math.min(100, (v - a) / (b - a) * 100));
+    return `<div class="ib-band"><div class="ib-band-h"><b>${label}</b><span>${my != null ? `나 <strong>${fmt(my)}</strong>${p.me_pct != null ? ` · 같은 분야에서 <strong>상위 ${Math.max(1, 100 - p.me_pct)}%</strong>` : ''}` : '<em>내 기록 없음</em>'}</span></div>
+      <div class="ib-track" aria-hidden="true"><i class="mid" style="left:${x(p.p25)}%;width:${Math.max(1, x(p.p75) - x(p.p25))}%"></i><i class="med" style="left:${x(p.p50)}%"></i>${my != null ? `<i class="me" style="left:${x(my)}%"></i>` : ''}</div>
+      <div class="ib-band-f"><span>가운데 50%: ${fmt(p.p25)}~${fmt(p.p75)}${unit || ''}</span><span>중간값 ${fmt(p.p50)}${unit || ''}</span></div></div>`;
+  },
+  advice(d, p){
+    const out = [], g = this.gpa45(d), certs = (d.certs || []).map(c=>c.name);
+    if(p && p.status === 'ok'){
+      if(p.gpa && g != null && p.gpa.p25 != null && g < p.gpa.p25) out.push(['학점', '같은 분야 학생들보다 학점이 낮은 편이에요. 면접에서 학점을 물으면 "그 시간에 대신 한 일"과 최근 학기 변화로 답할 준비를 해 두세요.']);
+      if(p.gpa && g != null && p.gpa.p75 != null && g >= p.gpa.p75) out.push(['학점', '학점은 상위권이에요. 성실함은 이미 보이니, 면접에서는 협업·실행 경험을 더 보여 주는 게 좋아요.']);
+      if(p.toeic && d.toeic != null && p.toeic.p75 != null && d.toeic >= p.toeic.p75) out.push(['어학', '어학은 강점이에요. 영어를 실제로 써 본 장면 하나를 답변에 넣으면 점수가 경험으로 바뀌어요.']);
+      if(p.toeic && d.toeic == null && p.toeic.k >= Math.ceil(p.n / 2)) out.push(['어학', `같은 분야 학생 ${Math.round(p.toeic.k / p.n * 100)}%가 TOEIC 점수를 적었어요. 어학을 묻는 질문에 준비 계획으로 답할 수 있게 해 두세요.`]);
+      if(!(d.intern_months > 0) && p.intern_rate >= 40) out.push(['경험', `같은 분야 학생 ${p.intern_rate}%가 인턴·현장실습 경험이 있어요. 프로젝트·아르바이트에서 직무와 닮은 경험을 골라 "이 직무의 ○○과 같다"고 연결해 보세요.`]);
+      (p.certs || []).filter(c=>!certs.includes(c.name)).slice(0, 2).forEach(c=>out.push(['자격', `같은 분야 학생 ${c.pct}%가 '${c.name}'을 가지고 있어요. 꼭 필요한 건 아니지만, 직무에 쓰이는 자격인지 확인해 보세요.`]));
+      if(p.score && p.score.avg != null && p.my_score != null) out.push(['면접 연습', `같은 분야 학생들의 최근 면접 연습 평균은 ${p.score.avg}점, 내 최근 평균은 ${p.my_score}점이에요.`]);
+    }
+    if(!out.length && this.has()) out.push(['준비', '적은 수치로 아래 예상 질문을 만들었어요. 질문 미리 연습의 \'내 서류·이력\' 칸에서 연습할 수 있어요.']);
+    return out;
+  },
+  async renderOut(){
+    const box = document.getElementById('ib-out'); if(!box) return;
+    const d = this.d; if(!d || !this.has()){ box.innerHTML = '<p class="ib-empty">수치를 적고 저장하면 비슷한 학생과의 비교와 내 이력에서 나올 면접 질문이 여기에 보여요.</p>'; return; }
+    box.innerHTML = '<p class="ib-load">비교하는 중…</p>';
+    const p = await this.loadPeers(), g = this.gpa45(d), qs = this.questions(d), adv = this.advice(d, p);
+    let cmp = '';
+    if(!p || p.status === 'error') cmp = `<p class="ib-empty">비교를 불러오지 못했어요${p && p.msg ? ': ' + escapeHtml(p.msg) : ''}.</p>`;
+    else if(p.status === 'locked') cmp = '<p class="ib-empty">\'비슷한 학생 비교에 내 수치 보태기\'를 켜고 저장하면 같은 분야 학생들과 비교해 볼 수 있어요.</p>';
+    else if(p.status === 'no_field') cmp = '<p class="ib-empty">목표 분야를 고르고 저장하면 같은 분야 학생들과 비교해요.</p>';
+    else if(p.status === 'few') cmp = `<p class="ib-empty">${escapeHtml(this.fieldName(p.field))} 분야에서 수치를 보탠 학생이 아직 ${p.n}명이에요. 5명이 되면 비교가 열려요. (누군지 알 수 없게 하려고 5명부터 보여 줘요)</p>`;
+    else if(p.status === 'ok') cmp = `<div class="ib-cmp"><p class="ib-cmp-h"><b>${escapeHtml(this.fieldName(p.field))}</b> 분야${p.same_grade && p.grade ? ` · ${p.grade === '졸업' ? '졸업(예정)' : p.grade + '학년'}` : ''} 학생 <b>${p.n}명</b>과 비교 <small>이름 없이 합친 분포예요</small></p>
+        ${this.band('학점 (4.5 만점으로 환산)', g, p.gpa, v=>(+v).toFixed(2))}${this.band('TOEIC', d.toeic, p.toeic, v=>Math.round(v), '점')}
+        <div class="ib-stats"><span>인턴·현장실습 있는 학생 <b>${p.intern_rate}%</b><small>나: ${d.intern_months > 0 ? d.intern_months + '개월' : '없음'}</small></span><span>대외활동 평균 <b>${p.activities_avg}개</b><small>나: ${d.activities != null ? d.activities + '개' : '-'}</small></span><span>프로젝트 평균 <b>${p.projects_avg}개</b><small>나: ${d.projects != null ? d.projects + '개' : '-'}</small></span>${p.score && p.score.avg != null ? `<span>면접 연습 평균 <b>${p.score.avg}점</b><small>나: ${p.my_score != null ? p.my_score + '점' : '-'}</small></span>` : ''}</div>
+        ${(p.certs || []).length ? `<p class="ib-certs-top">많이 가진 자격증: ${p.certs.map(c=>`<span class="${(d.certs || []).some(x=>x.name === c.name) ? 'has' : ''}">${escapeHtml(c.name)} ${c.pct}%</span>`).join('')}</p>` : ''}</div>`;
+    box.innerHTML = `${cmp}
+      ${adv.length ? `<div class="ib-adv"><b>내 인바디로 본 면접 포인트</b><ul>${adv.map(([k, t])=>`<li><span>${escapeHtml(k)}</span>${escapeHtml(t)}</li>`).join('')}</ul></div>` : ''}
+      ${qs.length ? `<div class="ib-qs"><b>내 이력에서 나올 수 있는 질문 ${qs.length}개</b><ol>${qs.map(q=>`<li>${escapeHtml(q.q)}<small>${escapeHtml(q.why)}</small></li>`).join('')}</ol><p>면접 준비의 '질문 미리 연습' → '내 서류·이력' 칸에서 답변 틀과 함께 연습할 수 있어요.</p></div>` : ''}`;
+  },
+  /* ── 결과 화면 ── */
+  async renderResult(){
+    const box = document.getElementById('ib-result'); if(!box) return;
+    box.hidden = true; box.innerHTML = '';
+    if(!state.currentUser || state.currentUser.isAdmin) return;
+    await this.ensure(); const d = this.d; if(!d || !this.has()) return;
+    const texts = (state.answerTexts || []).join(' '), certs = (d.certs || []).map(c=>c.name), tips = [];
+    const said = w=>texts.includes(w);
+    const c1 = certs.find(c=>said(c.replace(/\s*\d급$/, '').slice(0, 4)));
+    if(certs.length && !c1) tips.push(`자격증(${certs.slice(0, 2).join(', ')})을 답변에서 한 번도 말하지 않았어요. 직무 질문에서 "이 지식을 이렇게 쓰겠다"는 근거로 써 보세요.`);
+    if(d.intern_months > 0 && !/(인턴|실습|현장)/.test(texts)) tips.push(`인턴·현장실습 ${d.intern_months}개월 경험이 답변에 나오지 않았어요. 경험 질문에서 가장 먼저 꺼낼 만한 재료예요.`);
+    const lang = d.toeic >= 850 || OPIC_RANK.indexOf(d.opic) >= OPIC_RANK.indexOf('IH');
+    if(lang && !/(영어|외국어|해외|글로벌|외국인)/.test(texts) && ['corp','pubcorp'].includes(d.target_field)) tips.push('어학이 강점인데 답변에서 드러나지 않았어요. 지원 동기나 강점 질문에 외국어를 쓴 장면을 한 줄 넣어 보세요.');
+    if(d.projects > 0 && !/(프로젝트|과제|팀)/.test(texts)) tips.push('프로젝트 경험을 적어 두셨는데 답변에는 나오지 않았어요.');
+    let peer = '';
+    try{ const p = this.peers || await this.loadPeers(); if(p && p.status === 'ok' && p.score && p.score.avg != null && state.lastAverageScore != null) peer = `같은 분야(${escapeHtml(this.fieldName(p.field))}) 학생들의 최근 연습 평균은 ${p.score.avg}점이에요. 이번 ${state.lastAverageScore}점은 평균보다 ${Math.abs(state.lastAverageScore - p.score.avg)}점 ${state.lastAverageScore >= p.score.avg ? '높아요' : '낮아요'}.`; }catch(_){}
+    if(!tips.length && !peer) return;
+    box.innerHTML = `<h3 class="ib-r-h">내 인바디와 연결한 조언 <small>마이페이지에 적은 수치 기준</small></h3>${peer ? `<p class="ib-r-peer">${peer}</p>` : ''}${tips.length ? `<ul class="ib-r-list">${tips.map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul>` : ''}`;
+    box.hidden = false;
+  },
 };
 /* 2026-11-02v 한림대 데모: 학생은 모든 면접을 면접 준비 흐름(목적 → 맞춤 준비 → 질문 연습 → 진행 방식 → 면접관·설정 → 확인)으로만 시작.
    again=true(결과에서 다시 연습)면 지난 선택을 그대로 두고 '맞춤 준비'부터 다시 보여 줌. 관리자는 기존 바로가기 그대로 */
@@ -11739,6 +12102,7 @@ const StartFlow = {
     CompanyData.cur = null; state.companyPackP = null; try{ PrepSync.save(); }catch(_){}
     if(s.kind === 'job' && s.job.companyId){ state.companyPackP = CompanyData.pack(s.job.companyId).then(p=>{ CompanyData.cur = p; return p; }); }
     this.close();
+    try{ IvVoice.loadMap(); }catch(_){}   // 2026-11-03c 이번 면접에서 쓸 면접관 목소리 (시작 때 한 번 읽어 고정)
     if(state.dashField !== fid){ state.dashField = fid; try{ renderDashboard(); }catch(_){} }
     openSetup(fid);
     setTimeout(()=>{ try{
@@ -11774,6 +12138,7 @@ const StartFlow = {
     on('#fl-spk-next', ()=>{ setSpk((s.spk + 1) % Math.max(1, s.people.length)); });
     on('[data-spk]', b=>{ setSpk(+b.dataset.spk); });
     on('#fl-set-toggle', ()=>{ s.showSet = !s.showSet; });
+    try{ DocBox.mount(); }catch(e){ console.warn('[서류 칸]', e); }
     const add = document.getElementById('fl-exp-add');
     if(add) add.onclick = ()=>{ const t = document.getElementById('fl-exp-text'), ty = document.getElementById('fl-exp-type'); const v = String(t.value || '').trim();
       if(!v){ t.focus(); const h = document.getElementById('fl-need'); if(h) h.textContent = '경험 내용을 적어 주세요'; return; }
@@ -11862,7 +12227,7 @@ const StartFlow = {
   vProfile(){ const m = this.s.major; return `<div class="fl-grid"><div class="fl-f"><label for="fl-dept">전공 <span class="req">*</span></label><input id="fl-dept" value="${escapeHtml(m.dept)}" placeholder="예: 경영학과"></div>
     <div class="fl-f"><label for="fl-grade">학년 <span class="req">*</span></label><select id="fl-grade"><option value="">학년 선택</option>${['1','2','3','4'].map(g=>`<option value="${g}" ${g===m.grade?'selected':''}>${g}학년</option>`).join('')}</select></div></div>`; },
   vPrep(){ const s = this.s;
-    if(s.kind === 'major') return `<h2 class="fl-h">전공·경험 면접 준비</h2><p class="fl-lead">전공 시험이 아니라, 내 경험을 얼마나 깊이 이해하고 설명하는지 확인하는 면접이에요.</p>${this.vProfile()}${this.vExps('수강 과목·프로젝트·활동')}${this.vSummary()}`;
+    if(s.kind === 'major') return `<h2 class="fl-h">전공·경험 면접 준비</h2><p class="fl-lead">전공 시험이 아니라, 내 경험을 얼마나 깊이 이해하고 설명하는지 확인하는 면접이에요.</p>${this.vProfile()}${this.vExps('수강 과목·프로젝트·활동')}${this.vDocs()}${this.vSummary()}`;
     const j = s.job, f = this.field(j.field);
     return `<h2 class="fl-h">기업·직무 맞춤 면접 준비</h2><p class="fl-lead">기업 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vProfile()}
     <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}</span><span class="d">${escapeHtml((hallymRoles(x.id).length ? hallymRoles(x.id) : (x.roles||[])).slice(0,3).join('·'))} 외</span></button>`).join('')}</div></div>
@@ -11872,7 +12237,8 @@ const StartFlow = {
     <div class="fl-f wide" id="fl-co-card">${j.companyId ? '<p class="cc-load">회사 정보를 불러오는 중…</p>' : '<p class="cc-load">회사를 고르면 인재상과 면접 전형이 보여요. 목록에 없으면 이름만 적어도 돼요.</p>'}</div>
     <div class="fl-f wide" id="fl-role-pick"></div>
     <div class="fl-f wide"><label for="fl-post">채용공고 <span class="fl-opt">(선택)</span></label><textarea id="fl-post" placeholder="자격 요건·우대 사항을 붙여 넣으면 관련 경험을 확인하는 질문이 나와요.">${escapeHtml(j.post)}</textarea></div></div>
-    ${this.vExps('활용할 내 경험')}${this.vSummary()}`; },
+    ${this.vExps('활용할 내 경험')}${this.vDocs()}${this.vSummary()}`; },
+  vDocs(){ return '<div class="fl-f wide fl-docs" id="fl-docs">' + DocBox.html() + '</div>'; },
   vPrepQ(){ return '<div class="pr-body" id="pr-body"><p class="cc-load">질문을 불러오는 중…</p></div>'; },
   vMode(){ const s = this.s; return `<h2 class="fl-h">진행 방식을 골라 주세요</h2><p class="fl-lead">어느 목적이든 연습형과 실전형 모두 할 수 있어요.</p>
     <div class="fl-picks"><button type="button" class="fl-pick" data-mode="practice" aria-pressed="${s.mode==='practice'}"><span class="t">연습형</span><span class="d">편하게 익히기</span><ul class="fl-ul"><li>질문 힌트</li><li>답변 후 바로 피드백</li><li>중간에 멈추고 이어 하기</li></ul></button>
@@ -12187,7 +12553,7 @@ const ADMIN_GROUPS = {   // 2026-10-22m 하는 일별로 다시 묶음 (화면 i
   results:  { label:'연습 결과', views:[['records','면접 기록'],['realset','실전 세트 · 자기소개'],['hardq','점수 낮은 질문'],['export','엑셀로 내려받기']] },
   questions:{ label:'질문', views:[['questions','질문 · 모범답안'],['qrecord','질문 음성 녹음'],['reports','실제 면접 후기'],['reportq','후기 질문 정리'],['reportcall','후기 부탁할 사람'],['sttfix','음성 인식 바로잡기']] },
   talk:     { label:'소통', views:[['feedback','의견 · 오류 신고'],['notices','공지 보내기']] },
-  settings: { label:'AI · 비용', views:[['pipeline','AI 켜기 · 횟수'],['tccredit','타입캐스트 크레딧'],['ttslive','즉석으로 읽은 문장'],['voice','면접관 목소리'],['devtest','문제 확인 (개발용)']] },
+  settings: { label:'AI · 비용', views:[['ivvoice','면접관 10명 목소리'],['pipeline','AI 켜기 · 횟수'],['tccredit','타입캐스트 크레딧'],['ttslive','즉석으로 읽은 문장'],['voice','기본 목소리 (1개)'],['devtest','문제 확인 (개발용)']] },
 };
 /* 2026-10-22m: 'AI · 비용' 안의 탭은 한 화면(admin-view-pipeline)의 칸을 나눠 보여 줌 */
 const PIPE_VIEWS = {
@@ -12219,6 +12585,7 @@ const AdminFind = {
     pipeline:'AI 켜기 끄기 꼬리질문 채점 횟수 한도 하루 5회 전체 OpenAI 오픈에이아이 비용 요금',
     tccredit:'타입캐스트 크레딧 남은 요금제 충전 안전장치 1인 한도 사람별 사용량 typecast',
     ttslive:'즉석 읽은 문장 꼬리질문 음성 녹음본 저장 대신읽음 새문장',
+    ivvoice:'면접관 10명 목소리 캐릭터 타입캐스트 매핑 겹침 발음 사전 예산 녹음 다시 녹음 감정 속도 높낮이 예비',
     voice:'목소리 면접관 음성 타입캐스트 OpenAI 속도 발음 교정',
     devtest:'문제 확인 개발 점검 테스트 동작',
   },
@@ -12312,6 +12679,8 @@ function showAdminView(view){
   if(view === 'live') startLiveRefresh(); else stopLiveRefresh();
   if(view === 'beta') loadBetaView();
   if(view === 'questions') qmLoad();
+  if(view === 'ivvoice') IvVoice.load();
+  else if(typeof IvVoice !== 'undefined') IvVoice.stop();
   if(view === 'realset') loadRealSetView();
   if(view === 'hardq') loadHardQ();
   if(view === 'approvals') ApprovalAdmin.load(true);
@@ -13182,7 +13551,7 @@ function openSetup(fieldId){   // 2026-10-22v: 새 버전 확인 뒤 준비 창 
   renderVoiceSelect(); renderPrimaryVoice();
   { const vp = document.getElementById('voice-primary'); if(vp) vp.style.display = isAdmin ? '' : 'none'; }   // 면접관 목소리 정보는 관리자에게만 (2026-10-08)
   document.getElementById('resume-file').value = '';
-  document.getElementById('resume-drop-label').textContent = 'PDF 파일을 여기로 끌어다 놓거나 클릭해서 올려주세요';
+  document.getElementById('resume-drop-label').textContent = '파일을 끌어다 놓거나 눌러서 올려 주세요 (PDF·한글·워드·사진)';
   const statusEl = document.getElementById('resume-status');
   statusEl.style.display='none'; statusEl.className='resume-status'; statusEl.textContent='';
   syncResumeCard(); updateSetupSummary(); setCamPill('확인 중','');
@@ -13390,7 +13759,7 @@ function updateSetupSummary(){
   const ms = document.getElementById('setup-ms-config'); if(ms) ms.textContent = isReview ? `복습 ${state.questionCount||0}개` : realSet ? '실전 세트' : `질문 ${state.questionCount||5}개`;
   try{ syncRealSetDocStep(); }catch(e){}
 }
-const RESUME_DROP_DEFAULT = 'PDF 파일을 여기로 끌어다 놓거나 클릭해서 올려주세요';
+const RESUME_DROP_DEFAULT = '파일을 끌어다 놓거나 눌러서 올려 주세요 (PDF·한글·워드·사진)';
 function syncResumeCard(){
   const label = (document.getElementById('resume-drop-label')||{}).textContent || '';
   const st = document.getElementById('resume-status'), card = document.getElementById('resume-card'), drop = document.getElementById('resume-drop');
@@ -13465,20 +13834,14 @@ async function processResumeFileInner(file){
   statusEl.style.display=''; statusEl.className='resume-status';
   statusEl.textContent = '자기소개서를 분석해 맞춤형 질문을 준비하는 중입니다…';
 
-  const isPdf = /\.pdf$/i.test(file.name);
-  if(!isPdf){
-    state.customQuestions = [];
+  if(!DocText.ok(file.name)){
     statusEl.className='resume-status warn';
-    statusEl.textContent = `'${file.name}' 파일이 첨부되었습니다. 이 데모에서는 PDF만 자동으로 분석할 수 있어 맞춤형 질문은 생성되지 않습니다.`;
-    return;
-  }
-  if(!(await PdfLib.load())){
-    statusEl.className='resume-status warn';
-    statusEl.textContent = 'PDF 분석 라이브러리를 불러오지 못했습니다. 네트워크 상태를 확인해 주세요.';
+    statusEl.textContent = `'${file.name}'은 읽을 수 없는 형식이에요. ${DocText.LABEL} 파일로 올려 주세요.`;
     return;
   }
   try{
-    const text = await extractPdfText(file);
+    const text = await DocText.extract(file, m=>{ statusEl.textContent = m; });
+    state.resumeName = file.name;
     state.resumeFull = DocQ.clean(text || ''); state.resumeText = state.resumeFull.slice(0, 2000);
     refreshDocQuestions();
     if(state.customQuestions.length && state.customQuestions[0].src){
@@ -13493,7 +13856,7 @@ async function processResumeFileInner(file){
     if(saved) statusEl.textContent += ' 이 자기소개서는 계정에 저장되어 다음 면접에도 자동으로 사용돼요.';
   }catch(err){
     statusEl.className='resume-status warn';
-    statusEl.textContent = 'PDF 내용을 읽는 중 문제가 발생해 맞춤형 질문 생성을 건너뜁니다.';
+    statusEl.textContent = (err && err.friendly ? err.message : '파일 내용을 읽지 못했어요.') + ' 서류 없이도 면접은 할 수 있어요.';
     state.customQuestions = [];
   }
 }
@@ -13524,6 +13887,214 @@ async function extractPdfText(file){
   }
   return DocQ.clean(text);
 }
+
+/* 2026-11-03b 서류 읽기 (DocText): PDF(글자 PDF + 스캔 PDF), 한글(HWP·HWPX), 워드(DOCX·DOC), 사진(JPG·PNG).
+ * 읽는 부품(압축 풀기·글자 인식)은 그 파일을 올릴 때만 받음. HWP·DOC는 OLE 복합 문서를 직접 읽음.
+ * 글자 인식(스캔 PDF·사진)은 tesseract.js 한국어 모델로 브라우저 안에서 처리 (파일을 밖으로 보내지 않음) */
+const DocText = {
+  EXT: /\.(pdf|hwp|hwpx|docx|doc|jpe?g|png|webp)$/i,
+  ACCEPT: '.pdf,.hwp,.hwpx,.docx,.doc,.jpg,.jpeg,.png,.webp',
+  LABEL: 'PDF·한글(HWP)·워드·사진',
+  ok(name){ return this.EXT.test(String(name || '')); },
+  kind(name){ const m = String(name || '').toLowerCase().match(/\.([a-z]+)$/); return m ? m[1].replace('jpeg', 'jpg') : ''; },
+  fail(msg){ const e = new Error(msg); e.friendly = true; return e; },
+  korLen(t){ return (String(t || '').match(/[가-힣]/g) || []).length; },
+  _js:{},
+  script(src, integrity, test){
+    if(test()) return Promise.resolve(true);
+    if(this._js[src]) return this._js[src];
+    return this._js[src] = new Promise(res=>{
+      let done = false; const fin = v=>{ if(!done){ done = true; if(!v) delete this._js[src]; res(v); } };
+      const sc = document.createElement('script'); sc.src = src; if(integrity){ sc.integrity = integrity; sc.crossOrigin = 'anonymous'; }
+      sc.onload = ()=>fin(test()); sc.onerror = ()=>{ try{ sc.remove(); }catch(_){} fin(false); };
+      document.head.appendChild(sc); setTimeout(()=>fin(test()), 30000);
+    });
+  },
+  /** 파일 → 글자 (DocQ.clean까지). say(문장)으로 진행 상황을 알림. 못 읽으면 이유가 담긴 Error */
+  async extract(file, say){
+    say = say || (()=>{});
+    if(!file) throw this.fail('파일이 없어요.');
+    if(!this.ok(file.name)) throw this.fail(`${this.LABEL} 파일만 읽을 수 있어요.`);
+    if(file.size > 20 * 1024 * 1024) throw this.fail('파일이 너무 커요. 20MB 이하로 올려 주세요.');
+    const k = this.kind(file.name);
+    let text = '';
+    try{
+      if(k === 'pdf'){
+        say('파일을 읽는 중이에요…');
+        text = await extractPdfText(file);
+        if(this.korLen(text) < 40){ say('글자를 고를 수 없는 스캔 PDF예요. 사진 속 글자를 읽는 중이에요 (처음 한 번은 20~40초 걸려요)…'); text = await this.ocrPdf(file, say); }
+      }else if(k === 'docx'){ say('워드 파일을 읽는 중이에요…'); text = await this.docx(file); }
+      else if(k === 'hwpx'){ say('한글 파일을 읽는 중이에요…'); text = await this.hwpx(file); }
+      else if(k === 'hwp'){ say('한글 파일을 읽는 중이에요…'); text = await this.hwp(file); }
+      else if(k === 'doc'){ say('워드 파일을 읽는 중이에요…'); text = await this.doc(file); }
+      else { say('사진 속 글자를 읽는 중이에요 (처음 한 번은 20~40초 걸려요)…'); text = await this.ocr([file], say); }
+    }catch(e){
+      if(e && e.friendly) throw e;
+      console.warn('[서류 읽기]', k, e);
+      throw this.fail(k === 'pdf' ? 'PDF 내용을 읽지 못했어요. 파일이 손상되지 않았는지 확인해 주세요.' : '파일 내용을 읽지 못했어요. 그 프로그램에서 PDF로 저장해 올려 주세요.');
+    }
+    text = DocQ.clean(String(text || '').replace(/ /g, ' '));
+    if(this.korLen(text) < 20) throw this.fail('파일에서 글자를 거의 읽지 못했어요. 글자가 또렷한 파일로 다시 올려 주세요.');
+    return text;
+  },
+  ent(t){ return String(t).replace(/&#x([0-9a-f]+);/gi, (m, h)=>String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (m, d)=>String.fromCodePoint(+d))
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&'); },
+  async zip(){
+    const I = 'sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG';
+    for(const u of ['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js'])
+      if(await this.script(u, I, ()=>typeof JSZip !== 'undefined')) return JSZip;
+    throw this.fail('한글·워드 파일을 읽는 부품을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
+  },
+  /** DOCX: word/document.xml의 문단(w:p)·글자(w:t) */
+  async docx(file){
+    const Z = await this.zip(); const z = await Z.loadAsync(await file.arrayBuffer());
+    const f = z.file('word/document.xml'); if(!f) throw this.fail('워드 문서 형식이 아니에요.');
+    const xml = await f.async('string'); let out = '';
+    const re = /<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>|<\/w:p>|<w:tab\/>|<w:br\/>|<w:cr\/>/g; let m;
+    while((m = re.exec(xml))){ if(m[1] !== undefined) out += this.ent(m[1]); else out += m[0] === '<w:tab/>' ? ' ' : '\n'; }
+    return out;
+  },
+  /** HWPX: Contents/section*.xml의 문단(hp:p)·글자(hp:t) */
+  async hwpx(file){
+    const Z = await this.zip(); const z = await Z.loadAsync(await file.arrayBuffer());
+    const names = Object.keys(z.files).filter(n=>/^Contents\/section\d+\.xml$/i.test(n)).sort((a, b)=>+a.match(/(\d+)\.xml$/i)[1] - +b.match(/(\d+)\.xml$/i)[1]);
+    if(!names.length) throw this.fail('한글(HWPX) 문서 형식이 아니에요.');
+    let out = '';
+    for(const n of names){
+      const xml = await z.file(n).async('string');
+      const re = /<hp:t(?:\s[^>]*)?\/>|<hp:t(?:\s[^>]*)?>([\s\S]*?)<\/hp:t>|<\/hp:p>/g; let m;
+      while((m = re.exec(xml))){ if(m[0].startsWith('</')) out += '\n'; else if(m[1]) out += this.ent(m[1].replace(/<hp:lineBreak\s*\/>/g, '\n').replace(/<[^>]+>/g, ' ')); }
+      out += '\n';
+    }
+    return out;
+  },
+  /** OLE(복합 문서) 아주 작게 읽기: 경로 → 스트림 바이트 (HWP 5.x, Word 97~2003) */
+  cfb(buf){
+    const dv = new DataView(buf), u8 = new Uint8Array(buf);
+    if(buf.byteLength < 512 || dv.getUint32(0, true) !== 0xE011CFD0) throw this.fail('파일 형식을 알아볼 수 없어요. 그 프로그램에서 PDF로 저장해 올려 주세요.');
+    const END = 0xFFFFFFFA, ss = 1 << dv.getUint16(0x1E, true), mss = 1 << dv.getUint16(0x20, true);
+    const nFat = dv.getUint32(0x2C, true), dir0 = dv.getUint32(0x30, true), cutoff = dv.getUint32(0x38, true), mf0 = dv.getUint32(0x3C, true);
+    const sec = n=>(n + 1) * ss;
+    const fatSecs = [];
+    for(let i = 0; i < 109 && fatSecs.length < nFat; i++){ const v = dv.getUint32(0x4C + i * 4, true); if(v < END) fatSecs.push(v); }
+    for(let d = dv.getUint32(0x44, true), g = 0; d < END && fatSecs.length < nFat && g < 10000; g++){
+      const o = sec(d); for(let i = 0; i < ss / 4 - 1 && fatSecs.length < nFat; i++){ const v = dv.getUint32(o + i * 4, true); if(v < END) fatSecs.push(v); }
+      d = dv.getUint32(o + ss - 4, true);
+    }
+    const fat = []; fatSecs.forEach(x=>{ const o = sec(x); for(let i = 0; i < ss / 4 && o + i * 4 + 4 <= buf.byteLength; i++) fat.push(dv.getUint32(o + i * 4, true)); });
+    const chain = (start, tbl)=>{ const out = []; for(let n = start, g = 0; n < END && n < tbl.length && g < 1e6; g++){ out.push(n); n = tbl[n]; } return out; };
+    const read = (start, size)=>{ const out = new Uint8Array(size); let p = 0;
+      for(const x of chain(start, fat)){ const len = Math.min(ss, size - p); if(len <= 0) break; out.set(u8.subarray(sec(x), sec(x) + len), p); p += len; } return out; };
+    const dc = chain(dir0, fat), dir = new Uint8Array(dc.length * ss); dc.forEach((x, i)=>dir.set(u8.subarray(sec(x), sec(x) + ss), i * ss));
+    const ddv = new DataView(dir.buffer), ents = [];
+    for(let o = 0; o + 128 <= dir.length; o += 128){
+      const nl = ddv.getUint16(o + 0x40, true); let name = '';
+      for(let i = 0; i < Math.min(31, Math.max(0, nl / 2 - 1)); i++) name += String.fromCharCode(ddv.getUint16(o + i * 2, true));
+      ents.push({ name, type: dir[o + 0x42], l: ddv.getUint32(o + 0x44, true), r: ddv.getUint32(o + 0x48, true), c: ddv.getUint32(o + 0x4C, true), start: ddv.getUint32(o + 0x74, true), size: ddv.getUint32(o + 0x78, true) });
+    }
+    const root = ents[0]; if(!root) throw this.fail('파일 형식을 알아볼 수 없어요.');
+    const mfat = []; if(mf0 < END) chain(mf0, fat).forEach(x=>{ const o = sec(x); for(let i = 0; i < ss / 4; i++) mfat.push(dv.getUint32(o + i * 4, true)); });
+    const mini = root.size ? read(root.start, root.size) : new Uint8Array(0);
+    const readMini = (start, size)=>{ const out = new Uint8Array(size); let p = 0;
+      for(const x of chain(start, mfat)){ const len = Math.min(mss, size - p); if(len <= 0) break; out.set(mini.subarray(x * mss, x * mss + len), p); p += len; } return out; };
+    const files = {}, seen = new Set();
+    const walk = (i, path)=>{ if(i >= END || i >= ents.length || seen.has(i)) return; seen.add(i); const e = ents[i];
+      walk(e.l, path); walk(e.r, path); if(e.type === 2) files[path + e.name] = e; else if(e.type === 1) walk(e.c, path + e.name + '/'); };
+    walk(root.c, '');
+    return { files, get(p){ const e = files[p]; if(!e) return null; return e.size < cutoff ? readMini(e.start, e.size) : read(e.start, e.size); } };
+  },
+  async inflateRaw(u8){
+    if(typeof DecompressionStream !== 'undefined'){
+      try{ return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer()); }catch(_){}
+    }
+    const ok = await this.script('https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako_inflate.min.js', 'sha384-taEjHL+GUvC8IhXeCaTNUxz3O8ItsajGFLDFj4v/VJvM24HU36qP/6sRpuAGGfeT', ()=>typeof pako !== 'undefined');
+    if(!ok) throw this.fail('한글 파일을 읽는 부품을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
+    return pako.inflateRaw(u8);
+  },
+  /** HWP 5.x: FileHeader(압축·암호·배포용 여부) → BodyText/Section* 의 문단 글자(HWPTAG_PARA_TEXT = 67) */
+  async hwp(file){
+    const buf = await file.arrayBuffer();
+    if(new Uint8Array(buf, 0, 4).every((b, i)=>b === [0x50, 0x4B, 0x03, 0x04][i])) return this.hwpx(file);   // 확장자만 hwp인 HWPX
+    const c = this.cfb(buf), fh = c.get('FileHeader');
+    if(!fh || !/HWP Document File/.test(String.fromCharCode(...fh.subarray(0, 17)))) throw this.fail('한글 문서 형식이 아니에요. 한글에서 PDF로 저장해 올려 주세요.');
+    const prop = new DataView(fh.buffer, fh.byteOffset, fh.byteLength).getUint32(36, true);
+    if(prop & 2) throw this.fail('암호가 걸린 한글 문서라 읽을 수 없어요. 암호를 풀거나 PDF로 저장해 올려 주세요.');
+    if(prop & 4) throw this.fail('배포용(복사 막힘) 한글 문서라 읽을 수 없어요. 한글에서 PDF로 저장해 올려 주세요.');
+    const names = Object.keys(c.files).filter(p=>/^BodyText\/Section\d+$/.test(p)).sort((a, b)=>+a.match(/\d+$/)[0] - +b.match(/\d+$/)[0]);
+    if(!names.length) throw this.fail('한글 문서에서 본문을 찾지 못했어요.');
+    const out = [];
+    for(const n of names){ let d = c.get(n); if(prop & 1) d = await this.inflateRaw(d); out.push(this.hwpParas(d)); }
+    return out.join('\n');
+  },
+  hwpParas(d){
+    const dv = new DataView(d.buffer, d.byteOffset, d.byteLength), lines = []; let o = 0;
+    const ONE = new Set([0, 10, 13, 24, 25, 26, 27, 28, 29, 30, 31]);   // 1글자짜리 제어 문자 (나머지 제어 문자는 8글자 = 16바이트)
+    while(o + 4 <= d.length){
+      const h = dv.getUint32(o, true); o += 4; const tag = h & 0x3FF; let size = (h >>> 20) & 0xFFF;
+      if(size === 0xFFF){ if(o + 4 > d.length) break; size = dv.getUint32(o, true); o += 4; }
+      if(o + size > d.length) break;
+      if(tag === 67){ let t = '';
+        for(let i = 0; i + 1 < size; ){ const ch = dv.getUint16(o + i, true);
+          if(ch < 32){ if(ONE.has(ch)){ if(ch === 10 || ch === 13) t += '\n'; i += 2; } else { if(ch === 9) t += ' '; i += 16; } }
+          else { t += String.fromCharCode(ch); i += 2; } }
+        lines.push(t); }
+      o += size;
+    }
+    return lines.join('\n');
+  },
+  /** Word 97~2003(.doc): WordDocument의 FIB → 표 스트림의 조각 표(piece table)로 본문 글자 */
+  async doc(file){
+    const c = this.cfb(await file.arrayBuffer()), wd = c.get('WordDocument');
+    if(!wd) throw this.fail('워드 문서 형식이 아니에요. 워드에서 PDF나 DOCX로 저장해 올려 주세요.');
+    const dv = new DataView(wd.buffer, wd.byteOffset, wd.byteLength);
+    if(dv.getUint16(0, true) !== 0xA5EC) throw this.fail('워드 문서 형식이 아니에요.');
+    const flags = dv.getUint16(0x0A, true);
+    if(flags & 0x0100) throw this.fail('암호가 걸린 워드 문서라 읽을 수 없어요.');
+    const tbl = c.get((flags & 0x0200) ? '1Table' : '0Table'); if(!tbl) throw this.fail('워드 문서 형식을 읽지 못했어요.');
+    const tv = new DataView(tbl.buffer, tbl.byteOffset, tbl.byteLength);
+    let o = dv.getUint32(0x01A2, true); const end = o + dv.getUint32(0x01A6, true);
+    while(o < end && tbl[o] === 0x01) o += 3 + tv.getUint16(o + 1, true);
+    if(tbl[o] !== 0x02) throw this.fail('워드 문서 형식을 읽지 못했어요.');
+    const lcb = tv.getUint32(o + 1, true); o += 5; const n = Math.floor((lcb - 4) / 12); let t = '';
+    for(let i = 0; i < n; i++){
+      const cp0 = tv.getUint32(o + i * 4, true), cp1 = tv.getUint32(o + (i + 1) * 4, true), len = cp1 - cp0;
+      let fc = tv.getUint32(o + (n + 1) * 4 + i * 8 + 2, true); const comp = !!(fc & 0x40000000); fc &= 0x3FFFFFFF;
+      if(comp){ fc = fc / 2; for(let k = 0; k < len && fc + k < wd.length; k++) t += String.fromCharCode(wd[fc + k]); }
+      else for(let k = 0; k < len && fc + k * 2 + 1 < wd.length; k++) t += String.fromCharCode(dv.getUint16(fc + k * 2, true));
+    }
+    return t.replace(/\x13[^\x14\x15]*\x14?/g, '').replace(/\x15/g, '').replace(/[\r\x07\x0b\x0c]/g, '\n').replace(/[\x00-\x08\x0e-\x1f]/g, ' ');
+  },
+  /** 글자 인식 (스캔 PDF·사진). 한국어 모델은 처음 한 번만 받음 (약 1.5MB) */
+  async tess(){
+    const ok = await this.script('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js', 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F', ()=>typeof Tesseract !== 'undefined');
+    if(!ok) throw this.fail('사진 속 글자를 읽는 부품을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
+    if(!this._w) this._w = Tesseract.createWorker('kor', 1, {
+      workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/worker.min.js', corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1',
+      langPath: 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/kor/4.0.0_best_int',
+      logger: m=>{ if(m && m.status === 'recognizing text' && this._say) this._say(m.progress || 0); } }).catch(e=>{ this._w = null; throw e; });
+    return this._w;
+  },
+  async ocr(srcs, say){
+    const w = await this.tess(); let out = '';
+    for(let i = 0; i < srcs.length; i++){
+      this._say = p=>say(`사진 속 글자를 읽는 중이에요… ${srcs.length > 1 ? `${i + 1}/${srcs.length}쪽 ` : ''}${Math.round(p * 100)}%`);
+      const r = await w.recognize(srcs[i]); out += (r && r.data ? r.data.text : '') + '\n';
+    }
+    this._say = null;
+    // 한국어 인식 결과에서 낱글자 사이에 끼는 띄어쓰기 줄이기 (가 나 다 → 가나다)
+    return out.replace(/([가-힣]) (?=[가-힣](?: [가-힣]){2,})/g, '$1').replace(/[|]/g, ' ');
+  },
+  async ocrPdf(file, say){
+    if(!(await PdfLib.load())) throw this.fail('PDF 분석 부품을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
+    const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise, pages = [];
+    for(let p = 1; p <= Math.min(pdf.numPages, 5); p++){
+      const page = await pdf.getPage(p), vp = page.getViewport({ scale: 2 }), cv = document.createElement('canvas');
+      cv.width = Math.floor(vp.width); cv.height = Math.floor(vp.height);
+      await page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise; pages.push(cv);
+    }
+    return this.ocr(pages, say);
+  },
+};
 
 /* ============================================================
  * 접속 기록 (activity_log) + 실시간 현황 (user_presence)
@@ -14669,6 +15240,8 @@ async function openMyPage(){
   document.getElementById('modal-mypage').classList.add('active');
   await renderMyPageResume();
   await renderMyPageCv();
+  try{ await DocBox.loadShare(); }catch(_){}
+  try{ if(!state.currentUser.isAdmin) await Inbody.renderMy(); else { const b = document.getElementById('mp-ib'); if(b) b.innerHTML = '<p class="ib-empty">관리자 계정에는 인바디가 없어요.</p>'; } }catch(e){ console.warn('[인바디]', e); }
 }
 function closeMyPage(){ document.getElementById('modal-mypage').classList.remove('active'); }
 
@@ -14684,7 +15257,7 @@ async function renderMyPageResume(){
     return;
   }
   if(!data || !data.resume_text){
-    box.innerHTML = '<span style="color:var(--slate-400);">저장된 자기소개서가 없어요. 아래에서 PDF를 올리면 면접 때 자동으로 맞춤형 질문에 사용돼요.</span>';
+    box.innerHTML = '<span style="color:var(--slate-400);">저장된 자기소개서가 없어요. 아래에서 파일(PDF·한글·워드·사진)을 올리면 면접 때 자동으로 맞춤 질문에 써요.</span>';
     delBtn.style.display = 'none';
     return;
   }
@@ -14702,18 +15275,13 @@ async function handleMyPageResumeUpload(event){
   if(!file) return;
   const s = document.getElementById('mp-resume-status');
   s.style.display=''; s.className='resume-status';
-  if(!/\.pdf$/i.test(file.name)){
-    s.className='resume-status warn'; s.textContent='PDF 파일만 올릴 수 있어요.'; return;
-  }
-  if(!(await PdfLib.load())){
-    s.className='resume-status warn'; s.textContent='PDF 분석 라이브러리를 불러오지 못했습니다. 네트워크 상태를 확인해 주세요.'; return;
+  if(!DocText.ok(file.name)){
+    s.className='resume-status warn'; s.textContent=`${DocText.LABEL} 파일만 올릴 수 있어요.`; return;
   }
   s.textContent = '자기소개서를 읽는 중입니다…';
   try{
-    const text = await extractPdfText(file);
-    if(!text.trim()){
-      s.className='resume-status warn'; s.textContent='PDF에서 글자를 읽지 못했어요. 스캔 이미지 PDF가 아닌, 글자가 선택되는 PDF로 올려주세요.'; return;
-    }
+    const text = await DocText.extract(file, m=>{ s.textContent = m; });
+    state.resumeName = file.name;
     const ok = await saveResumeText(file.name, text);
     if(!ok){ s.className='resume-status warn'; s.textContent='저장에 실패했어요. 잠시 후 다시 시도해 주세요.'; return; }
     s.className='resume-status ok'; s.textContent = `'${file.name}' 파일을 저장했어요. 다음 면접부터 자동으로 사용돼요.`;
@@ -14721,7 +15289,7 @@ async function handleMyPageResumeUpload(event){
     { const lbl = document.getElementById('resume-drop-label'); if(lbl) lbl.textContent = file.name; }
     await renderMyPageResume();
   }catch(err){
-    s.className='resume-status warn'; s.textContent='PDF 내용을 읽는 중 문제가 발생했어요: '+(err.message||err);
+    s.className='resume-status warn'; s.textContent = err && err.friendly ? err.message : '파일 내용을 읽지 못했어요: '+(err.message||err);
   }
 }
 async function deleteSavedResumeFromMyPage(){
@@ -14733,7 +15301,7 @@ async function deleteSavedResumeFromMyPage(){
 /* ---------------- 이력서 (2026-10-07) ----------------
  * 자기소개서와 따로 올리는 이력서 PDF. user_resumes.cv_* 칸에 저장(step12).
  * AI 꼬리질문(followup-question)에 cv_summary(앞 1,200자)로 함께 보내 서류 내용과 답변을 연결해 되묻게 함. */
-const CV_DROP_DEFAULT = '이력서 PDF를 여기로 끌어다 놓거나 클릭해서 올려주세요';
+const CV_DROP_DEFAULT = '이력서 파일을 끌어다 놓거나 눌러서 올려 주세요 (PDF·한글·워드·사진)';
 function syncCvCard(){
   const card = document.getElementById('cv-card'), drop = document.getElementById('cv-drop');
   if(!card || !drop) return;
@@ -14743,7 +15311,7 @@ function syncCvCard(){
     document.getElementById('cv-card-name').textContent = state.cvFileName || '이력서';
     document.getElementById('cv-card-meta').textContent = state.cvUpdatedAt ? `${formatDateShort(state.cvUpdatedAt)} 저장 · 계정에 저장된 서류` : '계정에 저장된 서류';
     const b = document.getElementById('cv-card-badge');
-    if(b){ const on = (typeof AiSwitch !== 'undefined') && AiSwitch.on('ai_followup'); b.textContent = on ? '✓ AI 꼬리질문에 활용' : '저장됨 · AI 꼬리질문이 켜지면 활용'; b.className = 'rc-badge' + (on ? ' ok' : ''); }
+    if(b){ const on = (typeof AiSwitch !== 'undefined') && AiSwitch.on('ai_followup'); const n = DocQ.fromCv(state.cvFull || state.cvText || '').length; b.textContent = n ? `✓ 맞춤 질문에 활용${on ? ' · AI 꼬리질문' : ''}` : '저장됨 · 경력 줄을 못 찾음'; b.className = 'rc-badge' + (n ? ' ok' : ' warn'); }
   }
   const lbl = document.getElementById('cv-drop-label'); if(lbl && !has) lbl.textContent = CV_DROP_DEFAULT;
   const ms = document.getElementById('setup-ms-resume'); if(ms){ const any = has || !!(state.customQuestions && state.customQuestions.length); ms.textContent = any ? '첨부됨' : '선택'; ms.className = any ? 'ok' : ''; }
@@ -14752,14 +15320,11 @@ function syncCvCard(){
 async function readCvPdf(file, statusEl){
   const say = (cls, msg)=>{ if(statusEl){ statusEl.style.display=''; statusEl.className='resume-status' + (cls ? ' '+cls : ''); statusEl.textContent = msg; } };
   if(!file) return null;
-  if(!/\.pdf$/i.test(file.name)){ say('warn', 'PDF 파일만 올릴 수 있어요. 한글·워드 파일은 PDF로 저장한 뒤 올려 주세요.'); return null; }
-  if(!(await PdfLib.load())){ say('warn', 'PDF 분석 라이브러리를 불러오지 못했습니다. 네트워크 상태를 확인해 주세요.'); return null; }
+  if(!DocText.ok(file.name)){ say('warn', `${DocText.LABEL} 파일만 올릴 수 있어요.`); return null; }
   say('', '이력서를 읽는 중입니다…');
   try{
-    const text = await extractPdfText(file);
-    if(!text || !text.trim()){ say('warn', 'PDF에서 글자를 읽지 못했어요. 스캔 이미지 PDF가 아닌, 글자가 선택되는 PDF로 올려 주세요.'); return null; }
-    return text;
-  }catch(err){ say('warn', 'PDF 내용을 읽는 중 문제가 발생했어요: ' + (err.message || err)); return null; }
+    return await DocText.extract(file, m=>say('', m));
+  }catch(err){ say('warn', err && err.friendly ? err.message : '파일 내용을 읽지 못했어요: ' + (err.message || err)); return null; }
 }
 async function saveCvText(fileName, text){
   if(!state.currentUser) return false;
@@ -14795,7 +15360,7 @@ async function renderMyPageCv(){
   box.innerHTML = '<span style="color:var(--slate-400);">불러오는 중…</span>';
   const { data, error } = await sb.from('user_resumes').select('cv_file_name, cv_text, cv_updated_at').eq('user_id', state.currentUser.id).maybeSingle();
   if(error){ box.innerHTML = `<span style="color:var(--danger);">불러오지 못했습니다: ${escapeHtml(error.message)}</span>`; if(del) del.style.display='none'; return; }
-  if(!data || !data.cv_text){ box.innerHTML = '<span style="color:var(--slate-400);">저장된 이력서가 없어요. PDF를 올리면 AI 꼬리질문이 이력서의 경력·자격을 참고해 물어봐요.</span>'; if(del) del.style.display='none'; return; }
+  if(!data || !data.cv_text){ box.innerHTML = '<span style="color:var(--slate-400);">저장된 이력서가 없어요. 올리면 이력서에 적힌 경력·활동으로 맞춤 질문과 꼬리질문이 나와요.</span>'; if(del) del.style.display='none'; return; }
   const cleanC = DocQ.clean(data.cv_text);
   box.innerHTML = `<div class="mp-resume-name">${escapeHtml(data.cv_file_name || '이력서')}</div><div class="mp-resume-meta">${data.cv_updated_at ? formatDateFull(data.cv_updated_at) + ' 저장 · ' : ''}약 ${cleanC.length.toLocaleString()}자 · 질문 후보 ${DocQ.fromCv(cleanC).length}개</div><p class="mp-resume-preview">${escapeHtml(cleanC.slice(0, 300))}</p>`;
   if(del) del.style.display = '';
@@ -14807,7 +15372,7 @@ async function handleMyPageCvUpload(event){
   const ok = await saveCvText(f.name, text);
   if(!ok){ st.className='resume-status warn'; st.textContent='저장에 실패했어요. 잠시 후 다시 시도해 주세요.'; return; }
   state.cvFull = DocQ.clean(text); state.cvText = state.cvFull.slice(0, 2000); state.cvFileName = f.name; refreshDocQuestions();
-  st.className='resume-status ok'; st.textContent = `'${f.name}' 파일을 저장했어요. 다음 면접부터 이력서 맞춤형 질문과 AI 꼬리질문에 쓰여요.`;
+  st.className='resume-status ok'; st.textContent = `'${f.name}' 파일을 저장했어요. 다음 면접부터 이력서 맞춤 질문과 꼬리질문에 쓰여요.`;
   await renderMyPageCv(); syncCvCard();
 }
 async function removeCvFromMyPage(){ if(await deleteSavedCv()) showToast('저장된 이력서를 삭제했어요'); await renderMyPageCv(); syncCvCard(); }
@@ -14853,7 +15418,7 @@ async function deleteSavedResume(){
   if(error){ ({ error } = await sb.from('user_resumes').delete().eq('user_id', state.currentUser.id)); }
   if(error){ showToast('자기소개서를 삭제하지 못했어요. '+friendlyErr(error), 'warn'); return; }
   state.resumeText = ''; state.resumeFull = ''; refreshDocQuestions();
-  document.getElementById('resume-drop-label').textContent = 'PDF 파일을 여기로 끌어다 놓거나 클릭해서 올려주세요';
+  document.getElementById('resume-drop-label').textContent = '파일을 끌어다 놓거나 눌러서 올려 주세요 (PDF·한글·워드·사진)';
   const statusEl = document.getElementById('resume-status');
   statusEl.style.display='none'; statusEl.className='resume-status'; statusEl.textContent='';
   showToast('저장된 자기소개서를 삭제했어요');
@@ -14966,9 +15531,9 @@ const DocQ = {
   },
   _feat(s){
     return {
-      action: /(했|하였|들였|줄였|높였|늘렸|만들|제안|맡|작성|담당|겪|경험|취득|유지|활용|정리|대조|확인|수행|참여|기록|일하|근무|봉사|통역|준비|극복|해결|개선|배웠|익혔)/.test(s),
+      action: /(했|하였|들였|줄였|줄이|높였|높이|늘렸|늘리|만들|제안|맡|작성|담당|겪|경험|취득|유지|활용|정리|대조|확인|수행|참여|기록|일하|근무|봉사|통역|준비|극복|해결|개선|배웠|익혔|모았|모으|홍보|분석|조사|기획|운영|설계|개발|발표|진행|바꿨|바꾸|찾아)/.test(s),
       num: /\d/.test(s),
-      result: /(결과|줄였|높였|늘렸|개선|절반|자리\s?잡|활용되었|향상|달성|성공|인정|수상|합격|칭찬)/.test(s),
+      result: /(결과|줄였|높였|늘렸|개선|절반|자리\s?잡|활용되었|향상|달성|성공|인정|수상|합격|칭찬|모았|늘었|줄었|증가|감소|\d+\s?(?:%|배|명|건|개)(?:의|을|를|으로|로|에서)?\s?(?:응답|참여|매출|방문|모집|달성|확보|늘|줄)|만에\s?\d)/.test(s),
       conflict: /(의견이 달|갈등|설득|입장|조율|다투|충돌|이견|양보|타협)/.test(s),
       motive: /(지원했|지원하게|일하고 싶|하고 싶어|계기)/.test(s),
       plan: /(되겠|하겠|싶습니다|기여|노력하겠|성장)/.test(s),
@@ -15031,7 +15596,7 @@ const DocQ = {
     conflict: ['그 의견 차이를 어떻게 좁히셨는지 말씀해 주세요.', '서로 생각이 달랐을 때 어떤 순서로 풀어 가셨는지 말씀해 주세요.'],
     conflictAct: ['상대방이 그 방법을 받아들이도록 어떻게 설명하셨는지 말씀해 주세요.', '그 방법을 제안할 때 상대방을 어떻게 설득하셨는지 말씀해 주세요.'],
     skill: ['그 실력을 갖추기까지 어떻게 연습하셨는지 말씀해 주세요.', '그 수준에 이르기까지 어떤 방법으로 준비하셨는지 말씀해 주세요.', '그 과정에서 가장 효과가 있었던 연습 방법을 말씀해 주세요.', '그 실력을 유지하려고 지금은 어떻게 연습하고 계신지 말씀해 주세요.'],
-    motive: ['그렇게 느끼게 된 장면을 하나 말씀해 주세요.', '그 마음이 생긴 구체적인 순간을 말씀해 주세요.'],
+    motive: ['그렇게 마음먹게 된 구체적인 경험을 하나 말씀해 주세요.', '그 마음이 생긴 장면을 하나 골라 말씀해 주세요.'],
     plan: ['그 다짐을 위해 입사 후 첫 1년 동안 무엇을 하실 계획인지 말씀해 주세요.', '그 목표를 위해 지금 준비하고 있는 것을 말씀해 주세요.'],
     belief: ['그렇게 생각하게 된 계기를 말씀해 주세요.', '그 생각을 갖게 된 경험을 하나 말씀해 주세요.'],
     learn: ['그렇게 느끼게 된 장면을 하나 말씀해 주세요.', '그 깨달음을 얻은 순간을 구체적으로 말씀해 주세요.'],
@@ -15055,13 +15620,13 @@ const DocQ = {
     switch(kind){
       case 'result': return '그 결과를 무엇으로 확인하셨는지 말씀해 주세요.';
       case 'conflict': case 'conflictAct': return '지금 다시 그 상황이 온다면, 처음부터 다르게 하실 부분을 말씀해 주세요.';
-      case 'skill': return '실제 회의를 속기할 때 그 실력이 어떤 장면에서 가장 잘 드러나는지 말씀해 주세요.';
-      case 'motive': return '그 경험이 속기 직무를 고르는 데 어떤 영향을 주었는지 말씀해 주세요.';
+      case 'skill': return '그 실력이 지원한 일에서 어떤 장면에 가장 잘 쓰일지 말씀해 주세요.';
+      case 'motive': return '그 경험이 지금 지원한 일을 고르는 데 어떤 영향을 주었는지 말씀해 주세요.';
       case 'plan': return '그 계획을 이루는 데 지금 가장 부족한 점이 무엇인지 말씀해 주세요.';
       case 'belief': return '그 생각이 실제로 일하는 태도에서 어떻게 드러나는지 말씀해 주세요.';
       case 'learn': return '그 깨달음이 지금 공부하거나 일하는 방식에 어떻게 이어지고 있는지 말씀해 주세요.';
       case 'decide': return '준비하면서 가장 힘들었던 순간을 어떻게 넘기셨는지 말씀해 주세요.';
-      case 'trait': return '그 성향이 속기 업무에서 어떤 장점이 되는지 말씀해 주세요.';
+      case 'trait': return '그 성향이 지원한 일에서 어떤 장점이 되는지 말씀해 주세요.';
       default: return q ? '그렇게 했을 때 실제로 달라진 점을 말씀해 주세요.' : '';
     }
   },
@@ -15080,6 +15645,7 @@ const DocQ = {
         else if((sec.kind === 'conflict' || f.conflict) && /(제안|설득|듣고|조율|대화|양보|맞춰|절충)/.test(s)){ kind = 'conflictAct'; score = 8; }
         else if(f.conflict || (sec.kind === 'conflict' && f.action)){ kind = 'conflict'; score = 5; }
         else if(sec.kind === 'motive' && /경험/.test(s)){ kind = 'motive'; score = 7; }
+        else if(f.motive){ kind = 'motive'; score = 6; }   // 2026-11-03b '…해서 지원했습니다'는 지원 동기로 (예전엔 '그 일을 하면서 신경 쓴 부분'처럼 어긋나게 물었음)
         else if(skill){ kind = 'skill'; score = 5; }
         else if(/(알게 되었|알게 됐|깨달|배웠|느꼈|결심|다짐|마음먹)/.test(s)){ kind = /(결심|다짐|마음먹)/.test(s) ? 'decide' : 'learn'; score = sec.kind === 'motive' ? 6 : 5; }
         else if(/(좋아했|즐겼|관심이 많|관심을 가|흥미를)/.test(s)){ kind = 'trait'; score = 3; }
@@ -15164,7 +15730,7 @@ const DocQ = {
         q = /(대회|경진|경연|공모전|올림피아드)/.test(x.main)
           ? this._pick([`이력서에 ${x.y}년 ${J(item, '을/를')} 받으셨다고 적으셨는데요, 그 대회를 어떻게 준비하셨는지 말씀해 주세요.`, `이력서에 적으신 ${x.y}년 ${item} 수상에 대해, 준비 과정에서 가장 힘들었던 점을 말씀해 주세요.`])
           : this._pick([`이력서에 ${x.y}년 ${J(item, '을/를')} 받으셨다고 적으셨는데요, 어떤 일로 받으셨는지 말씀해 주세요.`, `이력서에 적으신 ${x.y}년 ${item} 수상에 대해, 어떤 노력이 인정받은 것인지 말씀해 주세요.`]);
-        follow.push('그 경험에서 얻은 것이 실제 속기 업무에 어떻게 도움이 되는지 말씀해 주세요.');
+        follow.push('그 경험에서 얻은 것이 지원한 일에 어떻게 도움이 되는지 말씀해 주세요.');
       }else if(x.kind === 'training'){
         q = this._pick([`이력서에 ${J(item, '을/를')} 수료하셨다고 적으셨는데요, 그 과정에서 가장 크게 배운 것을 말씀해 주세요.`, `이력서에 적으신 ${item}에서 배운 것 가운데, 실무에 바로 쓸 수 있었던 내용을 말씀해 주세요.`]);
         follow.push('배운 내용을 실제 업무에 어떻게 쓰고 계신지 말씀해 주세요.', '배운 내용 중 실무에서 생각처럼 잘 되지 않았던 부분이 있으면 말씀해 주세요.');
@@ -17301,7 +17867,7 @@ function sanitizeForSpeech(text){
     .replace(/\s{2,}/g, ' ')
     .trim();
 }
-function speakQuestion(text, onDone){
+function speakQuestion(text, onDone, opt){
   state.ttsSupported = 'speechSynthesis' in window;
   if(!state.ttsSupported || !text){ if(onDone) onDone(); return; }
   window.speechSynthesis.cancel();
@@ -17309,9 +17875,9 @@ function speakQuestion(text, onDone){
   const utter = new SpeechSynthesisUtterance(sanitizeForSpeech(text));
   utter.volume = 1;
   utter.lang = 'ko-KR';
-  utter.rate = 0.95;   // 면접관답게 살짝 차분한 속도
-  utter.pitch = 1.0;
-  const voice = pickKoreanVoice();
+  utter.rate = (opt && opt.rate) || 0.95;   // 면접관답게 살짝 차분한 속도 (2026-11-03c 면접관별 목소리면 그 속도)
+  utter.pitch = (opt && opt.pitch) || 1.0;
+  const voice = (opt && opt.voice) || pickKoreanVoice();
   if(voice) utter.voice = voice;
   let done = false;
   const finish = ()=>{ if(done) return; done = true; clearTimeout(guard); if(onDone) onDone(); };
@@ -19131,6 +19697,7 @@ async function endInterview(){
   renderResultSummary();
   try{ renderResultFocus(); }catch(e){ console.warn('[결과 요약]', e); }
   try{ CoResult.render(); }catch(e){ console.warn('[기업 맞춤 결과]', e); }
+  try{ Inbody.renderResult(); }catch(e){ console.warn('[인바디 조언]', e); }
   try{ ResultFold.reset(); ResultFold.apply(); }catch(e){ console.warn('[결과 접기]', e); }
   try{ renderNonverbalPanel(); }catch(e){ console.warn('[표정·시선]', e); }
   try{ renderResultTop(); }catch(e){ console.warn('[결과 상단]', e); }
@@ -21119,6 +21686,13 @@ const StenoVoice = {
         console.warn('[저장된 음성 재생 실패 → 실시간 음성]', e.message);
       }
     }
+    // 2026-11-03c 면접관별 목소리: 타입캐스트 서버가 없으면(클론) 면접관마다 다른 브라우저 목소리로, 있으면 그 면접관에게 정한 타입캐스트 목소리로
+    let ivPid = null, ivKind = 'question';
+    if(typeof IvVoice !== 'undefined' && IvVoice.active()){
+      ivPid = IvVoice.speakerId(); ivKind = (opts && opts.kind) || IvVoice.kindOf(ivPid);
+      if(IvVoice.serverOff){ IvVoice.speakBrowser(sanitizeForSpeech(text), onDone, ivPid, ivKind); return; }
+      this.engine = IvVoice.engineFor(ivPid, ivKind) || ttsEngineOf(loadTtsSettings());
+    }
     if(this.provider === 'openai'){
       try{
         // supabase-js의 invoke는 audio/mpeg 응답을 글자로 읽어 버려(깨진 오디오) 직접 fetch로 mp3 Blob을 받습니다
@@ -21135,6 +21709,10 @@ const StenoVoice = {
         return;
       }catch(e){
         if(my !== this._seq) return;
+        if(ivPid !== null){   // 2026-11-03c 면접관에게 정한 예비 목소리 (글자만이 아니면 브라우저로)
+          if(/HTTP 404|not found|Failed to fetch/i.test(String(e && e.message || ''))) IvVoice.serverOff = true;
+          const m = (IvVoice.map || {})[ivPid]; if(!m || m.fallback !== 'text'){ IvVoice.speakBrowser(sanitizeForSpeech(text), onDone, ivPid, ivKind); return; }
+        }
         this.silentDone(text, onDone, e.message); return;
         console.warn('[OpenAI 음성 실패 → 브라우저 음성으로 대체]', e.message);
         if(!this._warned){ this._warned = true; showToast('면접관 목소리를 불러오지 못해 기본 음성으로 읽어요. 면접은 그대로 진행돼요.' + ((state.currentUser && state.currentUser.isAdmin) ? ' ('+String(e.message||e).slice(0,80)+')' : ''), 'info'); }
@@ -21169,7 +21747,7 @@ const StenoVoice = {
     for(let i=0;i<waits.length;i++){
       if(waits[i]){ await new Promise(r=>setTimeout(r, waits[i])); if(my !== this._seq) throw new Error('취소됨'); }
       try{ return await fetchSpeechBlob(text, this.openaiVoice, this.speed, this.ttsModel, this.instructions, this.engine); }
-      catch(e){ last = e; const m = String(e && e.message || ''); if(/HTTP 40[013]\b|invalid|unauthorized|권한/i.test(m)) break; console.warn('[면접관 목소리 '+(i+1)+'회 실패]', m); }
+      catch(e){ last = e; const m = String(e && e.message || ''); if(/HTTP 40[0134]\b|not found|invalid|unauthorized|권한/i.test(m)) break; console.warn('[면접관 목소리 '+(i+1)+'회 실패]', m); }
     }
     throw last || new Error('음성 생성 실패');
   },
@@ -21252,8 +21830,8 @@ async function coachLoadDocs(){
     cv: String(state.cvText || data.cv_text || '').slice(0, 1500), cvName: data.cv_file_name || state.cvFileName || '',
   };
   docsEl.innerHTML = [
-    Coach.docs.resume ? `<li class="ok"><b>✓</b> 자기소개서 · ${escapeHtml(Coach.docs.resumeName || '저장됨')}</li>` : '<li class="no"><b>–</b> 자기소개서 없음 <label class="coach-up" for="coach-up-resume">PDF 올리기</label><input type="file" id="coach-up-resume" accept=".pdf" hidden onchange="coachUpload(event,\'resume\')"></li>',
-    Coach.docs.cv ? `<li class="ok"><b>✓</b> 이력서 · ${escapeHtml(Coach.docs.cvName || '저장됨')}</li>` : '<li class="no"><b>–</b> 이력서 없음 <label class="coach-up" for="coach-up-cv">PDF 올리기</label><input type="file" id="coach-up-cv" accept=".pdf" hidden onchange="coachUpload(event,\'cv\')"></li>',
+    Coach.docs.resume ? `<li class="ok"><b>✓</b> 자기소개서 · ${escapeHtml(Coach.docs.resumeName || '저장됨')}</li>` : '<li class="no"><b>–</b> 자기소개서 없음 <label class="coach-up" for="coach-up-resume">파일 올리기</label><input type="file" id="coach-up-resume" accept="${DocText.ACCEPT}" hidden onchange="coachUpload(event,\'resume\')"></li>',
+    Coach.docs.cv ? `<li class="ok"><b>✓</b> 이력서 · ${escapeHtml(Coach.docs.cvName || '저장됨')}</li>` : '<li class="no"><b>–</b> 이력서 없음 <label class="coach-up" for="coach-up-cv">파일 올리기</label><input type="file" id="coach-up-cv" accept="${DocText.ACCEPT}" hidden onchange="coachUpload(event,\'cv\')"></li>',
     (!Coach.docs.resume && !Coach.docs.cv) ? '<li class="coach-docs-n">서류가 없으면 아래에 자기소개를 직접 해 주셔도 돼요.</li>' : '',
   ].join('');
   return data;
@@ -22443,6 +23021,316 @@ const VS_EXAMPLES = [
   '안녕하세요. 지금부터 모의 면접을 시작하겠습니다. 편하게 답변해 주세요.',
 ];
 const VS_SAMPLE_LINE = '안녕하세요, 면접을 시작하겠습니다.';
+
+/* ---------------- 2026-11-03c 면접관 10명 목소리 (IvVoice) ----------------
+ * 관리자가 면접관(인사팀장·현업 팀장·…·공공·청렴형)마다 타입캐스트 목소리·속도·높낮이·상황별 감정·예비 목소리를 정함 (interviewer_voices 표).
+ * 저장하면 새로 시작하는 면접부터 적용 (학생 화면은 면접 시작 때 설정을 한 번 읽어 고정). 바꿀 때마다 interviewer_voice_log에 기록.
+ * 타입캐스트 API(typecast-tts·speak-text 함수)가 아직 클론에 없어서:
+ *   - 목소리 목록은 '예시 목록'으로 보여 주고, API가 붙으면 실제 목록으로 바뀜
+ *   - 미리 듣기와 실제 면접은 면접관마다 다른 브라우저 목소리(성별·높낮이·속도·감정 반영)로 읽음 → 클론에서도 면접관이 서로 다른 목소리로 말함
+ * 클론에 타입캐스트 함수를 배포하면 DEMO_TTS_SERVER = true */
+const DEMO_TTS_SERVER = false;
+const IV_VOICE_SAMPLE = [
+  { voice_id:'sample-m-mid-1', name:'예시 · 중년 남성 1', gender:'male', age:'middle_age', tone:'낮고 차분', emotions:['normal','calm','tonedown','toneup'] },
+  { voice_id:'sample-m-mid-2', name:'예시 · 중년 남성 2', gender:'male', age:'middle_age', tone:'또렷하고 단호', emotions:['normal','toneup','tonedown','angry'] },
+  { voice_id:'sample-m-mid-3', name:'예시 · 중년 남성 3', gender:'male', age:'middle_age', tone:'부드럽고 정중', emotions:['normal','calm','tender'] },
+  { voice_id:'sample-m-eld-1', name:'예시 · 장년 남성', gender:'male', age:'elder', tone:'무게감 있음', emotions:['normal','tonedown','calm'] },
+  { voice_id:'sample-m-yng-1', name:'예시 · 청년 남성 1', gender:'male', age:'young_adult', tone:'밝고 친근', emotions:['normal','happy','toneup'] },
+  { voice_id:'sample-m-yng-2', name:'예시 · 청년 남성 2', gender:'male', age:'young_adult', tone:'담백하고 빠름', emotions:['normal','calm','tonedown'] },
+  { voice_id:'sample-f-mid-1', name:'예시 · 중년 여성 1', gender:'female', age:'middle_age', tone:'차분하고 신뢰감', emotions:['normal','calm','tender','tonedown'] },
+  { voice_id:'sample-f-mid-2', name:'예시 · 중년 여성 2', gender:'female', age:'middle_age', tone:'똑 부러짐', emotions:['normal','toneup','tonedown'] },
+  { voice_id:'sample-f-mid-3', name:'예시 · 중년 여성 3', gender:'female', age:'middle_age', tone:'원칙적이고 단정', emotions:['normal','calm','tonedown'] },
+  { voice_id:'sample-f-eld-1', name:'예시 · 장년 여성', gender:'female', age:'elder', tone:'온화하고 여유', emotions:['normal','calm','tender'] },
+  { voice_id:'sample-f-yng-1', name:'예시 · 청년 여성 1', gender:'female', age:'young_adult', tone:'밝고 상냥', emotions:['normal','happy','tender','toneup'] },
+  { voice_id:'sample-f-yng-2', name:'예시 · 청년 여성 2', gender:'female', age:'young_adult', tone:'또랑또랑', emotions:['normal','toneup','calm'] },
+];
+/* 면접관별로 어울리는 목소리 (추천 순서·빈 칸 채우기·아무것도 정하지 않았을 때의 기본 소리) */
+const IV_WANT = {
+  hr:{ g:'female', age:['middle_age'], emo:'calm', fu:'calm', tempo:1, pitch:0 },
+  lead:{ g:'male', age:['middle_age'], emo:'normal', fu:'normal', tempo:1.05, pitch:0 },
+  exec:{ g:'male', age:['elder','middle_age'], emo:'tonedown', fu:'tonedown', tempo:0.95, pitch:-2 },
+  senior:{ g:'female', age:['young_adult'], emo:'happy', fu:'tender', tempo:1.05, pitch:1 },
+  press:{ g:'male', age:['middle_age'], emo:'toneup', fu:'toneup', tempo:1.1, pitch:0 },
+  data:{ g:'female', age:['young_adult','middle_age'], emo:'normal', fu:'normal', tempo:1.05, pitch:0 },
+  value:{ g:'female', age:['middle_age'], emo:'normal', fu:'normal', tempo:1, pitch:0 },
+  logic:{ g:'male', age:['young_adult','middle_age'], emo:'calm', fu:'calm', tempo:0.95, pitch:-1 },
+  quiet:{ g:'male', age:['middle_age','elder'], emo:'tonedown', fu:'tonedown', tempo:0.9, pitch:-1 },
+  ethics:{ g:'female', age:['middle_age','elder'], emo:'calm', fu:'calm', tempo:0.95, pitch:0 },
+};
+const IV_LINES = {
+  hr:'안녕하세요. 긴장 푸시고, 1분 동안 자기소개 부탁드립니다.', lead:'방금 말씀하신 프로젝트에서 본인이 직접 맡은 일을 구체적으로 말씀해 주세요.',
+  exec:'10년 뒤 어떤 사람이 되어 있고 싶은지, 짧게 말씀해 주시죠.', senior:'편하게 하셔도 돼요. 우리 회사에 지원한 이유가 궁금해요.',
+  press:'방금 답변은 근거가 약한데요. 숫자로 다시 말씀해 보시겠어요?', data:'그 성과를 숫자로 말씀해 주시겠어요? 전과 후를 비교해서요.',
+  value:'우리 회사 인재상 가운데 본인과 가장 맞는 것은 무엇인가요?', logic:'왜 그렇게 판단하셨나요? 다른 방법은 없었을까요?',
+  quiet:'네. 다음 질문입니다. 본인의 단점을 말씀해 주세요.', ethics:'원칙과 고객의 요구가 부딪히면 어떻게 하시겠습니까?' };
+const IV_FU_LINE = '그 과정에서 가장 어려웠던 점은 무엇이었나요?';
+const IV_EMO_KIND = [['question','기본 질문'],['followup','꼬리질문'],['press','압박할 때']];
+const IvVoice = {
+  rows:{}, draft:{}, catalog:null, api:null, apiWhy:'', sel:null, log:[], lex:[], budget:{ monthly:0, warn:80 }, map:null, lexMap:null,
+  f:{ g:'', age:'', q:'', rec:true }, _seq:0, _cache:new Map(), _audio:null, serverOff: !DEMO_TTS_SERVER,
+  people(){ return StartFlow.PEOPLE; },
+  P(pid){ return this.people().find(p=>p.id === pid); },
+  cur(pid){ return this.draft[pid] || this.rows[pid] || null; },
+  sig(r){ return r && r.voice_id ? [r.provider || 'typecast', r.voice_id, (+r.tempo || 1).toFixed(2), r.pitch || 0, JSON.stringify(r.emotions || {})].join('|') : ''; },
+  changed(pid){ const d = this.draft[pid]; if(!d) return false; const o = this.rows[pid] || {}; return this.sig(d) !== this.sig(o) || d.fallback !== (o.fallback || 'browser') || !!d.enabled !== (o.enabled !== false); },
+  soundChanged(pid){ const d = this.draft[pid]; return !!d && this.sig(d) !== this.sig(this.rows[pid]); },
+  voiceOf(id){ return (this.catalog || []).find(v=>v.voice_id === id) || null; },
+  blank(pid){ const w = IV_WANT[pid] || {}; return { persona_id: pid, provider:'typecast', voice_id:'', voice_name:'', voice_meta:{}, tempo: w.tempo || 1, pitch: w.pitch || 0,
+    emotions:{ question: w.emo || 'normal', followup: w.fu || 'normal', press: 'toneup' }, fallback:'browser', enabled:true }; },
+  edit(pid){ if(!this.draft[pid]) this.draft[pid] = JSON.parse(JSON.stringify(this.rows[pid] || this.blank(pid))); return this.draft[pid]; },
+
+  /* ── 면접 화면(학생) ── */
+  async loadMap(){
+    try{ const r = await sb.from('interviewer_voices').select('persona_id,provider,voice_id,voice_name,voice_meta,tempo,pitch,emotions,fallback,enabled,version'); if(!r.error){ const m = {}; (r.data || []).forEach(x=>{ m[x.persona_id] = x; }); this.map = m; } }catch(_){}
+    try{ const r = await sb.from('app_settings').select('value').eq('key', 'tts_lexicon').maybeSingle(); this.lexMap = r && r.data && Array.isArray(r.data.value) ? r.data.value : []; }catch(_){}
+    return this.map;
+  },
+  active(){ return !!(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS && state.flowCtx && Array.isArray(state.flowCtx.interviewers) && state.flowCtx.interviewers.length); },
+  speakerId(){ try{ const ppl = IvPanel.people(); const p = ppl[Math.max(0, IvPanel.cur)]; return p ? p.id : null; }catch(_){ return null; } },
+  kindOf(pid){ const it = state.interviewQuestions && state.interviewQuestions[state.currentQ - 1]; if(it && it.followup) return 'followup'; const p = this.P(pid); return p && p.p === 'hard' ? 'press' : 'question'; },
+  engineFor(pid, kind){ const m = (this.map || {})[pid]; if(!m || m.enabled === false || m.provider !== 'typecast' || !m.voice_id) return null;
+    const e = m.emotions || {}; return { provider:'typecast', tc:{ voice_id:m.voice_id, tempo:+m.tempo || 1, pitch:m.pitch || 0, emotion: e[kind] || e.question || 'normal' } }; },
+  lexApply(text, list){ let t = String(text || ''); (list || this.lexMap || this.lex || []).forEach(x=>{ if(x && x.t && x.s) t = t.split(x.t).join(x.s); }); return t; },
+  browserVoice(gender){
+    const vs = typeof getKoreanVoices === 'function' ? getKoreanVoices() : []; if(!vs.length) return null;
+    const male = /injoon|hyunsu|minsu|jinho|bongjin|gookmin|\bmale|남성/i, female = /heami|sunhi|yuna|jimin|seoyeon|female|여성/i;
+    if(gender === 'male'){ const v = vs.find(x=>male.test(x.name)); if(v) return v; }
+    if(gender === 'female'){ const v = vs.find(x=>female.test(x.name) && !male.test(x.name)); if(v) return v; }
+    return vs[0];
+  },
+  /** 브라우저 목소리로 이 면접관답게 읽기 (타입캐스트가 없을 때·예비 목소리) */
+  speakBrowser(text, onDone, pid, kind, setting){
+    let m = setting || (pid && ((this.map || {})[pid] || this.rows[pid])) || (pid ? this.blank(pid) : null) || {};
+    if(!setting && m.enabled === false && pid) m = this.blank(pid);
+    const w = IV_WANT[pid] || {}, meta = m.voice_meta || {}, gender = meta.gender || w.g || '';
+    let emo = (m.emotions || {})[kind] || (m.emotions || {}).question || 'normal'; if(emo === 'smart') emo = (IV_WANT[pid] || {}).emo || 'normal';
+    const emoPitch = { toneup:0.12, tonedown:-0.12, happy:0.08, tender:0.04, calm:-0.05, sad:-0.1, angry:0.06 }[emo] || 0;
+    const emoRate = { toneup:0.04, tonedown:-0.04, calm:-0.03, angry:0.05 }[emo] || 0;
+    const opt = { rate: Math.max(0.6, Math.min(1.6, 0.95 * (+m.tempo || 1) + emoRate)), pitch: Math.max(0.3, Math.min(1.8, 1 + (m.pitch || 0) * 0.07 + emoPitch + (gender === 'male' ? -0.12 : 0.04))), voice: this.browserVoice(gender) };
+    speakQuestion(this.lexApply(text), onDone, opt);
+  },
+
+  /* ── 관리자 화면 ── */
+  async load(){
+    const root = document.getElementById('ivv-root'); if(!root) return;
+    if(!this.rows || !Object.keys(this.rows).length) root.innerHTML = '<p class="ivv-load">면접관 목소리 설정을 불러오는 중…</p>';
+    const [rows, log, lex, bud] = await Promise.all([
+      sb.from('interviewer_voices').select('*'),
+      sb.from('interviewer_voice_log').select('*').order('created_at', { ascending:false }).limit(20),
+      sb.from('app_settings').select('value').eq('key', 'tts_lexicon').maybeSingle(),
+      sb.from('app_settings').select('value').eq('key', 'tts_budget').maybeSingle(),
+    ].map(p=>p.then(r=>r, e=>({ error:e }))));
+    this.rows = {}; ((rows && rows.data) || []).forEach(r=>{ this.rows[r.persona_id] = r; });
+    this.log = (log && log.data) || [];
+    this.lex = lex && lex.data && Array.isArray(lex.data.value) ? lex.data.value : (this.lex || []);
+    if(bud && bud.data && bud.data.value) this.budget = Object.assign({ monthly:0, warn:80 }, bud.data.value);
+    if(rows && rows.error) this.loadErr = rows.error.message || String(rows.error); else this.loadErr = '';
+    if(this.api === null) await this.checkApi();
+    this.render();
+  },
+  async checkApi(){
+    if(!DEMO_TTS_SERVER){ this.api = false; this.apiWhy = '클론에는 타입캐스트 서버 함수(typecast-tts·speak-text)가 아직 없어요'; this.catalog = IV_VOICE_SAMPLE; return; }
+    try{
+      const res = await Promise.race([tcFetch({ action:'voices' }), new Promise((_, rej)=>setTimeout(()=>rej(new Error('응답 없음 (8초)')), 8000))]);
+      const d = await res.json();
+      this.catalog = (d.voices || []).filter(v=>v.voice_id).map(v=>({ voice_id:v.voice_id, name:v.name || v.voice_id, gender:String(v.gender || '').toLowerCase(), age:v.age || '', emotions:(v.emotions && v.emotions.length) ? v.emotions : ['normal'], preview_url:v.preview_url || '', tone:(v.use_cases || []).slice(0, 2).join('·') }));
+      this.api = this.catalog.length > 0; this.apiWhy = this.api ? '' : '목소리 목록이 비어 있어요';
+      if(!this.api) this.catalog = IV_VOICE_SAMPLE;
+    }catch(e){ this.api = false; this.apiWhy = e.code === 'no_key' ? '타입캐스트 API 키가 서버에 없어요' : ('연결 실패: ' + (e.message || e)); this.catalog = IV_VOICE_SAMPLE; }
+  },
+  dups(){ const by = {}; this.people().forEach(p=>{ const c = this.cur(p.id); if(c && c.enabled !== false && c.voice_id) (by[c.voice_id] = by[c.voice_id] || []).push(p.id); }); return Object.values(by).filter(a=>a.length > 1); },
+  dupOf(pid){ const g = this.dups().find(a=>a.includes(pid)); return g ? g.filter(x=>x !== pid) : []; },
+  qChars(){
+    if(this._qc) return this._qc; const set = new Set();
+    try{ [HALLYM_QA.first, HALLYM_QA.last].concat(HALLYM_QA.common, HALLYM_QA.major).forEach(x=>x && set.add(x.q));
+      FIELDS.forEach(f=>(HALLYM_QA[f.id] || []).forEach(x=>set.add(x.q)));
+      Object.values(HALLYM_ROLEQ || {}).forEach(g=>Object.values(g).forEach(list=>(list || []).forEach(x=>set.add(x.q)))); }catch(_){}
+    let n = 0; set.forEach(q=>{ n += String(q).length; }); return (this._qc = { n: set.size, chars: n + 400 });
+  },
+  estimate(){ const ids = this.people().filter(p=>this.soundChanged(p.id) && (this.cur(p.id) || {}).voice_id).map(p=>p.id); const q = this.qChars(); return { ids, sents: q.n * ids.length, credits: q.chars * ids.length }; },
+  rec(pid){
+    const w = IV_WANT[pid] || {}, used = new Set(this.people().filter(p=>p.id !== pid).map(p=>(this.cur(p.id) || {}).voice_id).filter(Boolean));
+    return (this.catalog || []).map(v=>({ v, sc: ((w.age || []).includes(v.age) ? 3 : 0) + ((v.emotions || []).includes(w.emo) ? 2 : 0) + (v.gender === w.g ? 1 : 0) + (used.has(v.voice_id) ? -4 : 0) })).sort((a, b)=>b.sc - a.sc);
+  },
+  meta(v){ return v ? [v.gender === 'male' ? '남성' : v.gender === 'female' ? '여성' : '', (typeof TC_AGE !== 'undefined' && TC_AGE[v.age]) || '', v.tone || ''].filter(Boolean).join(' · ') : ''; },
+  emoName(e){ return (typeof TC_EMO !== 'undefined' && TC_EMO[e]) || e; },
+  card(p){
+    const c = this.cur(p.id), v = c && c.voice_id ? (this.voiceOf(c.voice_id) || { name: c.voice_name || c.voice_id, gender:(c.voice_meta || {}).gender, age:(c.voice_meta || {}).age }) : null;
+    const ch = this.changed(p.id), dup = this.dupOf(p.id), off = c && c.enabled === false, on = this.sel === p.id;
+    return `<article class="ivv-card${on ? ' on' : ''}${off ? ' off' : ''}" data-pid="${p.id}">
+      <div class="ivv-who"><span class="ivv-av" style="background:${p.c}">${escapeHtml(StartFlow.ini(p))}</span><div><b>${escapeHtml(p.n)}</b><small>${escapeHtml(p.m)}</small></div></div>
+      <div class="ivv-v">${v ? `<b>${escapeHtml(v.name)}</b><small>${escapeHtml(this.meta(v))}</small>` : '<b class="none">목소리 미지정</b><small>정하지 않으면 기본 소리(브라우저)로 읽어요</small>'}</div>
+      ${c && c.voice_id ? `<div class="ivv-chips"><span>속도 ${(+c.tempo || 1).toFixed(2)}배</span><span>높낮이 ${c.pitch > 0 ? '+' : ''}${c.pitch || 0}</span><span>질문 ${escapeHtml(this.emoName((c.emotions || {}).question || 'normal'))}</span><span>꼬리 ${escapeHtml(this.emoName((c.emotions || {}).followup || 'normal'))}</span></div>` : ''}
+      <div class="ivv-flags">${ch ? '<span class="f-ch">저장 안 함</span>' : ''}${dup.length ? `<span class="f-dup">${escapeHtml(DocQ._j(dup.map(x=>this.P(x).n).join('·'), '과/와'))} 같은 목소리</span>` : ''}${off ? '<span class="f-off">사용 안 함</span>' : ''}${c && c.voice_id && !ch ? `<span class="f-ok">v${(this.rows[p.id] || {}).version || 1}</span>` : ''}</div>
+      <div class="ivv-acts"><button type="button" class="btn-manage" data-play="${p.id}">▶ 듣기</button><button type="button" class="btn-manage ${on ? 'on' : ''}" data-pick="${p.id}">${on ? '닫기' : (c && c.voice_id ? '바꾸기' : '정하기')}</button></div>
+    </article>`;
+  },
+  editor(pid){
+    const p = this.P(pid), d = this.edit(pid), cur = this.voiceOf(d.voice_id), f = this.f;
+    let list = this.f.rec ? this.rec(pid).map(x=>x.v) : (this.catalog || []).slice();
+    list = list.filter(v=>(!f.g || v.gender === f.g) && (!f.age || v.age === f.age) && (!f.q || (v.name + ' ' + (v.tone || '')).toLowerCase().includes(f.q.toLowerCase())));
+    const used = {}; this.people().forEach(x=>{ if(x.id !== pid){ const c = this.cur(x.id); if(c && c.voice_id) (used[c.voice_id] = used[c.voice_id] || []).push(x.n); } });
+    const emos = ['smart'].concat(cur && cur.emotions && cur.emotions.length ? cur.emotions : ['normal']);
+    const ages = [...new Set((this.catalog || []).map(v=>v.age).filter(Boolean))];
+    return `<section class="ivv-edit" aria-label="${escapeHtml(p.n)} 목소리 정하기">
+      <header><span class="ivv-av" style="background:${p.c}">${escapeHtml(StartFlow.ini(p))}</span><div><h3>${escapeHtml(p.n)} 목소리</h3><p>${escapeHtml(p.m)} · ${escapeHtml(p.q)}</p></div></header>
+      <div class="ivv-cols">
+        <div class="ivv-pick">
+          <div class="ivv-filter">
+            <select data-f="g" aria-label="성별"><option value="">성별 전체</option><option value="male"${f.g === 'male' ? ' selected' : ''}>남성</option><option value="female"${f.g === 'female' ? ' selected' : ''}>여성</option></select>
+            <select data-f="age" aria-label="나이"><option value="">나이 전체</option>${ages.map(a=>`<option value="${a}"${f.age === a ? ' selected' : ''}>${escapeHtml((typeof TC_AGE !== 'undefined' && TC_AGE[a]) || a)}</option>`).join('')}</select>
+            <input data-f="q" type="search" placeholder="이름·느낌 검색" value="${escapeHtml(f.q)}" aria-label="목소리 검색">
+            <label class="ivv-rec"><input type="checkbox" data-f="rec"${f.rec ? ' checked' : ''}> 이 면접관에 어울리는 순</label>
+          </div>
+          <ul class="ivv-list" role="listbox" aria-label="목소리 목록">${list.map(v=>`<li role="option" aria-selected="${v.voice_id === d.voice_id}" class="${v.voice_id === d.voice_id ? 'on' : ''}">
+            <button type="button" class="ivv-li" data-voice="${escapeHtml(v.voice_id)}"><b>${escapeHtml(v.name)}</b><small>${escapeHtml(this.meta(v))}</small>${used[v.voice_id] ? `<em>${escapeHtml(used[v.voice_id].join('·'))} 사용 중</em>` : ''}</button>
+            <button type="button" class="ivv-sm" data-sample="${escapeHtml(v.voice_id)}" aria-label="${escapeHtml(v.name)} 샘플 듣기">▶</button></li>`).join('') || '<li class="ivv-empty">조건에 맞는 목소리가 없어요</li>'}</ul>
+          ${this.api ? '' : '<p class="ivv-note">예시 목록이에요. 타입캐스트를 연결하면 실제 목소리 목록(샘플 포함)으로 바뀌고, 고른 설정은 그대로 남아요.</p>'}
+        </div>
+        <div class="ivv-tune">
+          <div class="ivv-row"><label for="ivv-tempo">속도 <b id="ivv-tempo-v">${(+d.tempo || 1).toFixed(2)}배</b></label><input id="ivv-tempo" type="range" min="0.8" max="1.3" step="0.05" value="${+d.tempo || 1}" data-t="tempo"></div>
+          <div class="ivv-row"><label for="ivv-pitch">높낮이 <b id="ivv-pitch-v">${d.pitch > 0 ? '+' : ''}${d.pitch || 0}</b></label><input id="ivv-pitch" type="range" min="-6" max="6" step="1" value="${d.pitch || 0}" data-t="pitch"></div>
+          <div class="ivv-row"><span class="lbl">상황별 감정</span><div class="ivv-emos">${IV_EMO_KIND.map(([k, l])=>`<label>${l}<select data-emo="${k}">${emos.map(e=>`<option value="${e}"${(d.emotions || {})[k] === e ? ' selected' : ''}>${escapeHtml(this.emoName(e))}</option>`).join('')}</select></label>`).join('')}</div></div>
+          <div class="ivv-row"><label for="ivv-fb">타입캐스트가 안 될 때</label><select id="ivv-fb" data-t="fallback"><option value="browser"${d.fallback === 'browser' ? ' selected' : ''}>브라우저 목소리로 읽기 (이 설정의 성별·높낮이)</option><option value="openai"${d.fallback === 'openai' ? ' selected' : ''}>OpenAI 목소리로 읽기 (크레딧 듦)</option><option value="text"${d.fallback === 'text' ? ' selected' : ''}>소리 없이 글자로만</option></select></div>
+          <label class="ivv-use"><input type="checkbox" data-t="enabled"${d.enabled !== false ? ' checked' : ''}> 이 면접관 목소리 사용 (끄면 기본 목소리로 읽어요)</label>
+          <div class="ivv-row"><label for="ivv-line">들어 볼 문장</label><textarea id="ivv-line" rows="2" maxlength="160">${escapeHtml(IV_LINES[pid] || '')}</textarea></div>
+          <div class="ivv-play"><button type="button" class="btn-manage" data-try="question">▶ 질문 말투로</button><button type="button" class="btn-manage" data-try="followup">▶ 꼬리질문 말투로</button>${(this.dupOf(pid)[0] || this.people()[0].id !== pid) ? `<button type="button" class="btn-manage" data-cmp="1">▶ 다른 면접관과 번갈아</button>` : ''}</div>
+          <p class="ivv-src" id="ivv-src">${this.api ? '타입캐스트로 만든 소리예요. 같은 문장·설정은 다시 들어도 크레딧이 들지 않아요.' : '지금은 브라우저 임시 목소리로 들려요 (성별·속도·높낮이·감정만 흉내). 타입캐스트를 연결하면 실제 목소리로 들려요.'}</p>
+          ${this.soundChanged(pid) && this.rows[pid] && this.rows[pid].voice_id ? `<p class="ivv-warn">저장하면 이 면접관의 녹음본(질문 약 ${this.qChars().n}개)을 새 목소리로 다시 만들어야 해요.</p>` : ''}
+        </div>
+      </div>
+    </section>`;
+  },
+  render(){
+    const root = document.getElementById('ivv-root'); if(!root) return;
+    const ppl = this.people(), set = ppl.filter(p=>(this.cur(p.id) || {}).voice_id).length, dups = this.dups(), ch = ppl.filter(p=>this.changed(p.id)), est = this.estimate();
+    const bud = +this.budget.monthly || 0, pct = bud ? Math.round(est.credits / bud * 100) : null;
+    root.innerHTML = `
+      <div class="admin-view-head"><div><h2>면접관 10명 목소리</h2>
+        <p>면접관마다 어떤 목소리로 말할지 정해요. 저장하면 <b>새로 시작하는 면접부터</b> 적용되고, 진행 중인 면접은 시작할 때의 목소리를 그대로 써요.</p></div>
+        <div class="beta-head-btns"><button type="button" class="btn-manage" data-auto="1">빈 칸 추천으로 채우기</button><button type="button" class="btn-manage" data-allplay="1">▶ 10명 차례로 듣기</button></div></div>
+      <div class="ivv-stat">
+        <span class="ivv-api ${this.api ? 'ok' : 'off'}"><i></i>${this.api ? '타입캐스트 연결됨' : '타입캐스트 연결 전'}<small>${escapeHtml(this.api ? `목소리 ${this.catalog.length}개` : this.apiWhy)}</small></span>
+        <span>지정 <b>${set}/10</b></span><span class="${dups.length ? 'warn' : ''}">겹침 <b>${dups.length}쌍</b></span><span class="${ch.length ? 'warn' : ''}">저장 안 함 <b>${ch.length}명</b></span>
+      </div>
+      ${this.loadErr ? `<p class="ivv-warn">설정 표를 읽지 못했어요: ${escapeHtml(this.loadErr)} (supabase/clone/009_interviewer_voices.sql 적용 확인)</p>` : ''}
+      ${dups.length ? `<p class="ivv-warn">같은 목소리를 쓰는 면접관이 있어요: ${dups.map(g=>g.map(x=>this.P(x).n).join('·')).join(', ')}. 다대일 면접에서 누가 말하는지 헷갈릴 수 있어요. 목소리를 바꾸거나 높낮이·속도를 다르게 해 주세요.</p>` : ''}
+      <div class="ivv-grid">${ppl.map(p=>this.card(p)).join('')}</div>
+      ${this.sel ? this.editor(this.sel) : ''}
+      <div class="ivv-bar${ch.length ? ' on' : ''}">
+        <div class="ivv-bar-t">${ch.length ? `<b>${ch.map(p=>p.n).join(', ')}</b> 변경 ${ch.length}건` : '바뀐 것이 없어요'}
+          ${est.ids.length ? `<small>다시 녹음할 질문 약 ${est.sents.toLocaleString()}문장 · 약 ${est.credits.toLocaleString()}크레딧 (1글자 1크레딧 기준${pct != null ? ` · 한 달 예산의 ${pct}%` : ''}). 실제로는 그 면접관이 맡는 질문만 녹음하면 돼서 이보다 적어요.</small>` : ''}</div>
+        <input type="text" id="ivv-note" maxlength="80" placeholder="바꾼 이유 (기록에 남아요)" ${ch.length ? '' : 'disabled'}>
+        <button type="button" class="btn-manage" data-reset="1" ${ch.length ? '' : 'disabled'}>되돌리기</button>
+        <button type="button" class="btn-manage primary" data-save="1" ${ch.length ? '' : 'disabled'}>저장하고 적용</button>
+      </div>
+      <div class="ivv-more">
+        <details class="ivv-sec"><summary>발음 사전 <small>${this.lex.length}개 · 기관 이름·영문 약어를 읽는 법</small></summary>
+          <p class="ivv-sub">면접관이 읽을 때 왼쪽 말을 오른쪽처럼 읽어요. 예) LH → 엘에이치, KOTRA → 코트라. 모든 면접관에 똑같이 적용돼요.</p>
+          <div class="ivv-lex">${this.lex.map((x, i)=>`<div class="ivv-lx"><span>${escapeHtml(x.t)}</span><i>→</i><span>${escapeHtml(x.s)}</span><button type="button" class="fl-del" data-lexdel="${i}">지우기</button></div>`).join('')}
+            <div class="ivv-lx add"><input id="ivv-lx-t" maxlength="30" placeholder="쓰인 말 (예: LH)"><i>→</i><input id="ivv-lx-s" maxlength="40" placeholder="읽는 법 (예: 엘에이치)"><button type="button" class="btn-manage" data-lexadd="1">추가</button></div></div>
+          <div class="ivv-lx-acts"><button type="button" class="btn-manage" data-lexsave="1">발음 사전 저장</button><button type="button" class="btn-manage" data-lextry="1">▶ 사전 적용해서 듣기</button></div></details>
+        <details class="ivv-sec"><summary>크레딧 예산 <small>${bud ? `한 달 ${bud.toLocaleString()}크레딧` : '정하지 않음'}</small></summary>
+          <p class="ivv-sub">목소리를 바꾸면 녹음본을 다시 만들어야 해서 크레딧이 들어요. 한 달 예산을 적어 두면 저장 전에 예상 사용량을 예산과 비교해 보여 줘요.</p>
+          <div class="ivv-bud"><label>한 달 예산 <input id="ivv-bud" type="number" min="0" step="1000" value="${bud || ''}" placeholder="예: 300000"> 크레딧</label><label>경고 기준 <input id="ivv-warn" type="number" min="10" max="100" value="${this.budget.warn || 80}">%</label><button type="button" class="btn-manage" data-budsave="1">예산 저장</button></div></details>
+        <details class="ivv-sec"${this.log.length ? '' : ''}><summary>변경 기록 <small>최근 ${this.log.length}건 · 눌러서 그때 설정으로 되돌리기</small></summary>
+          ${this.log.length ? `<ul class="ivv-log">${this.log.map(l=>{ const p = this.P(l.persona_id) || { n:l.persona_id }, b = l.before || {}, a = l.after || {};
+            const what = [b.voice_name !== a.voice_name ? `${escapeHtml(b.voice_name || '미지정')} → ${escapeHtml(a.voice_name || '미지정')}` : '', (+b.tempo || 1) !== (+a.tempo || 1) ? `속도 ${(+b.tempo || 1)}→${(+a.tempo || 1)}` : '', (b.pitch || 0) !== (a.pitch || 0) ? `높낮이 ${b.pitch || 0}→${a.pitch || 0}` : '', JSON.stringify(b.emotions || {}) !== JSON.stringify(a.emotions || {}) ? '감정' : '', b.fallback !== a.fallback ? '예비 목소리' : '', b.enabled !== a.enabled ? (a.enabled ? '사용 켬' : '사용 끔') : ''].filter(Boolean).join(' · ') || '처음 지정';
+            return `<li><time>${escapeHtml(formatDateFull(l.created_at))}</time><b>${escapeHtml(p.n)}</b><span>${what}${l.note ? ` <em>“${escapeHtml(l.note)}”</em>` : ''}</span>${l.before ? `<button type="button" class="fl-del" data-undo="${l.id}">이 변경 전으로</button>` : ''}</li>`; }).join('')}</ul>` : '<p class="ivv-sub">아직 바꾼 기록이 없어요.</p>'}</details>
+        <details class="ivv-sec" open><summary>타입캐스트 API를 붙일 때 필요한 것 <small>관리자 확인용</small></summary>${this.checklist()}</details>
+      </div>`;
+    this.bind(root);
+  },
+  checklist(){
+    const L = [
+      ['ok', '면접관별 설정 저장·기록·되돌리기', '이 화면과 interviewer_voices·interviewer_voice_log 표. 저장하면 새 면접부터 적용'],
+      ['ok', '진행 중인 면접 보호', '면접을 시작할 때 설정을 한 번 읽어 고정 → 중간에 바꿔도 그 면접은 같은 목소리'],
+      ['ok', '목소리 겹침 검사', '두 면접관이 같은 목소리면 경고 (다대일 면접에서 누가 말하는지 헷갈림)'],
+      ['ok', '예비 목소리', '타입캐스트가 안 될 때 면접관마다 브라우저·OpenAI·글자만 중에서 고름. 지금 클론은 브라우저 목소리로 면접관마다 다르게 읽음'],
+      ['ok', '다시 녹음 예상량', '목소리를 바꾸면 그 면접관 녹음본만 다시 만들도록 문장 수·크레딧을 저장 전에 보여 줌'],
+      ['ok', '발음 사전', 'LH·KOTRA 같은 말 읽는 법. 지금은 브라우저 목소리에 적용, 서버가 생기면 타입캐스트 요청 전에 같은 사전으로 바꿈'],
+      ['todo', 'API 키는 서버에만', '클론 Supabase에 typecast-tts·speak-text 함수를 배포하고 키는 시크릿에 저장 → index.html의 DEMO_TTS_SERVER = true. 운영 프로젝트에는 배포하지 않음'],
+      ['todo', '목소리 목록 받아 오기', '연결되면 이 화면이 예시 목록 대신 실제 목록(성별·나이·감정·무료 샘플)을 보여 줌. 지금 고른 예시 목소리는 실제 목소리로 다시 골라야 함'],
+      ['todo', '면접관별 녹음본 보관', '녹음 파일을 "면접관 + 목소리 버전(v번호)"별로 따로 저장 (예: tts/hr/v3/문장.mp3). 지금 녹음 도구는 목소리 1개 기준이라 면접관별로 나눠야 함'],
+      ['todo', '즉석 문장 지연 줄이기', '꼬리질문은 그때그때 만들어 1~2초 늦음 → 자주 쓰는 맞장구·연결 문장("네, 다음 질문입니다")은 면접관별로 미리 녹음'],
+      ['todo', '한 달 사용량·한도', '면접관 10명 × 학생 수만큼 즉석 문장이 늘어남 → 예산 경고, 한도를 넘으면 예비 목소리로 자동 전환'],
+      ['todo', '사용권 확인', '학교 납품·상업 이용이 되는 요금제인지, 목소리별 이용 조건을 계약서로 확인'],
+    ];
+    return `<ul class="ivv-check">${L.map(([st, t, d])=>`<li class="${st}"><i>${st === 'ok' ? '✓' : '○'}</i><div><b>${t}</b><small>${d}</small></div><span>${st === 'ok' ? '이 화면에 있음' : 'API 연결 때'}</span></li>`).join('')}</ul>`;
+  },
+  bind(root){
+    root.querySelectorAll('[data-pick]').forEach(b=>b.onclick = ()=>{ this.sel = this.sel === b.dataset.pick ? null : b.dataset.pick; this.stop(); this.render(); if(this.sel){ const e = root.querySelector('.ivv-edit'); if(e) e.scrollIntoView({ block:'nearest', behavior:'smooth' }); } });
+    root.querySelectorAll('[data-play]').forEach(b=>b.onclick = ()=>this.play(b.dataset.play, IV_LINES[b.dataset.play], 'question'));
+    root.querySelectorAll('[data-voice]').forEach(b=>b.onclick = ()=>{ const v = this.voiceOf(b.dataset.voice), d = this.edit(this.sel), w = IV_WANT[this.sel] || {};
+      const fresh = !d.voice_id; d.voice_id = v.voice_id; d.voice_name = v.name; d.voice_meta = { gender:v.gender, age:v.age }; d.provider = 'typecast';
+      const ok = e=>(['smart'].concat(v.emotions || [])).includes(e), pickE = (cur, want)=>(!fresh && ok(cur)) ? cur : ok(want) ? want : ok(cur) ? cur : 'normal';   // 처음 고를 때는 이 면접관에 어울리는 감정으로
+      d.emotions = { question: pickE(d.emotions.question, w.emo), followup: pickE(d.emotions.followup, w.fu), press: pickE(d.emotions.press, 'toneup') };
+      this.render(); this.play(this.sel, IV_LINES[this.sel], 'question'); });
+    root.querySelectorAll('[data-sample]').forEach(b=>b.onclick = ()=>{ const v = this.voiceOf(b.dataset.sample); if(!v) return; if(v.preview_url){ this.stop(); const a = new Audio(v.preview_url); this._audio = a; a.play().catch(()=>{}); return; }
+      this.say(this.sel, IV_LINES[this.sel] || VS_SAMPLE_LINE, 'question', Object.assign({}, this.edit(this.sel), { voice_id:v.voice_id, voice_meta:{ gender:v.gender, age:v.age } })); });
+    root.querySelectorAll('[data-f]').forEach(el=>{ const k = el.dataset.f; const fn = ()=>{ this.f[k] = el.type === 'checkbox' ? el.checked : el.value; const pos = el.selectionStart; this.render(); const n = root.querySelector(`[data-f="${k}"]`); if(n && k === 'q'){ n.focus(); try{ n.setSelectionRange(pos, pos); }catch(_){} } };
+      if(k === 'q') el.oninput = ()=>{ clearTimeout(this._ft); this._ft = setTimeout(fn, 250); }; else el.onchange = fn; });
+    root.querySelectorAll('[data-t]').forEach(el=>{ const k = el.dataset.t, d = ()=>this.edit(this.sel);
+      if(el.type === 'range') el.oninput = ()=>{ const v = k === 'tempo' ? +(+el.value).toFixed(2) : +el.value; d()[k] = v; const lab = document.getElementById('ivv-' + k + '-v'); if(lab) lab.textContent = k === 'tempo' ? v.toFixed(2) + '배' : (v > 0 ? '+' : '') + v; };
+      el.onchange = ()=>{ d()[k] = el.type === 'checkbox' ? el.checked : el.type === 'range' ? +el.value : el.value; this.render(); }; });
+    root.querySelectorAll('[data-emo]').forEach(el=>el.onchange = ()=>{ const d = this.edit(this.sel); d.emotions = Object.assign({}, d.emotions, { [el.dataset.emo]: el.value }); this.render(); });
+    root.querySelectorAll('[data-try]').forEach(b=>b.onclick = ()=>{ const t = (document.getElementById('ivv-line') || {}).value || IV_LINES[this.sel]; this.play(this.sel, b.dataset.try === 'followup' ? IV_FU_LINE : t, b.dataset.try); });
+    root.querySelectorAll('[data-cmp]').forEach(b=>b.onclick = ()=>{ const other = this.dupOf(this.sel)[0] || this.people().find(p=>p.id !== this.sel).id; this.chain([[this.sel, IV_LINES[this.sel]], [other, IV_LINES[other]]]); });
+    root.querySelectorAll('[data-allplay]').forEach(b=>b.onclick = ()=>this.chain(this.people().map(p=>[p.id, `${p.n}입니다. ` + IV_LINES[p.id].split(/(?<=[.?])\s/)[0]])));
+    root.querySelectorAll('[data-auto]').forEach(b=>b.onclick = ()=>this.autoFill());
+    root.querySelectorAll('[data-reset]').forEach(b=>b.onclick = ()=>{ this.draft = {}; this.render(); });
+    root.querySelectorAll('[data-save]').forEach(b=>b.onclick = ()=>this.save());
+    root.querySelectorAll('[data-undo]').forEach(b=>b.onclick = ()=>{ const l = this.log.find(x=>String(x.id) === b.dataset.undo); if(!l || !l.before) return; this.draft[l.persona_id] = Object.assign(this.blank(l.persona_id), l.before); this.sel = l.persona_id; this.render(); showToast(`${this.P(l.persona_id).n} 설정을 그때로 되돌려 놓았어요. '저장하고 적용'을 눌러야 반영돼요.`, 'info'); });
+    root.querySelectorAll('[data-lexadd]').forEach(b=>b.onclick = ()=>{ const t = document.getElementById('ivv-lx-t').value.trim(), sv = document.getElementById('ivv-lx-s').value.trim(); if(!t || !sv) return showToast('쓰인 말과 읽는 법을 모두 적어 주세요'); this.lex = this.lex.filter(x=>x.t !== t).concat([{ t, s: sv }]); this.render(); const d = root.querySelector('.ivv-sec'); if(d) d.open = true; });
+    root.querySelectorAll('[data-lexdel]').forEach(b=>b.onclick = ()=>{ this.lex.splice(+b.dataset.lexdel, 1); this.render(); const d = root.querySelector('.ivv-sec'); if(d) d.open = true; });
+    root.querySelectorAll('[data-lexsave]').forEach(b=>b.onclick = ()=>this.saveSetting('tts_lexicon', this.lex, '발음 사전을 저장했어요'));
+    root.querySelectorAll('[data-lextry]').forEach(b=>b.onclick = ()=>{ const ex = this.lex.length ? this.lex.map(x=>x.t).join(', ') + ' 지원 동기를 말씀해 주세요.' : 'LH와 KOTRA 가운데 어디에 지원하셨나요?'; this.play(this.sel || 'hr', ex, 'question'); });
+    root.querySelectorAll('[data-budsave]').forEach(b=>b.onclick = ()=>{ this.budget = { monthly: Math.max(0, +document.getElementById('ivv-bud').value || 0), warn: Math.min(100, Math.max(10, +document.getElementById('ivv-warn').value || 80)) }; this.saveSetting('tts_budget', this.budget, '크레딧 예산을 저장했어요'); });
+  },
+  async saveSetting(key, value, msg){
+    const { error } = await sb.from('app_settings').upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict:'key' });
+    if(error){ showToast('저장하지 못했어요. ' + friendlyErr(error), 'warn'); return; }
+    showToast(msg, 'ok'); if(key === 'tts_lexicon') this.lexMap = value.slice(); this.render();
+  },
+  autoFill(){
+    let n = 0;
+    this.people().forEach(p=>{ if((this.cur(p.id) || {}).voice_id) return; const best = this.rec(p.id)[0]; if(!best) return; const d = this.edit(p.id), v = best.v, w = IV_WANT[p.id] || {};
+      d.voice_id = v.voice_id; d.voice_name = v.name; d.voice_meta = { gender:v.gender, age:v.age }; d.tempo = w.tempo || 1; d.pitch = w.pitch || 0;
+      const ok = e=>(['smart'].concat(v.emotions || [])).includes(e); d.emotions = { question: ok(w.emo) ? w.emo : 'normal', followup: ok(w.fu) ? w.fu : 'normal', press: ok('toneup') ? 'toneup' : 'normal' }; n++; });
+    this.render(); showToast(n ? `${n}명을 어울리는 목소리로 채웠어요. 들어 보고 '저장하고 적용'을 눌러 주세요.` : '비어 있는 면접관이 없어요.', 'info');
+  },
+  async save(){
+    const ids = this.people().filter(p=>this.changed(p.id)).map(p=>p.id); if(!ids.length) return;
+    const est = this.estimate(), bud = +this.budget.monthly || 0;
+    if(est.ids.length && !confirm(`${ids.map(x=>this.P(x).n).join(', ')}의 목소리 설정을 저장할까요?\n\n새로 시작하는 면접부터 적용돼요.${est.ids.length ? `\n소리가 바뀐 면접관 ${est.ids.length}명은 녹음본을 다시 만들어야 해요 (약 ${est.credits.toLocaleString()}크레딧${bud ? `, 한 달 예산의 ${Math.round(est.credits / bud * 100)}%` : ''}).` : ''}`)) return;
+    const rows = ids.map(pid=>{ const d = this.draft[pid]; return { persona_id: pid, provider: d.provider || 'typecast', voice_id: d.voice_id || '', voice_name: d.voice_name || '', voice_meta: d.voice_meta || {}, tempo: +d.tempo || 1, pitch: d.pitch || 0, emotions: d.emotions || {}, fallback: d.fallback || 'browser', enabled: d.enabled !== false }; });
+    const note = (document.getElementById('ivv-note') || {}).value || '';
+    const { data, error } = await sb.rpc('set_interviewer_voices', { p_rows: rows, p_note: note });
+    if(error){ showToast('저장하지 못했어요. ' + friendlyErr(error), 'warn'); return; }
+    this.draft = {}; showToast(`면접관 ${data || ids.length}명의 목소리를 저장했어요. 새 면접부터 적용돼요.`, 'ok');
+    try{ Activity.log('iv_voice_save', { personas: ids, sound: est.ids }); }catch(_){}
+    await this.load();
+  },
+  stop(){ this._seq++; if(this._audio){ try{ this._audio.pause(); }catch(_){} this._audio = null; } try{ window.speechSynthesis.cancel(); }catch(_){} },
+  play(pid, text, kind){ const d = this.cur(pid) || this.blank(pid); this.say(pid, text, kind, d); },
+  /** 미리 듣기: 타입캐스트가 붙어 있으면 그 목소리로(같은 문장·설정은 다시 만들지 않음), 아니면 브라우저 목소리로 흉내 */
+  async say(pid, text, kind, setting, onDone, keep){
+    if(!keep) this.stop(); const my = this._seq;
+    const src = document.getElementById('ivv-src');
+    if(this.api && setting && setting.voice_id && !String(setting.voice_id).startsWith('sample-')){
+      const e = setting.emotions || {}, eng = { provider:'typecast', tc:{ voice_id:setting.voice_id, tempo:+setting.tempo || 1, pitch:setting.pitch || 0, emotion: e[kind] || e.question || 'normal' } };
+      const key = JSON.stringify(eng) + '|' + text;
+      try{ let blob = this._cache.get(key); if(!blob){ blob = await fetchSpeechBlob(this.lexApply(text, this.lex), 'onyx', 1, 'gpt-4o-mini-tts', '', eng, { purpose:'admin_test' }); this._cache.set(key, blob); }
+        if(my !== this._seq) return; const a = new Audio(URL.createObjectURL(blob)); this._audio = a; a.onended = ()=>{ if(onDone) onDone(); }; await a.play(); return; }
+      catch(err){ if(src) src.textContent = '타입캐스트로 만들지 못해 브라우저 목소리로 들려 드려요: ' + (err.message || err); }
+    }
+    this.speakBrowser(this.lexApply(text, this.lex), ()=>{ if(my === this._seq && onDone) onDone(); }, pid, kind, setting);
+  },
+  chain(list){ this.stop(); const my = this._seq; const next = i=>{ if(i >= list.length || my !== this._seq) return; const [pid, t] = list[i]; const card = document.querySelector(`.ivv-card[data-pid="${pid}"]`);
+    document.querySelectorAll('.ivv-card.spk').forEach(c=>c.classList.remove('spk')); if(card) card.classList.add('spk');
+    const d = this.cur(pid) || this.blank(pid); this.say(pid, t, 'question', d, ()=>{ if(card) card.classList.remove('spk'); setTimeout(()=>{ if(my === this._seq) next(i + 1); }, 250); }, true); };
+    next(0); },
+};
 const VoiceSet = {
   voices:null, loading:false, err:'', g:'', age:'', q:'', shown:40, cache:new Map(), used:0, _seq:0, _sample:null,
   ui(){ return state.ttsEngineUI || (state.ttsEngineUI = { provider:'openai', tc:null }); },
