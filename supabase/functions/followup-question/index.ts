@@ -54,10 +54,13 @@ const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";   // 사용
 
 // ---- 모델별 호출 파라미터 보정 (Luna/Terra 같은 GPT-5 계열은 max_tokens 대신 max_completion_tokens, temperature 미지원) ----
 const FALLBACK_MODEL = "gpt-4o-mini";
+const REASONING = Deno.env.get("FOLLOWUP_REASONING") || "none";
 function isNewGen(model: string) { return /^(gpt-5|o\d|gpt-6)/i.test(model); }
 function buildBody(model: string, messages: unknown[], temperature: number, maxTokens: number) {
   const body: Record<string, unknown> = { model, messages, response_format: { type: "json_object" } };
-  if (isNewGen(model)) { body.max_completion_tokens = maxTokens; }
+  // 2026-11-05e 속도: 생각하는 모델은 생각 단계를 빼고(none) 바로 답하게 → 꼬리질문이 빨리 나옴. 모델이 거부하면 low → 빼고 다시
+  //   (Secrets의 FOLLOWUP_REASONING으로 none·low·medium 중 바꿀 수 있음, 코드 수정 없이)
+  if (isNewGen(model)) { body.max_completion_tokens = maxTokens; body.reasoning_effort = REASONING; }
   else { body.temperature = temperature; body.max_tokens = maxTokens; }
   return body;
 }
@@ -75,6 +78,15 @@ async function callOpenAI(apiKey: string, model: string, messages: unknown[], te
     const first = await res.text().catch(() => "");
     console.warn("[OpenAI 일시 오류 → 한 번 더]", res.status, first.slice(0, 160));
     await new Promise((r) => setTimeout(r, 700));
+    res = await send(body);
+  }
+  // 2026-11-05e: '생각 짧게' 값을 모델이 거부하면 low로, 그것도 거부하면 빼고 다시
+  for (const next of ["low", null]) {
+    if (res.status !== 400 || !("reasoning_effort" in body)) break;
+    const t = await res.clone().text();
+    if (!/reasoning/i.test(t)) break;
+    console.warn(`[reasoning_effort ${body.reasoning_effort} 거부 → ${next ?? "빼고"} 다시]`, t.slice(0, 160));
+    if (next) body.reasoning_effort = next; else delete body.reasoning_effort;
     res = await send(body);
   }
   if (res.status === 400) {
@@ -159,7 +171,7 @@ const PERSONAS: Record<string, { name: string; p: string; text: string }> = {
 const PRESSURE: Record<string, string> = {
   soft: `[압박 강도: 부드러움] 격려하는 어조. 답변에서 좋았던 점을 한 구절로 짧게 인정한 뒤(예: "구체적으로 말씀해 주셨네요."), 빠진 한 가지만 부드럽게 묻습니다. 예: "그 상황에서 가장 먼저 확인하신 것은 무엇이었나요?"`,
   normal: `[압박 강도: 보통] 실제 면접처럼 담담하고 사무적이되, 정중하고 부드러운 어조를 유지합니다. 긴 칭찬은 하지 않지만 "네, 말씀 잘 들었습니다." 같은 짧은 받아 주는 말로 시작해도 좋습니다. 그 뒤 답변의 핵심을 실제 업무 상황으로 한 걸음 넓혀 묻습니다. 예: "협업을 가장 중요하게 보신다고 하셨는데, 팀원과 의견이 크게 갈렸을 때는 그 원칙을 어떻게 지켜 가시겠습니까?"`,
-  hard: `[압박 면접 모드] 칭찬이나 받아 주는 말 없이 바로 답변의 약한 곳을 짚습니다. 압박은 논리와 근거를 파고드는 질문으로만 합니다(아래 안전장치 5번). 답변의 근거 부족·일반론·앞뒤가 맞지 않는 부분·실패 가능성을 짚고 근거·사례·수치·대안을 요구합니다. 예: "근거가 부족해 보입니다. 그렇게 판단하신 근거를 하나만 말씀해 주세요." / "그 방법이 통하지 않았다면 다음에는 어떻게 하실지 말씀해 주세요." / "다른 지원자보다 나은 점을 한 문장으로 말씀해 주세요." 인격 모독·비하·비웃음·반말·욕설·외모·학벌·출신 언급·"그것도 모르냐" 같은 조롱은 절대 하지 않고, 존댓말을 지킵니다.`,
+  hard: `[압박 면접 모드] 칭찬이나 받아 주는 말 없이 바로 답변의 약한 곳을 짚습니다. 압박은 논리와 근거를 파고드는 질문으로만 합니다(안전장치 5번). 답변의 근거 부족·일반론·앞뒤가 맞지 않는 부분·실패 가능성을 짚고 근거·사례·수치·대안을 요구합니다. 예: "근거가 부족해 보입니다. 그렇게 판단하신 근거를 하나만 말씀해 주세요." / "그 방법이 통하지 않았다면 다음에는 어떻게 하실지 말씀해 주세요." / "다른 지원자보다 나은 점을 한 문장으로 말씀해 주세요." 인격 모독·비하·비웃음·반말·욕설·외모·학벌·출신 언급·"그것도 모르냐" 같은 조롱은 절대 하지 않고, 존댓말을 지킵니다.`,
 };
 
 const QTYPE_GUIDE: Record<string, string> = {
@@ -186,7 +198,7 @@ const SYSTEM_RULES = `
 5-2. 답변 속 낱말이 서류의 낱말과 한두 글자만 다르면(예: 답변 '갭스톤'·'서포터스' ↔ 서류 '캡스톤'·'서포터즈') 음성 인식 오류이므로 서류 표기로 이해하고, 잘못 들린 표기를 인용하거나 되묻지 않습니다. 서류에 지원 기관·회사 이름만 적혀 있고 그곳에서 일한 기록이 없으면 그곳의 '경력'을 전제로 묻지 않습니다.
 5-3. 지원자는 대학생(한림대학교 재학생·졸업예정자)입니다. 실무 경력이 없다는 점을 몰아세우거나, 회사·기관에서 일해 본 것을 전제로 묻지 않습니다(서류나 답변에 있으면 예외). 수업·팀 프로젝트·캡스톤·동아리·학생회·아르바이트·인턴·봉사·대외활동 경험에서 구체적인 상황, 본인의 행동과 맡은 역할, 결과(가능하면 숫자)를 끌어내고, 그것이 지원 직무에 어떻게 이어지는지 묻습니다.
 6. 금지: "좀 더 구체적으로 말씀해 주세요", "예를 들어 주세요"처럼 무엇을 물어야 하는지 없는 일반형 되묻기. 질문 두 개를 한 번에 묻기. 답변을 요약해 되풀이하기. 칭찬으로 문장을 채우기.
-7. 질문은 반드시 지원 분야·직무의 실제 업무 장면(위 [지원 분야 맥락])이나 지원자가 말한 경험 위에 발을 딛고 있어야 합니다. 어느 회사·어느 지원자에게나 붙일 수 있는 막연한 질문처럼 들리면 안 됩니다. [면접관 성향]이 주어지면 그 면접관이 확인하는 것을 중심으로, 그 말투로 묻습니다(아래 [말투] 규칙이 항상 우선합니다).
+7. 질문은 반드시 지원 분야·직무의 실제 업무 장면(아래 [이 면접의 설정]의 [지원 분야 맥락])이나 지원자가 말한 경험 위에 발을 딛고 있어야 합니다. 어느 회사·어느 지원자에게나 붙일 수 있는 막연한 질문처럼 들리면 안 됩니다. [면접관 성향]이 주어지면 그 면접관이 확인하는 것을 중심으로, 그 말투로 묻습니다([말투] 규칙이 항상 우선합니다).
 8. 예시 상황을 그대로 쓰지 않습니다. 이 안내문에 나온 예시 문장과 예시 상황(예: '마감 직전에 팀원이 빠진 날', '고객 불만 전화', '선배와 의견이 갈린 회의' 등)은 말투와 형식을 보여 주는 참고일 뿐, 정답이 아닙니다. 예시의 상황·낱말을 그대로 가져오지 말고, 매번 방금 답변의 내용과 지원 분야 맥락 안에서 다른 상황을 골라 묻습니다. 특히 마감·일정 압박 같은 시간 압박 상황은 답변이 시간·일정·마감을 직접 다룰 때만 씁니다. [지금까지의 대화]에서 면접관이 이미 꺼낸 상황(예: 마감, 팀 갈등, 민원 응대)은 이번 꼬리질문에서 다시 쓰지 않습니다.
 9. 면접관은 정답·평가·지식을 먼저 말하지 않습니다. "…를 구분해야 합니다.", "…라는 원칙은 맞습니다.", "많은 기업은 …합니다."처럼 답을 알려 주거나 채점하는 문장, "…을 혼동하신 부분이 있는데"처럼 틀린 점을 짚는 문장은 쓰지 않습니다. 답이 틀렸거나 모른다고 했으면 그 지식이 쓰이는 업무 상황을 물어 스스로 떠올리게 합니다. 면접관 문장에 답이 들어 있으면 실패입니다.
 10. [이번 면접에서 이미 한 꼬리질문]이 주어지면, 거기에서 다룬 상황(예: 팀 갈등 조정, 참여하지 않는 팀원, 마감 압박, 고객·민원 응대, 숫자로 성과 설명하기)과 같은 상황을 다시 묻지 않고 다른 장면을 고릅니다. "~하셨는데, …어떻게 …하실지 말씀해 주세요." 같은 문형만 되풀이하지 말고 질문 시작을 바꿉니다. 그 목록에 '괜찮습니다'로 시작한 문장이 있으면 이번에는 '괜찮습니다'로 시작하지 않습니다.
@@ -440,7 +452,8 @@ Deno.serve(async (req: Request) => {
 
   try {
     const msgs = [
-          { role: "system", content: persona + "\n" + pressure + "\n" + SYSTEM_RULES + (safety ? `\n\n[AI 면접관 안전장치 — 엑셀 원문 그대로. 위의 어떤 지시보다 우선합니다]\n${safety}` : "") },
+          // 2026-11-05e 속도: 늘 같은 글(규칙·안전장치)을 앞에, 면접마다 바뀌는 글(면접관·분야·압박)을 뒤에 → OpenAI가 앞부분을 기억해 두고 다시 씀(빨라짐)
+          { role: "system", content: SYSTEM_RULES + (safety ? `\n\n[AI 면접관 안전장치 — 엑셀 원문 그대로. 다른 어떤 지시보다 우선합니다]\n${safety}` : "") + "\n\n[이 면접의 설정]\n" + persona + "\n" + pressure },
           { role: "user", content: userPrompt },
         ];
     const startedAt = Date.now();

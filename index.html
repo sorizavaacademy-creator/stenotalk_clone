@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05d';
+var APP_VERSION = '2026-11-05e';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5963,6 +5963,8 @@ html.ivv-dr-open{overflow:hidden;}
 .iv-co summary::-webkit-details-marker{display:none;}
 .iv-co summary::after{content:'회사 정보 펼치기';margin-left:auto;font-size:12px;color:#8a8a90;font-weight:500;} .iv-co[open] summary::after{content:'접기';}
 .iv-co .cc{margin:0 10px 10px;}
+.iv-lang-row{order:9;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 0;padding:8px 10px 8px 12px;border-radius:10px;background:#EEF3FB;color:#33415c;font-size:13.5px;line-height:1.5;} .iv-lang-row[hidden]{display:none;} .iv-lang-note{flex:1 1 180px;}
+.iv-lang-btn{flex:0 0 auto;border:1px solid #9fb3d6;background:#fff;color:#24406e;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:600;cursor:pointer;} .iv-lang-btn:hover{background:#f4f7fd;} .iv-lang-btn.on{background:#24406e;color:#fff;border-color:#24406e;}
 .iv-co-hint{order:9;margin:10px 0 0;padding:9px 12px;border-radius:10px;background:#FBEDE7;color:#4a4a52;font-size:13.5px;line-height:1.55;} .iv-co-hint b{color:#c8441c;}
 #screen-interview .avatar-panel > .iv-roster, #screen-interview .avatar-panel > .iv-co{grid-column:1/-1;}
 .iv-roster{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px;}
@@ -7738,6 +7740,7 @@ html.ivv-dr-open{overflow:hidden;}
             <span id="iv-example-q">면접관이 첫 질문을 준비하고 있어요.</span>
           </div>
           <p class="iv-co-hint" id="iv-co-hint" hidden></p>
+          <div class="iv-lang-row" id="iv-lang-row" hidden><span class="iv-lang-note" id="iv-lang-note">영어 질문이에요. 영어로 답해 보세요.</span><button type="button" class="iv-lang-btn" id="iv-lang-btn" onclick="ivToggleAnswerLang()">한국어로 답할게요</button></div>
           <div class="rh-qchips rh-only"><span class="rh-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>권장 시간<b>00:30</b></span></div>
           <div class="rh3-startgate" id="rh3-startgate" hidden>
             <p><b>준비되면 시작을 눌러 주세요</b>카메라 속 내 모습과 마이크 소리를 먼저 확인해 보세요. 시작을 누르면 면접관이 첫 질문을 읽어 드려요.</p>
@@ -18691,6 +18694,21 @@ function presentCurrentQuestion(){
  * AI 대화 면접 (실제 면접 화면에서 StenoLoop 실행) — Step 5-A
  * ============================================================ */
 const DIALOG_VOICE_PROVIDER = 'openai';    // 녹음 파일 → OpenAI 목소리(최대 4번 재시도). 면접 화면에서는 어느 모드든 브라우저 목소리로 바꾸지 않음 (2026-10-14)
+/* 2026-11-05e 영어 질문: 듣기는 되는데 영어로 말하기가 어려운 학생은 '한국어로 답할게요'를 눌러 한국어로 답함 (그 질문만) */
+function ivLangUI(isEn){
+  const row = document.getElementById('iv-lang-row'); if(!row) return;
+  if(typeof isEn === 'boolean') row.hidden = !isEn;
+  const ko = StenoLoop._langOverride === 'ko';
+  const b = document.getElementById('iv-lang-btn'), n = document.getElementById('iv-lang-note');
+  if(b){ b.textContent = ko ? '영어로 답할게요' : '한국어로 답할게요'; b.classList.toggle('on', ko); }
+  if(n) n.textContent = ko ? '한국어로 받아 적고 있어요. 꼬리질문도 한국어로 드려요.' : '영어 질문이에요. 영어로 답해 보세요.';
+}
+function ivToggleAnswerLang(){
+  const ko = StenoLoop._langOverride !== 'ko';
+  StenoLoop.setAnswerLang(ko ? 'ko' : null);
+  ivLangUI();
+  showToast(ko ? '한국어로 답해도 괜찮아요. 지금부터 한국어로 받아 적어요.' : '다시 영어로 받아 적어요.');
+}
 function dialogPhase(cls, text){ const p=document.getElementById('dialog-phase'); if(!p) return; p.className='dialog-phase '+(cls||''); document.getElementById('dialog-phase-text').textContent=text;
   const li=document.getElementById('live-interviewer'); if(li){ li.classList.remove('speaking','listening','thinking'); if(cls) li.classList.add(cls); } const lt=document.getElementById('live-phase-text'); if(lt) lt.textContent=text;
   if(typeof Persona !== 'undefined') Persona.setState(cls); }
@@ -19347,10 +19365,11 @@ async function runDialogInterview(){
       curSlotName = d.q.slotName || '';
       qEl.textContent = d.q.q; { const qn=document.getElementById('rh-qnum'); if(qn) qn.textContent = String(d.index).padStart(2,'0'); }
       if(d.q.custom){ const dn = d.q.doc === 'cv' ? '이력서' : '자기소개서'; badge.textContent = d.q.slotName ? `실전 세트 · ${dn} 기반` : `${dn} 기반`; badge.className='qcard-source-badge resume'; }
-      else if(d.q.qb){ badge.textContent = `${d.q.qb.company || (d.q.qb.grp ? d.q.qb.grp : '기업')} 면접 질문 · ${d.q.qtype || ''}${d.q.lang === 'en' ? ' · 영어로 답해 주세요' : ''}`; badge.className='qcard-source-badge resume'; }   // 2026-11-05 면접 DB
+      else if(d.q.qb){ badge.textContent = `${d.q.qb.company || (d.q.qb.grp ? d.q.qb.grp : '기업')} 면접 질문 · ${d.q.qtype || ''}${d.q.lang === 'en' && d.q.qtype !== '영어' ? ' · 영어 질문' : ''}`; badge.className='qcard-source-badge resume'; }   // 2026-11-05 면접 DB
       else if(d.q.co){ badge.textContent = '기업 맞춤 질문'; badge.className='qcard-source-badge resume'; }
       else { badge.textContent = d.q.slotName ? `실전 세트 · ${d.q.slotName}` : state.selectedField.id==='review' ? '복습 문항' : '문제은행 출제'; badge.className='qcard-source-badge bank'; }
       try{ IvPanel.onQuestion(d.q); }catch(_){}
+      ivLangUI(d.q.lang === 'en');
       ta.value=''; updateCharCount();
     }
     else if(type==='speaking'){ FirstQWait.stop(); try{ SelfCam.stopSeg(); }catch(_){} dialogPhase('speaking', '면접관이 말하는 중'); document.getElementById('wave-state').textContent='면접관 발화 중'; stopBtn.disabled = true; if(!stopBtn.classList.contains('typed')) stopBtn.textContent = '면접관이 말하는 중…'; stopWaveAnim(); }
@@ -22305,7 +22324,31 @@ const SpeechTag = {
     return 'other';
   },
 };
+/* 2026-11-05e 짧은 말(24자 이하: "네, 잘 들었습니다." 같은 받는 말)은 한 번 받은 음성을 이 기기에 보관해 다시 씀 → 두 번째부터는 바로 재생, 음성 사용량도 들지 않음 */
+const VoiceCache = {
+  mem: new Map(), NAME: 'zp-voice-v1', MAX: 24,
+  key(text, voice, speed, model, engine){ return 'https://zp-voice.local/' + encodeURIComponent(JSON.stringify([String(text||'').trim(), voice||'', speed||'', model||'', engine ? [engine.provider||'', engine.voice_id||engine.voiceId||'', engine.emotion||'', engine.tempo||''] : ''])); },
+  ok(text){ const t = String(text||'').trim(); return t.length > 0 && t.length <= this.MAX; },
+  async get(k){
+    if(this.mem.has(k)) return this.mem.get(k);
+    try{ if(!('caches' in window)) return null; const c = await caches.open(this.NAME); const r = await c.match(k); if(!r) return null; const b = await r.blob(); if(!b || b.size < 100) return null; this.mem.set(k, b); return b; }catch(_){ return null; }
+  },
+  async put(k, blob){
+    this.mem.set(k, blob);
+    try{ if('caches' in window){ const c = await caches.open(this.NAME); await c.put(k, new Response(blob, { headers: { 'Content-Type': blob.type || 'audio/mpeg' } })); } }catch(_){}
+  },
+};
 async function fetchSpeechBlob(text, voice, speed, model, instructions, engine, meta){
+  if(!VoiceCache.ok(text) || instructions || (meta && meta.retry)) return fetchSpeechBlobNet(text, voice, speed, model, instructions, engine, meta);
+  const k = VoiceCache.key(text, voice, speed, model, engine);
+  const hit = await VoiceCache.get(k);
+  if(hit){ fetchSpeechBlob.cached = true; return hit; }
+  fetchSpeechBlob.cached = false;
+  const blob = await fetchSpeechBlobNet(text, voice, speed, model, instructions, engine, meta);
+  if(fetchSpeechBlob.last !== 'openai-fallback') VoiceCache.put(k, blob);   // 대신 읽은 목소리는 보관하지 않음
+  return blob;
+}
+async function fetchSpeechBlobNet(text, voice, speed, model, instructions, engine, meta){
   const { data: sess } = await sb.auth.getSession();
   const token = (sess && sess.session && sess.session.access_token) || SUPABASE_ANON_KEY;
   const tag = engine && engine.provider === 'typecast' ? { purpose: (meta && meta.purpose) || SpeechTag.of(text), retry: !!(meta && meta.retry) } : {};
@@ -23169,7 +23212,9 @@ const StenoLoop = {
         onState: (n,x)=>emit('listen-state',{name:n, extra:x}),
         onError: m=>emit('error',{message:m}),
         onEnd: r=>{
-          if(r.reason==='restart' && !this.aborted){ this._lastPartial = r; this._resumeListen = ()=>{ this._resumeListen=null; if(!this.micEnabled){ const pt=(this._lastPartial&&this._lastPartial.text)||''; this._lastPartial=null; waitTyped('mic-off', pt); return; } emit('listening'); startOnce(); }; return; }
+          if(r.reason==='restart' && !this.aborted){ this._lastPartial = r; this._resumeListen = ()=>{ this._resumeListen=null; if(!this.micEnabled){ const pt=(this._lastPartial&&this._lastPartial.text)||''; this._lastPartial=null; waitTyped('mic-off', pt); return; } emit('listening'); startOnce(); };
+            if(this._langSwitch && !this.paused){ this._langSwitch = false; this._resumeListen(); }   // 2026-11-05e 답하는 말 바꾸기 → 지금까지 들은 말은 두고 새 말로 이어서 들음
+            return; }
           // 면접자가 마이크를 끔 → 이 답변은 직접 입력으로 (다시 켜면 setMic(true)가 이어서 듣기 시작)
           if(r.reason==='mic-off' && !this.aborted){ this._lastPartial = null; waitTyped('mic-off', r.text||''); return; }
           // 마이크 권한 거부·장치 없음·네트워크 오류 등 → 이번 면접은 직접 입력으로 계속 (인식된 부분은 입력창에 미리 채움)
@@ -23241,14 +23286,16 @@ const StenoLoop = {
           if(this.aborted) break;
         }
         const q = questions[qi]; this.stats.questions++;
+        this._langOverride = null; this._langSwitch = false;   // 2026-11-05e '한국어로 답할게요'는 그 질문에만
         emit('question', {index:qi+1, total:questions.length, q});
         await say(spokenOf(q), 'interviewer', q.audio_url || null);
         let history = [], lastAsk = q.q;
-        let curLang = q.lang === 'en' ? 'en' : 'ko';   // 영어 질문은 꼬리질문도 영어로 (꼬리질문 문장이 한국어면 한국어로)
+        // 영어 질문은 꼬리질문도 영어로 (꼬리질문 문장이 한국어면 한국어로). 2026-11-05e 학생이 '한국어로 답할게요'를 누르면 그 질문은 한국어로 받아 적고 꼬리질문도 한국어로
+        const langNow = ()=> this._langOverride || (q.lang === 'en' && !/[가-힣]/.test(lastAsk) ? 'en' : 'ko');
         const fuCap = dyn ? (eligible(qi) ? dyn.perQ : 0) : (fuPlan ? (fuPlan.has(qi) ? 1 : 0) : this.opt.maxFollowups);
         for(let f=0; f<=fuCap && !this.aborted; f++){
           this._curLimit = this.opt.realMode ? realLimitMs(f===0 ? q.q : lastAsk, f>0) : this.opt.maxAnswerMs;
-          this._curLang = curLang === 'en' ? 'en-US' : 'ko-KR';   // 2026-11-05 영어로 물으면 영어로 받아 적음
+          this._curLang = langNow() === 'en' ? 'en-US' : 'ko-KR';   // 2026-11-05 영어로 물으면 영어로 받아 적음
           const r = await listen();
           if(this.aborted){
             // 답변 도중 종료 → 지금까지 인식된 말이 있으면 답변으로 남겨 결과에 반영
@@ -23288,20 +23335,23 @@ const StenoLoop = {
             if(fuUsed >= dyn.total) break;
             let left = 0; for(let k = qi + 1; k < questions.length; k++) if(eligible(k)) left++;
             force = f === 0 && fuUsed < dyn.min && left === 0;   // 끝까지 한 번도 안 했으면 마지막 기회에 1개
-            const weak = this.weakness(q, ans, f > 0, curLang);
+            const weak = this.weakness(q, ans, f > 0, langNow());
             const need = f > 0 ? 0.75 : ((dyn.total - fuUsed) > left ? 0.35 : 0.55);   // 남은 질문보다 남은 꼬리질문이 많으면 문턱을 낮춤
             if(!force && weak < need) break;
           }
           emit('thinking');
+          const fuLang = langNow();
+          // 2026-11-05e AI가 꼬리질문을 만드는 동안(4~5초) 면접관이 먼저 "네, 잘 들었습니다." 하고 받아 줌 — 기다리는 침묵이 줄어듦 (대화 기록에는 남기지 않음)
+          const filler = this.filler(fuLang);
           const fu = await Promise.race([
-            StenoDialog.followup({ fieldId:this.opt.fieldId, question:lastAsk, answer:ans, reference:q.ref, history:history.slice(0,-1), pressure:this.opt.pressure, rootQuestion:q.q, followupsDone:f, qid:(q.id != null ? q.id : q.dbId), lang: curLang, force, qbType: q.qtype || null }),
+            StenoDialog.followup({ fieldId:this.opt.fieldId, question:lastAsk, answer:ans, reference:q.ref, history:history.slice(0,-1), pressure:this.opt.pressure, rootQuestion:q.q, followupsDone:f, qid:(q.id != null ? q.id : q.dbId), lang: fuLang, force, qbType: q.qtype || null }),
             abortPromise,   // 생성 중 "면접 종료"를 누르면 기다리지 않고 바로 빠져나감
           ]);
+          await Promise.race([filler, abortPromise]);
           if(this.aborted || !fu) break;
           if(dyn){
             if(fu.intent === 'next' && !force) break;          // AI가 충분하다고 보면 묻지 않고 다음 질문으로
             fuUsed++; this.stats.followupUsed = fuUsed;
-            curLang = /[가-힣]/.test(fu.followup) ? 'ko' : 'en';
           }
           this.stats.followups++; if(fu.source==='llm') this.stats.llm++; else this.stats.mock++;
           emit('followup', fu);
@@ -23318,6 +23368,28 @@ const StenoLoop = {
     return this.transcript;
   },
   _log(role, text){ this.transcript.push({role, text, at:Date.now()}); },
+  /** 2026-11-05e 꼬리질문을 기다리는 동안 하는 짧은 받는 말. AI 꼬리질문을 쓸 때만, 면접관 목소리로 (기록에는 안 남김) */
+  filler(lang){
+    try{
+      if(this.aborted || this.paused) return Promise.resolve();
+      if(!(STEP1.useLlmFollowup && AiSwitch.on('ai_followup') && AiQuota.canUse())) return Promise.resolve();
+      const hard = this.opt.pressure === 'hard';
+      const L = lang === 'en' ? ['I see.', 'Okay, thank you.', 'Thank you.'] : hard ? ['네.', '알겠습니다.'] : ['네, 잘 들었습니다.', '네, 알겠습니다.', '네, 말씀 감사합니다.'];
+      let t = L[Math.floor(Math.random() * L.length)];
+      if(t === this._lastFiller) t = L[(L.indexOf(t) + 1) % L.length];
+      this._lastFiller = t;
+      return new Promise(res=>{ const done = ()=>{ clearTimeout(to); res(); }; const to = setTimeout(res, 6000); StenoVoice.speak(t, done); });
+    }catch(_){ return Promise.resolve(); }
+  },
+  /** 2026-11-05e 영어 질문에 '한국어로 답할게요' — 'ko'면 이 질문은 한국어로 받아 적음, null이면 원래대로. 듣는 중이면 들은 말은 두고 새 말로 이어서 들음 */
+  setAnswerLang(l){
+    this._langOverride = l === 'ko' ? 'ko' : null;
+    if(!this.running) return;
+    const next = this._langOverride === 'ko' ? 'ko-KR' : 'en-US';
+    if(this._curLang === next) return;
+    this._curLang = next;
+    if(StenoListener.active && !this.paused){ this._langSwitch = true; StenoListener.stop('restart'); }
+  },
   /** 2026-11-05 답변이 얼마나 부족한지 0~1 (꼬리질문을 붙일 곳을 고를 때). 한국어 답변은 6축 채점, 영어 답변은 길이로 */
   weakness(q, ans, isFu, lang){
     const t = String(ans || '').trim();
