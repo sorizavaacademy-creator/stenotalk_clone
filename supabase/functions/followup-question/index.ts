@@ -1,4 +1,7 @@
 // 운영 ZAVAPASS에서 읽어 온 원본 (2026-11-03, 읽기만). 클론(yiuraowvnadqdrnysdce)에만 배포
+// 2026-11-05 면접 DB 4단계: ① 엑셀 'AI면접관안전장치' 1~8번 지시문을 DB(qb_rules)에서 그대로 읽어 모든 꼬리질문에 넣음 (다른 지시보다 우선)
+//   ② 지원자가 가족·종교·건강 같은 개인 이야기를 먼저 꺼내면 그 내용은 묻지 않게 한 번 더 알리고, 만든 문장을 서버가 다시 검사(금지 낱말·개인 낱말 → 안전한 질문으로 바꿈)
+//   ③ 압박 모드(pressure: hard)는 시트 5번 '압박 면접에서도 지킬 선'에 맞춤 ④ lang: "en"이면 영어로 묻기 ⑤ force: true면 이번엔 반드시 묻기(next 금지)
 // 2026-11-03 한림대용: 속기사 채용 → 대학생 채용 면접으로 프롬프트 교체
 // 2026-10-26a: 즉석 문장 주간 점검 반영 — ① 길이 30~75자(최대 80자) ② 정답·평가·지식을 먼저 말하지 않기(규칙 9) ③ 이번 면접에서 이미 한 꼬리질문(recent_followups)과 같은 상황·'괜찮습니다' 반복 금지(규칙 10) ④ '~하시겠는지' → '~하실지' 다듬기
 // 2026-10-23a: 안내 문구의 '교육팀' → '담당자' (부서 이름을 특정하지 않음)
@@ -44,6 +47,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.118.0";
 import { loadCompanyPack, buildCompanyBlock } from "../_shared/company_prompt.ts";
+import { activeVer, blockReason, loadRules, safetyText } from "../_shared/qbank.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";   // 사용자 선택: Luna (가장 저렴). Secrets의 OPENAI_MODEL로 변경 가능
@@ -155,7 +159,7 @@ const PERSONAS: Record<string, { name: string; p: string; text: string }> = {
 const PRESSURE: Record<string, string> = {
   soft: `[압박 강도: 부드러움] 격려하는 어조. 답변에서 좋았던 점을 한 구절로 짧게 인정한 뒤(예: "구체적으로 말씀해 주셨네요."), 빠진 한 가지만 부드럽게 묻습니다. 예: "그 상황에서 가장 먼저 확인하신 것은 무엇이었나요?"`,
   normal: `[압박 강도: 보통] 실제 면접처럼 담담하고 사무적이되, 정중하고 부드러운 어조를 유지합니다. 긴 칭찬은 하지 않지만 "네, 말씀 잘 들었습니다." 같은 짧은 받아 주는 말로 시작해도 좋습니다. 그 뒤 답변의 핵심을 실제 업무 상황으로 한 걸음 넓혀 묻습니다. 예: "협업을 가장 중요하게 보신다고 하셨는데, 팀원과 의견이 크게 갈렸을 때는 그 원칙을 어떻게 지켜 가시겠습니까?"`,
-  hard: `[압박 강도: 높음] 답변의 근거 부족·일반론을 구체적으로 짚고 근거·사례·수치를 요청합니다. 다만 추궁하거나 몰아세우지 않고, 끝까지 정중합니다. 예: "원칙은 잘 이해했습니다. 그 원칙을 실제로 지켰던 사례를 하나만 말씀해 주시겠습니까?" / "앞서 혼자 끝까지 해내는 편이라고 하셨고 지금은 협업을 중요하게 본다고 하셨는데, 두 가지가 부딪히는 순간에는 어떻게 판단하시겠습니까?"`,
+  hard: `[압박 면접 모드] 칭찬이나 받아 주는 말 없이 바로 답변의 약한 곳을 짚습니다. 압박은 논리와 근거를 파고드는 질문으로만 합니다(아래 안전장치 5번). 답변의 근거 부족·일반론·앞뒤가 맞지 않는 부분·실패 가능성을 짚고 근거·사례·수치·대안을 요구합니다. 예: "근거가 부족해 보입니다. 그렇게 판단하신 근거를 하나만 말씀해 주세요." / "그 방법이 통하지 않았다면 다음에는 어떻게 하실지 말씀해 주세요." / "다른 지원자보다 나은 점을 한 문장으로 말씀해 주세요." 인격 모독·비하·비웃음·반말·욕설·외모·학벌·출신 언급·"그것도 모르냐" 같은 조롱은 절대 하지 않고, 존댓말을 지킵니다.`,
 };
 
 const QTYPE_GUIDE: Record<string, string> = {
@@ -325,6 +329,23 @@ function polish(text: string, recent: string[]): string {
   return t;
 }
 
+// ---- 2026-11-05 면접 DB: 엑셀 안전장치 1~8번 (5분 동안 기억해 두고 씀) ----
+let SAFETY_CACHE: { at: number; text: string } = { at: 0, text: "" };
+async function safetyBlock(): Promise<string> {
+  if (Date.now() - SAFETY_CACHE.at < 5 * 60 * 1000) return SAFETY_CACHE.text;
+  try {
+    const sb = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+    const ver = await activeVer(sb);
+    const text = ver ? safetyText(await loadRules(sb, ver, "AI면접관안전장치")) : "";
+    SAFETY_CACHE = { at: Date.now(), text };
+    return text;
+  } catch (e) { console.warn("[안전장치 읽기 실패 → 서버 낱말 검사만]", (e as Error).message); return SAFETY_CACHE.text; }
+}
+/** 지원자가 스스로 꺼낸 개인 신상 낱말 (시트 4번: 이런 내용에 대해 꼬리질문하지 않음) */
+const PERSONAL_RE = /((우리|저희|제)\s?(가족|부모님|집안)|아버지|아버님|어머니|어머님|엄마|아빠|할머니|할아버지|(제|저희|우리)\s?(형|동생|언니|오빠|누나)|종교|교회|성당|절에\s?다니|신앙|하나님|부처님|(제가|저는)\s?(아팠|아파서|아플)|건강이\s?(안\s?좋|나빠)|건강\s?문제|투병|수술을\s?받|입원했|우울증|공황|정신과|결혼|남자\s?친구|여자\s?친구|연애|임신|출산|군대|입대|전역|군\s?복무)/g;
+function personalWords(text: string): string[] { return [...new Set(String(text || "").match(PERSONAL_RE) ?? [])].map((w) => w.replace(/^(우리|저희|제가|저는|제)\s?/, "")); }
+const SAFE_FOLLOWUP = { ko: "그 경험에서 본인이 직접 한 일과 그 결과를 말씀해 주세요.", en: "Could you tell me what you personally did in that situation and what the result was?" };
+
 /** 답변이 거의 비어 있거나 "모르겠다"류인지 (프롬프트에 힌트를 주기 위한 판단) */
 function answerKind(answer: string): string {
   const a = answer.replace(/\s/g, "");
@@ -371,6 +392,10 @@ Deno.serve(async (req: Request) => {
   const df = (body.doc_focus && typeof body.doc_focus === "object") ? body.doc_focus as Record<string, unknown> : null;
   const docFocus = df && df.src ? `${df.doc === "cv" ? "이력서" : "자기소개서"}${df.section && df.doc !== "cv" ? ` '${String(df.section).slice(0, 30)}' 항목` : ""}: ${String(df.src).slice(0, 300)}` : "";
   const followupsDone = Number.isFinite(Number(body.followups_done)) ? Number(body.followups_done) : null;
+  const lang = body.lang === "en" ? "en" : "ko";              // 2026-11-05 영어 질문이면 영어로 묻기
+  const force = body.force === true;                          // 이번엔 반드시 꼬리질문 (면접 전체 최소 1개)
+  const bankType = cleanText(body.qb_type, 12);               // 질문은행 유형 (자기소개·경험·역량 …)
+  const personal = personalWords(answer);
   if (!question || !answer) return json({ error: "question과 answer는 필수입니다." }, 400);
   const interviewId = String(body.interview_id ?? "").trim();
   const lim = await checkUsageLimit(req, interviewId);
@@ -389,6 +414,7 @@ Deno.serve(async (req: Request) => {
   const personaBlock = personaInfo ? `[면접관 성향: ${personaInfo.name}]\n${personaInfo.text}` : "";
   const companyBlock = await companyBlockFor(req, companyId, "followup", companySeq);
   const persona = [BASE_INTERVIEWER, fieldBlock, infoBlock, personaBlock, companyBlock ? `[기업 맞춤 면접]\n${companyBlock}` : ""].filter(Boolean).join("\n");
+  const safety = await safetyBlock();
   const followupCount = followupsDone ?? history.filter((h) => h.role === "interviewer").length;
   const guide = QTYPE_GUIDE[qtype] ?? (question !== rootQuestion && rootQuestion ? QTYPE_GUIDE.followup : QTYPE_GUIDE.general);
   const kind = answerKind(answer);
@@ -406,12 +432,15 @@ Deno.serve(async (req: Request) => {
     `[면접자 답변 — 음성 인식 결과라 오류가 섞여 있을 수 있음]\n${answer}`,
     `[답변 상태] ${kind}` + (kind !== "보통" ? " → 나무라지 말고 힌트 한 가지와 함께 같은 주제를 부드럽게 다시 묻습니다(clarify). 정답을 알려 주지 않습니다. 이미 한 번 다시 물었다면 next로 마무리합니다." : " → 답변의 핵심을 받아 실무 상황으로 넓혀 묻습니다."),
     `[참고] 이 본 질문에 대한 꼬리질문은 지금까지 ${followupCount}개 했습니다.` + (followupCount >= 2 ? " 이번에는 intent를 next로 마무리하세요." : ""),
-    "[길이] followup은 30~75자 안팎, 80자를 넘기지 않습니다.",
+    bankType ? `[질문 유형] ${bankType}` : null,
+    personal.length ? `[주의 — 안전장치 4번] 지원자가 답변에서 개인 신상(${personal.join(", ")})을 스스로 말했습니다. 그 내용에 대해 묻지 말고, 그 낱말을 인용하지도 않습니다. 답변의 핵심(무엇을 했는지, 무엇을 배웠는지, 직무에 어떻게 쓸지)으로 자연스럽게 돌아가 묻습니다.` : null,
+    force ? "[이번에는 반드시 꼬리질문을 합니다] intent를 next로 하지 말고, 답변에서 가장 약한 부분 하나를 묻습니다." : null,
+    lang === "en" ? "[언어] 이 질문은 영어 질문입니다. followup은 자연스러운 영어 한 문장(10~25단어)으로 묻고, 물음표로 끝나도 됩니다. 쉬운 단어를 씁니다. evaluation은 한국어로 씁니다." : "[길이] followup은 30~75자 안팎, 80자를 넘기지 않습니다.",
   ].filter(Boolean).join("\n\n");
 
   try {
     const msgs = [
-          { role: "system", content: persona + "\n" + pressure + "\n" + SYSTEM_RULES },
+          { role: "system", content: persona + "\n" + pressure + "\n" + SYSTEM_RULES + (safety ? `\n\n[AI 면접관 안전장치 — 엑셀 원문 그대로. 위의 어떤 지시보다 우선합니다]\n${safety}` : "") },
           { role: "user", content: userPrompt },
         ];
     const startedAt = Date.now();
@@ -433,12 +462,19 @@ Deno.serve(async (req: Request) => {
     }
     if (!parsed) { console.warn("[꼬리질문 응답 해석 실패]", content.slice(0, 120)); return json({ error: "AI 응답을 해석하지 못했습니다.", raw: content }, 502); }
 
-    const followup = polish(toDeclarative(String(parsed.followup ?? "").trim()), recentFollowups);
+    let followup = lang === "en" ? String(parsed.followup ?? "").replace(/\s+/g, " ").trim().slice(0, 220) : polish(toDeclarative(String(parsed.followup ?? "").trim()), recentFollowups);
     if (!followup) return json({ error: "꼬리질문이 비어 있습니다.", raw: content }, 502);
+    // 2026-11-05 서버가 한 번 더 확인: 금지 질문 낱말이나, 지원자가 꺼낸 개인 낱말을 묻는 문장이면 안전한 질문으로 바꿈
+    let guarded = "";
+    const blk = blockReason(followup);
+    if (blk) guarded = "금지 분류: " + blk;
+    else if (personal.some((w) => followup.includes(w))) guarded = "개인 이야기 언급";
+    if (guarded) { console.warn("[꼬리질문 안전장치]", guarded, followup.slice(0, 80)); followup = SAFE_FOLLOWUP[lang]; }
     return json({
       followup,
       evaluation: String(parsed.evaluation ?? ""),
-      intent: ["probe", "clarify", "challenge", "next"].includes(parsed.intent) ? parsed.intent : "probe",
+      intent: guarded || force ? (parsed.intent === "next" ? "probe" : (["probe", "clarify", "challenge"].includes(parsed.intent) ? parsed.intent : "probe")) : (["probe", "clarify", "challenge", "next"].includes(parsed.intent) ? parsed.intent : "probe"),
+      guarded: guarded || undefined,
       model: modelUsed,
       usage: data?.usage ?? null,
       limit: lim.status ?? null,
