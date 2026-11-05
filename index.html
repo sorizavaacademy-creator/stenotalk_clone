@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05g';
+var APP_VERSION = '2026-11-05h';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5983,6 +5983,40 @@ html.ivv-dr-open{overflow:hidden;}
 .ae-next ol{margin:0;padding-left:18px;} .ae-next li{margin-bottom:6px;font-size:13.5px;line-height:1.5;} .ae-next li b{display:block;color:#1d1d22;} .ae-next li span{color:#5a5a62;}
 .rhg-grade.ae-word{font-size:26px;letter-spacing:-0.5px;}
 @media (max-width:720px){ .ae-rep-grid{grid-template-columns:1fr;} .ae-row{grid-template-columns:20px 1fr 60px 30px;} .ae-row .ae-w{display:none;} .ae-row .ae-r{grid-column:2 / -1;} .ae-bar{grid-template-columns:110px 1fr 46px;} }
+/* 2026-11-05h 결과 화면 읽기 쉽게: 글자 키우고 카드 안팎 여백 넓힘 (인쇄는 따로 작게 유지) */
+@media screen{
+  #screen-result .q-result-group{margin-bottom:18px;border-radius:18px;}
+  #screen-result .q-head{padding:18px 22px;gap:14px;}
+  #screen-result .q-title{font-size:16.5px;line-height:1.55;}
+  #screen-result .q-num{font-size:14px;}
+  #screen-result .q-body{padding:8px 22px 24px;}
+  #screen-result .q-body > * + *{margin-top:16px;}
+  #screen-result .qanswer, #screen-result .qfeedback{padding:18px 20px;margin-top:16px;border-radius:14px;}
+  #screen-result .qanswer-label, #screen-result .qfeedback-label{font-size:13px;padding:4px 11px;margin-bottom:12px;}
+  #screen-result .qanswer p{font-size:16px;line-height:1.8;}
+  #screen-result .qfeedback p, #screen-result .q-fb-text{font-size:15.5px;line-height:1.85;color:#2b3445;}
+  #screen-result .qfeedback p + p{margin-top:8px;}
+  #screen-result .delivery-note{font-size:14.5px;line-height:1.7;margin:8px 0 4px;}
+  #screen-result .delivery-chips .dchip{font-size:13.5px;padding:6px 11px;}
+  #screen-result .ae-box{padding:20px 22px;border-radius:16px;margin:8px 0 4px;}
+  #screen-result .ae-top{gap:12px;margin-bottom:14px;} #screen-result .ae-total{font-size:26px;} #screen-result .ae-type{font-size:14.5px;}
+  #screen-result .ae-grade{font-size:15px;padding:4px 12px;}
+  #screen-result .ae-rows{gap:12px;} #screen-result .ae-row{grid-template-columns:24px 120px 82px 40px 72px 1fr;gap:8px;font-size:15.5px;}
+  #screen-result .ae-dots i{width:14px;height:14px;} #screen-result .ae-w{font-size:14px;} #screen-result .ae-r{font-size:15px;line-height:1.6;}
+  #screen-result .ae-check, #screen-result .ae-note{font-size:14.5px;padding:12px 14px;margin-top:14px;line-height:1.65;} #screen-result .ae-how{font-size:13.5px;margin-top:12px;}
+  #screen-result .ae-rep{padding:26px 28px;border-radius:18px;margin:20px 0 24px;}
+  #screen-result .ae-rep-kicker{font-size:14px;} #screen-result .ae-rep h3{font-size:26px;margin:6px 0 6px;} #screen-result .ae-rep-sub{font-size:14.5px;line-height:1.6;}
+  #screen-result .ae-rep-grid{gap:26px;margin-top:20px;} #screen-result .ae-rep-t{font-size:15.5px;margin-bottom:12px;}
+  #screen-result .ae-bar{grid-template-columns:150px 1fr 60px;gap:12px;margin-bottom:12px;font-size:15.5px;} #screen-result .ae-bt{height:12px;}
+  #screen-result .ae-weak{padding:16px 18px;border-radius:14px;margin-bottom:16px;} #screen-result .ae-weak p{font-size:15px;line-height:1.65;} #screen-result .ae-weak .ae-weak-k{font-size:18px;margin-bottom:6px;}
+  #screen-result .ae-next li{font-size:15px;line-height:1.65;margin-bottom:10px;}
+  /* AI 피드백을 단계별 칸으로 */
+  #screen-result .ae-fb{display:flex;flex-direction:column;gap:14px;}
+  .ae-fb .fb-sec{margin:0;} .ae-fb .fb-k{display:block;font-size:14px;font-weight:800;color:#c8441c;margin-bottom:4px;letter-spacing:-.2px;}
+  .ae-fb .fb-v{display:block;white-space:pre-line;} .ae-fb .fb-sec.say .fb-v{padding:10px 14px;border-left:3px solid #9fb3d6;background:#f4f7fd;border-radius:0 10px 10px 0;}
+  .ae-fb .fb-sec.next .fb-v{font-weight:600;color:#1d2a44;}
+  @media (max-width:720px){ #screen-result .q-head{padding:14px 16px;} #screen-result .q-body{padding:6px 16px 18px;} #screen-result .ae-row{grid-template-columns:22px 1fr 64px 34px;} #screen-result .ae-bar{grid-template-columns:118px 1fr 50px;} #screen-result .ae-rep{padding:20px 18px;} }
+}
 .iv-lang-row{order:9;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 0;padding:8px 10px 8px 12px;border-radius:10px;background:#EEF3FB;color:#33415c;font-size:13.5px;line-height:1.5;} .iv-lang-row[hidden]{display:none;} .iv-lang-note{flex:1 1 180px;}
 .iv-lang-btn{flex:0 0 auto;border:1px solid #9fb3d6;background:#fff;color:#24406e;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:600;cursor:pointer;} .iv-lang-btn:hover{background:#f4f7fd;} .iv-lang-btn.on{background:#24406e;color:#fff;border-color:#24406e;}
 .iv-co-hint{order:9;margin:10px 0 0;padding:9px 12px;border-radius:10px;background:#FBEDE7;color:#4a4a52;font-size:13.5px;line-height:1.55;} .iv-co-hint b{color:#c8441c;}
@@ -20866,7 +20900,7 @@ function renderResultBars(){
         </div>
         <div class="qfeedback">
           <span class="qfeedback-label">${feedbackLabel}</span>
-          <p class="q-fb-text">${feedbackText}</p>${FaceCoach.answerNoteHtml(state.answerFace && state.answerFace[i-1])}${extraHtml}
+          ${ae ? AeReport.fbHtml(buildFeedbackText(analysis)) : `<p class="q-fb-text">${feedbackText}</p>`}${FaceCoach.answerNoteHtml(state.answerFace && state.answerFace[i-1])}${extraHtml}
         </div>
         ${item ? PracticeKit.toolsHtml(PracticeKit.resultItem(i-1)) : ''}
         </div>
@@ -21037,6 +21071,18 @@ const AeReport = {
     const rep = { n: list.length, of: state.currentQ, avg, total, grade: this.grade(total), weakest, types: types.slice(0, 2), checks };
     state.aeReport = rep;
     return rep;
+  },
+  /** 5단계 피드백 글을 단계별 칸으로 (맨 위 '총점' 줄은 위 A~E 칸에 이미 있어 뺌) */
+  fbHtml(text){
+    const KEYS = [['좋아진 항목','up'],['잘한 점','good'],['고칠 점','fix'],['바꿔 말하기','say'],['다음 꼬리질문','next'],['확인 필요','check']];
+    const parts = String(text||'').split(/\n\n+/).map(x=>x.trim()).filter(Boolean).filter(x=>!/^총점 /.test(x));
+    return '<div class="q-fb-text ae-fb">' + parts.map(b=>{
+      const hit = KEYS.find(([k])=>b.startsWith(k));
+      if(!hit) return `<p class="fb-sec"><span class="fb-v">${escapeHtml(b)}</span></p>`;
+      let rest = b.slice(hit[0].length), label = hit[0];
+      const m = rest.match(/^(\([^)]*\))?\s*[:：]?\s*\n?/); if(m){ if(m[1]) label += ' ' + m[1]; rest = rest.slice(m[0].length); }
+      return `<p class="fb-sec ${hit[1]}"><b class="fb-k">${escapeHtml(label)}</b><span class="fb-v">${escapeHtml(rest.trim())}</span></p>`;
+    }).join('') + '</div>';
   },
   compact(r){ return { n:r.n, avg:r.avg, total:r.total, grade:r.grade, weakest:r.weakest, types:r.types.map(x=>x.t) }; },
   html(r){

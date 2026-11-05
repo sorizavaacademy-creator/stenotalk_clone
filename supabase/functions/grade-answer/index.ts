@@ -303,6 +303,7 @@ ${R.fb.join("\n")}
 
 [반드시 지킬 것]
 - 회사·기관의 사업, 수치, 최근 소식처럼 지금 확인할 수 없는 사실은 맞다·틀리다로 감점하지 않습니다. 그 내용은 check 목록에 "확인 필요"로 적고, 점수는 나머지 근거로 매깁니다.
+- check에는 '학생이 답변에서 말한 회사·기관·산업에 대한 사실' 중 지금 확인할 수 없는 것만 적습니다. 답변에 빠진 정보, 학생 본인 경험의 기간·수치, 지원 정보와 답변의 차이, 지식 질문의 정답 여부는 check에 넣지 않습니다(지식 질문은 기준 문장대로 채점). 해당 없으면 빈 배열.
 - 실무 경력이 없다는 이유로 감점하지 않습니다. 수업·팀 프로젝트·동아리·아르바이트·봉사 경험도 같은 무게로 봅니다.
 - 음성 인식으로 받아쓴 답변이라 오탈자·띄어쓰기 오류는 감점하지도, 언급하지도 않습니다.
 - 지원자가 스스로 말한 가족·종교·건강·연애·병역 같은 개인 이야기는 피드백·예시·꼬리질문에 인용하지 않고 점수에도 반영하지 않습니다.
@@ -324,7 +325,12 @@ type AeOut = { qtype: string; lang_note: string; weights: Record<Axis, number>; 
   good: { axis: string; quote: string; text: string }; fixes: { axis: string; why: string; how: string }[]; rewrite: string; next_q: string; check: string[]; improved: string[] };
 
 /** AI 응답 → 프로그램이 총점·등급 계산 + 5단계 피드백 글 조립 */
-function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: string, prior: Record<string, number> | null): { ae: AeOut; feedback: string } | null {
+/** 답을 하지 못한 답변(비었거나 "모르겠다"에 가까움) — 잘한 점을 억지로 만들지 않기 위해 */
+function noAnswer(answer: string): boolean {
+  const a = answer.replace(/\s/g, "");
+  return a.length < 6 || (/(모르겠|모릅니다|잘몰라|생각이안|기억이안|딱히없|없습니다$|idon'?tknow|notsure)/i.test(a) && a.length < 40);
+}
+function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: string, prior: Record<string, number> | null, none = false): { ae: AeOut; feedback: string } | null {
   const sc = {} as Record<Axis, number>;
   for (const k of AXES) { const v = Math.round(Number(p?.scores?.[k])); if (!(v >= 1 && v <= 4)) return null; sc[k] = v; }
   const w = R.weights[qtype].w;
@@ -349,7 +355,7 @@ function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: st
     E: "같은 내용을 30초 안에 핵심만 다시 말씀해 주세요.",
   };
   if (!nextQ || blockReason(nextQ)) nextQ = SAFE_NEXT[weakest];
-  const check = (Array.isArray(p.check) ? p.check : []).map((x: unknown) => oneLine(x, 80)).filter(Boolean).slice(0, 3);
+  const check = (Array.isArray(p.check) ? p.check : []).map((x: unknown) => oneLine(x, 80)).filter((x: string) => x && !/정답\s?키|정답 여부|전공 표기|지원 정보/.test(x)).slice(0, 3);
   const reasons: Record<string, string> = {}; for (const k of AXES) reasons[k] = oneLine(p?.reasons?.[k], 80);
   // 같은 질문을 다시 답했으면 좋아진 항목부터
   const improved: string[] = [];
@@ -358,7 +364,8 @@ function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: st
   L.push(`총점 ${fmtNum(total)}점 · ${grade} (${AXES.map((k) => `${k} ${sc[k]}`).join(" · ")})`);
   if (langNote) L.push(langNote);
   if (prior) L.push(improved.length ? `좋아진 항목: ${improved.join(", ")}` : "지난번보다 좋아진 항목은 아직 없어요. 아래 고칠 점부터 해 보세요.");
-  L.push(`잘한 점(${label(good.axis)}): ${good.quote ? `"${good.quote}" — ` : ""}${good.text || "질문에 맞는 내용이 아직 없어요."}`);
+  if (none) { good.quote = ""; good.text = ""; L.push("잘한 점: 아직 없어요. 잘 모를 때는 아는 범위 한 가지와 \"확인해서 익히겠다\"는 말로 답해 보세요."); }
+  else L.push(`잘한 점(${label(good.axis)}): ${good.quote ? `"${good.quote}" — ` : ""}${good.text || "질문에 맞는 내용이 아직 없어요."}`);
   if (fixes.length) L.push("고칠 점\n" + fixes.map((f: any, i: number) => `${i + 1}. ${f.why} (${label(f.axis)}) ${f.how}`).join("\n"));
   if (rewrite) L.push(`바꿔 말하기: "${rewrite}"`);
   L.push(`다음 꼬리질문: ${nextQ}`);
@@ -491,11 +498,11 @@ Deno.serve(async (req: Request) => {
         let data = await res.json();
         let content: string = data?.choices?.[0]?.message?.content ?? "";
         let parsed: any = null; try { parsed = JSON.parse(content); } catch { parsed = null; }
-        let built = parsed ? aeBuild(parsed, R, qbType, langNote, prior) : null;
+        let built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer)) : null;
         if (!built) {
           console.warn("[A~E 응답 형식 오류 → 한 번 더]", content.slice(0, 120));
           const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.2, 4000);
-          if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; try { parsed = JSON.parse(content); } catch { parsed = null; } built = parsed ? aeBuild(parsed, R, qbType, langNote, prior) : null; }
+          if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; try { parsed = JSON.parse(content); } catch { parsed = null; } built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer)) : null; }
         }
         if (built) {
           return json({

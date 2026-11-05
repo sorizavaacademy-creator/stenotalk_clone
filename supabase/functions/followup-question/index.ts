@@ -355,6 +355,14 @@ async function safetyBlock(): Promise<string> {
 }
 /** 지원자가 스스로 꺼낸 개인 신상 낱말 (시트 4번: 이런 내용에 대해 꼬리질문하지 않음) */
 const PERSONAL_RE = /((우리|저희|제)\s?(가족|부모님|집안)|아버지|아버님|어머니|어머님|엄마|아빠|할머니|할아버지|(제|저희|우리)\s?(형|동생|언니|오빠|누나)|종교|교회|성당|절에\s?다니|신앙|하나님|부처님|(제가|저는)\s?(아팠|아파서|아플)|건강이\s?(안\s?좋|나빠)|건강\s?문제|투병|수술을\s?받|입원했|우울증|공황|정신과|결혼|남자\s?친구|여자\s?친구|연애|임신|출산|군대|입대|전역|군\s?복무)/g;
+/** 2026-11-05 영어 꼬리질문은 질문 하나만: 물음표가 둘 이상이면 첫 질문까지, "…, and how/what/…" 처럼 두 번째 질문을 이어 붙였으면 그 앞에서 끊음 */
+function oneEnQuestion(t: string): string {
+  let s = t.trim();
+  const q = s.indexOf("?"); if (q >= 0 && s.indexOf("?", q + 1) >= 0) s = s.slice(0, q + 1);
+  const m = s.match(/^(.{25,}?)(?:,)?\s+(?:and|or)\s+(?:how|what|why|when|where|which|who|whom|did|do|does|would|could|can|will|should|is|are|was|were|have|has)\b.*$/i);
+  if (m) s = m[1].replace(/[,;:\s]+$/, "") + "?";
+  return s;
+}
 function personalWords(text: string): string[] { return [...new Set(String(text || "").match(PERSONAL_RE) ?? [])].map((w) => w.replace(/^(우리|저희|제가|저는|제)\s?/, "")); }
 const SAFE_FOLLOWUP = { ko: "그 경험에서 본인이 직접 한 일과 그 결과를 말씀해 주세요.", en: "Could you tell me what you personally did in that situation and what the result was?" };
 
@@ -447,7 +455,7 @@ Deno.serve(async (req: Request) => {
     bankType ? `[질문 유형] ${bankType}` : null,
     personal.length ? `[주의 — 안전장치 4번] 지원자가 답변에서 개인 신상(${personal.join(", ")})을 스스로 말했습니다. 그 내용에 대해 묻지 말고, 그 낱말을 인용하지도 않습니다. 답변의 핵심(무엇을 했는지, 무엇을 배웠는지, 직무에 어떻게 쓸지)으로 자연스럽게 돌아가 묻습니다.` : null,
     force ? "[이번에는 반드시 꼬리질문을 합니다] intent를 next로 하지 말고, 답변에서 가장 약한 부분 하나를 묻습니다." : null,
-    lang === "en" ? "[언어] 이 질문은 영어 질문입니다. followup은 자연스러운 영어 한 문장(10~25단어)으로 묻고, 물음표로 끝나도 됩니다. 쉬운 단어를 씁니다. evaluation은 한국어로 씁니다." : "[길이] followup은 30~75자 안팎, 80자를 넘기지 않습니다.",
+    lang === "en" ? "[언어] 이 질문은 영어 질문입니다. followup은 자연스러운 영어 한 문장(10~22단어)으로 묻고, 물음표로 끝나도 됩니다. 쉬운 단어를 씁니다. 질문은 딱 하나만 묻습니다 — 'and'·'or'로 두 가지를 이어 묻지 않습니다(나쁜 예: How did you verify it and how did your team react? / 좋은 예: How did you check that the result was correct?). evaluation은 한국어로 씁니다." : "[길이] followup은 30~75자 안팎, 80자를 넘기지 않습니다.",
   ].filter(Boolean).join("\n\n");
 
   try {
@@ -475,7 +483,7 @@ Deno.serve(async (req: Request) => {
     }
     if (!parsed) { console.warn("[꼬리질문 응답 해석 실패]", content.slice(0, 120)); return json({ error: "AI 응답을 해석하지 못했습니다.", raw: content }, 502); }
 
-    let followup = lang === "en" ? String(parsed.followup ?? "").replace(/\s+/g, " ").trim().slice(0, 220) : polish(toDeclarative(String(parsed.followup ?? "").trim()), recentFollowups);
+    let followup = lang === "en" ? oneEnQuestion(String(parsed.followup ?? "").replace(/\s+/g, " ").trim().slice(0, 220)) : polish(toDeclarative(String(parsed.followup ?? "").trim()), recentFollowups);
     if (!followup) return json({ error: "꼬리질문이 비어 있습니다.", raw: content }, 502);
     // 2026-11-05 서버가 한 번 더 확인: 금지 질문 낱말이나, 지원자가 꺼낸 개인 낱말을 묻는 문장이면 안전한 질문으로 바꿈
     let guarded = "";
