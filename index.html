@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05e';
+var APP_VERSION = '2026-11-05f';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6704,7 +6704,8 @@ html.ivv-dr-open{overflow:hidden;}
       </div>
     </section>
 
-    <section class="d3-section">
+    <!-- 2026-11-05f 홈 맨 아래 '지원 분야' 카드 줄은 쓰지 않아 숨김 (분야는 '면접 시작' 준비 창에서 고름). 다른 코드가 참조하는 요소라 지우지 않고 숨겨 둠 -->
+    <section class="d3-section" id="d3-fields-section" hidden>
       <div class="d3-section-head"><h2 class="d3-section-title">지원 분야</h2><p class="d3-section-note" id="d3-fields-note"></p></div>
       <ul class="d3-fields" id="field-grid"></ul>
     </section>
