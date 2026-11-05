@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05h';
+var APP_VERSION = '2026-11-05i';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6127,6 +6127,51 @@ html.ivv-dr-open{overflow:hidden;}
 .rq-acts{display:flex;flex-direction:column;gap:6px;flex:none;}
 .rq-merge{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 14px;background:#fbf4e4;font-size:12.5px;color:#8a6a2a;}
 @media(max-width:640px){ .rq-row{flex-direction:column;} .rq-acts{flex-direction:row;flex-wrap:wrap;} }
+
+/* 2026-11-05i 결과 화면 글자 크게 (2차): 회색 작은 설명 글자까지 모두 키움. 다른 결과 화면 규칙(!important)보다 뒤에 두어 실제로 적용되게 */
+@media screen{
+  #screen-result .qanswer p, #screen-result.v3 .qanswer p{font-size:16.5px !important;line-height:1.8 !important;}
+  #screen-result .qfeedback p, #screen-result.v3 .qfeedback p, #screen-result .q-fb-text, #screen-result .ae-fb .fb-v{font-size:16px !important;line-height:1.8 !important;}
+  #screen-result .ae-fb .fb-k{font-size:15.5px !important;}
+  #screen-result .qfeedback p strong{font-size:16px !important;}
+  #screen-result .qanswer-label, #screen-result .qfeedback-label{font-size:14px !important;}
+  #screen-result .q-title, #screen-result.v3 .q-title{font-size:17px !important;}
+  #screen-result .q-num{font-size:15px !important;}
+  #screen-result .q-type-chip{font-size:14px !important;padding:3px 10px !important;}
+  #screen-result .q-grade.ae{font-size:15px !important;}
+  #screen-result .q-score{font-size:16px !important;}
+  #screen-result .qcard-source-badge{font-size:13.5px !important;}
+  #screen-result .q-toggle-all, #screen-result.v3 .q-toggle-all{font-size:14.5px !important;height:36px;}
+  #screen-result .ae-w{font-size:15px !important;color:#6b6b74 !important;}
+  #screen-result .ae-r{font-size:16px !important;color:#2b3445 !important;}
+  #screen-result .ae-type{font-size:15.5px !important;color:#4a4a52 !important;}
+  #screen-result .ae-how{font-size:15px !important;color:#5a5a62 !important;}
+  #screen-result .ae-check, #screen-result .ae-note{font-size:15.5px !important;}
+  #screen-result .ae-check small, #screen-result .ae-weak-k small{font-size:14.5px !important;}
+  #screen-result .ae-rep-sub{font-size:15.5px !important;color:#4a4a52 !important;} #screen-result .ae-rep-kicker{font-size:15px !important;}
+  #screen-result .ae-bar{font-size:16px !important;} #screen-result .ae-next li, #screen-result .ae-weak p{font-size:16px !important;}
+  #screen-result .delivery-note{font-size:15.5px !important;color:#3f4652 !important;}
+  #screen-result .dchip, #screen-result .dchip b{font-size:15px !important;}
+  #screen-result .nv-qchip, #screen-result .nv-na, #screen-result.v3 .r4-radar .nv-na{font-size:14.5px !important;}
+  #screen-result .q-docnote, #screen-result .aa-note, #screen-result .q-real-note{font-size:15px !important;}
+  #screen-result .pk-tb{font-size:15px !important;padding:9px 16px !important;}
+  #screen-result .q-model summary, #screen-result details > summary{font-size:15px !important;}
+  #screen-result .q-model p{font-size:15.5px !important;line-height:1.7 !important;}
+  #screen-result .result-meta, #screen-result.v3 .result-meta{font-size:15px !important;}
+  #screen-result .result-summary-line{font-size:16px !important;line-height:1.7 !important;}
+  #screen-result .result-mode-chip, #screen-result.v3 .result-mode-chip, #screen-result.v3 .result-hero .badge{font-size:13.5px !important;}
+  #screen-result .rs-next-k{font-size:15px !important;} #screen-result .rs-next-ex, #screen-result .rs-next p, #screen-result .rs-next b{font-size:15.5px !important;}
+  #screen-result .rs-next .ax{font-size:14px !important;} #screen-result .rs-next .qt{font-size:15px !important;}
+  #screen-result .rstat .lbl, #screen-result.v3 .rstat .lbl, #screen-result .rstat .nw{font-size:14.5px !important;}
+  #screen-result .rhg-score span, #screen-result.v3 .rhg-score span, #screen-result.v3 .r4-grade-foot p, #screen-result .r4-grade-foot small{font-size:14.5px !important;}
+  #screen-result .r4-radar-note, #screen-result.v3 .r4-radar .r4-radar-note{font-size:14px !important;}
+  #screen-result .rf-more, #screen-result .rf-no{font-size:14.5px !important;}
+  #screen-result small{font-size:max(13.5px, 0.9em) !important;}
+  #screen-result li{font-size:max(15px, 1em);}
+  #screen-result .ib-r-peer, #screen-result .ib-res li, #screen-result .ib-res p{font-size:15.5px !important;line-height:1.7;}
+  #screen-result .bar-top, #screen-result .bar-top span{font-size:15px !important;}
+  #screen-result .rp-col li, #screen-result .rp-reco li, #screen-result .rp-grade-note, #screen-result .rp-row{font-size:15px !important;}
+}
 </style>
 </head>
 <body>
