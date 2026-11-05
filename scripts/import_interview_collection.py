@@ -8,9 +8,10 @@
 - 2024·2025 기출(282문항) → interview_past_question. 출처 URL·출처 사이트·다시 확인하는 방법은 넣지 않음
 - 작업용 시트(안내·현황·면접 기출 수집·기출 문항 입력)는 읽지 않음
 - 만든 SQL은 클론 프로젝트(ZAVAPASS-clone)에서만 실행. 같은 키가 있으면 새 값으로 덮어씀(다시 넣어도 안전)
+- 같은 내용을 data.json으로도 만듦 → python3 -I scripts/push_interview_collection.py <폴더>/data.json 으로 클론 DB에 바로 넣을 수 있음
 - 표 구조는 supabase/clone/018_interview_collection.sql (002_company_talent.sql을 먼저 넣어야 함)
 """
-import collections, os, re, runpy, sys
+import collections, json, os, re, runpy, sys
 
 import openpyxl
 
@@ -141,7 +142,12 @@ def main():
     for n, sql in enumerate(files, 1):
         with open(os.path.join(out, f'{n:02d}.sql'), 'w', encoding='utf-8') as f:
             f.write(sql)
-    cat = collections.Counter(t['category'] for t in targets)
+    # 같은 내용을 JSON으로도 남김 → scripts/push_interview_collection.py가 ic_import()로 넣음 (019_interview_collection_use.sql)
+    pick = lambda items, cols: [{c: x[c] for c in cols} for x in items]
+    with open(os.path.join(out, 'data.json'), 'w', encoding='utf-8') as f:
+        json.dump([['interview_target', pick(targets, tcols)], ['interview_target_talent', pick(links, lcols)],
+                   ['interview_target_job', pick(jobs, jcols)], ['interview_past_question', pick(qs, qcols)]], f, ensure_ascii=False)
+    cat =collections.Counter(t['category'] for t in targets)
     yr = collections.Counter(q['year'] for q in qs)
     diff = sum(1 for q in qs if q['review_company'] and q['review_company'] != next(t['name'] for t in targets if t['key'] == q['target_key']))
     print(f"수집 대상 {len(targets)}곳 ({' · '.join(f'{c} {cat[c]}' for c in CATEGORIES)}), 인재상 연결 {len(links)}건, "
