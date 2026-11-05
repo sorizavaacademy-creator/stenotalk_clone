@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-04f';
+var APP_VERSION = '2026-11-05a';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5647,6 +5647,29 @@ html.pk-open{overflow:hidden;}
 .pk-chk{margin-top:10px;border:1px solid #E6EAF0;border-radius:12px;padding:0 12px;} .pk-chk summary{display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;font-size:14px;list-style:none;} .pk-chk summary::-webkit-details-marker{display:none;}
 .pk-prog{flex:1;height:8px;border-radius:999px;background:#EEF1F5;overflow:hidden;} .pk-prog i{display:block;height:100%;background:#2E7D4F;border-radius:999px;}
 .pk-chk ul{list-style:none;margin:0 0 10px;padding:0;} .pk-chk li{padding:5px 0;font-size:14px;} .pk-chk label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;} .pk-chk input{margin-top:3px;accent-color:#2E7D4F;} .pk-chk label span{flex:1;min-width:0;} .pk-chk small{display:block;color:#6B7485;font-size:12.5px;margin-top:2px;}
+/* 2026-11-05 면접 DB (엑셀) — 관리자 */
+#qb-root{color:#172033;font-size:14.5px;}
+.qb-up{cursor:pointer;} .qb-up.off{opacity:.6;cursor:wait;}
+.qb-card{margin:0 0 16px;padding:18px 20px;border:1px solid #E1E7F0;border-radius:14px;background:#fff;}
+.qb-card h3{margin:0 0 8px;font-size:16px;} .qb-sub{margin:0 0 12px;color:#4A5466;}
+.qb-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+.qb-stats > div{padding:12px 14px;border-radius:12px;background:#F5F7FB;} .qb-stats small{display:block;font-size:12.5px;color:#6B7485;font-weight:700;}
+.qb-stats b{font-size:24px;letter-spacing:-.02em;} .qb-stats span{display:block;font-size:12.5px;color:#4A5466;margin-top:2px;}
+.qb-blk{margin:12px 0 0;font-size:13.5px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;} .qb-blk b{margin-right:4px;}
+.qb-blk span{padding:2px 10px;border-radius:999px;background:#FDECEC;color:#A12B2B;font-weight:700;font-size:12.5px;}
+.qb-note{margin:10px 0 0;font-size:13px;color:#6B7485;}
+.qb-err{padding:12px 14px;border-radius:10px;background:#FDECEC;color:#8A1C1C;}
+.qb-prog p{margin:0 0 10px;color:#3A4456;} .qb-bar{height:12px;border-radius:999px;background:#EEF1F5;overflow:hidden;} .qb-bar i{display:block;height:100%;background:#2346A0;border-radius:999px;transition:width .3s;}
+.qb-good{border-color:#BFE0CB;background:#FBFEFC;} .qb-bad{border-color:#F2C2C2;background:#FFFBFB;} .qb-bad > p{margin:0;color:#8A1C1C;}
+.qb-scroll{overflow-x:auto;}
+.qb-table{width:100%;border-collapse:collapse;font-size:13.5px;} .qb-table th,.qb-table td{padding:9px 10px;border-bottom:1px solid #EEF1F5;text-align:left;vertical-align:top;} .qb-table thead th{font-size:12px;color:#6B7485;background:#F7F9FC;white-space:nowrap;}
+.qb-table .r{text-align:right;font-variant-numeric:tabular-nums;} .qb-check tbody th{white-space:nowrap;font-weight:700;}
+.qb-check td.ok{color:#21633C;font-weight:800;white-space:nowrap;} .qb-check td.no{color:#A12B2B;font-weight:800;white-space:nowrap;} .qb-check td.info{color:#6B7485;font-weight:700;white-space:nowrap;}
+.qb-st{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#EEF1F5;color:#4A5466;} .qb-st.active{background:#E3F3E9;color:#21633C;} .qb-st.checked{background:#E8EEFB;color:#2346A0;} .qb-st.problem,.qb-st.loading{background:#FDECEC;color:#A12B2B;}
+.qb-probs{margin-top:12px;padding:12px 14px;border-radius:10px;background:#FDECEC;color:#7A1C1C;} .qb-probs ul{margin:6px 0 0;padding-left:20px;}
+.qb-acts{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #E6EAF0;} .qb-acts p{margin:0;color:#21633C;font-weight:700;}
+.qb-done{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:#E3F3E9;color:#21633C;font-weight:700;}
+@media(max-width:860px){ .qb-stats{grid-template-columns:repeat(2,minmax(0,1fr));} }
 /* 2026-11-04e 결과 화면: 이번에 고칠 한 가지 · 받아쓴 말 고치기 · 달라진 점 */
 .rs-next{position:relative;margin:0 0 18px;padding:18px 20px;border:1.5px solid #F2C9B5;border-radius:16px;background:linear-gradient(180deg,#FFF8F4,#fff);color:#172033;}
 .rs-next-k{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#C8441C;letter-spacing:-.01em;}
@@ -6817,6 +6840,9 @@ html.ivv-dr-open{overflow:hidden;}
 
       <!-- 2026-11-03e 학교 관리 (현황·학생·연습 기록·의견·공지·권한 관리) — 관리자·교직원·학과 담당 -->
       <div class="admin-view" id="admin-view-sch"><div id="schl-main"></div></div>
+
+      <!-- 2026-11-05 면접 DB (엑셀): 질문은행·기업목록·평가 기준·AI 규칙 올리기 -->
+      <div class="admin-view" id="admin-view-qbank"><div id="qb-root"></div></div>
 
       <!-- 면접관 10명 목소리 (2026-11-03c) -->
       <div class="admin-view" id="admin-view-ivvoice"><div id="ivv-root"></div></div>
@@ -13224,7 +13250,7 @@ const ADMIN_GROUPS = {   // 2026-10-22m 하는 일별로 다시 묶음 (화면 i
   today:    { label:'오늘 할 일', views:[['overview','할 일 · 요약'],['live','지금 접속 · 접속 기록']] },
   users:    { label:'면접자', views:[['users','면접자 목록'],['expired','기간 끝난 사람'],['beta','연습 진행표'],['approvals','서류 합격 승인']] },
   results:  { label:'연습 결과', views:[['records','면접 기록'],['realset','실전 세트 · 자기소개'],['hardq','점수 낮은 질문'],['export','엑셀로 내려받기']] },
-  questions:{ label:'질문', views:[['questions','질문 · 모범답안'],['qrecord','질문 음성 녹음'],['reports','실제 면접 후기'],['reportq','후기 질문 정리'],['reportcall','후기 부탁할 사람'],['sttfix','음성 인식 바로잡기']] },
+  questions:{ label:'질문', views:[['qbank','면접 DB (엑셀)'],['questions','질문 · 모범답안'],['qrecord','질문 음성 녹음'],['reports','실제 면접 후기'],['reportq','후기 질문 정리'],['reportcall','후기 부탁할 사람'],['sttfix','음성 인식 바로잡기']] },
   talk:     { label:'소통', views:[['feedback','의견 · 오류 신고'],['notices','공지 보내기']] },
   settings: { label:'AI · 비용', views:[['ivvoice','면접관 10명 목소리'],['pipeline','AI 켜기 · 횟수'],['tccredit','타입캐스트 크레딧'],['ttslive','즉석으로 읽은 문장'],['voice','기본 목소리 (1개)'],['devtest','문제 확인 (개발용)']] },
 };
@@ -13263,6 +13289,7 @@ const AdminFind = {
     'sch-records':'연습 기록 엑셀 csv 내려받기 기간 분야 학과',
     'sch-talk':'의견 답장 공지 올리기',
     'sch-roles':'권한 관리 교직원 학과 담당 관리자 이용 중지 조교',
+    qbank:'면접 DB 엑셀 질문은행 기업목록 평가 기준 가중치 안전장치 피드백 규칙 올리기 업로드 되돌리기',
     ivvoice:'면접관 10명 목소리 캐릭터 타입캐스트 매핑 겹침 발음 사전 예산 녹음 다시 녹음 감정 속도 높낮이 예비',
     voice:'목소리 면접관 음성 타입캐스트 OpenAI 속도 발음 교정',
     devtest:'문제 확인 개발 점검 테스트 동작',
@@ -13360,6 +13387,7 @@ function showAdminView(view){
   if(view === 'questions') qmLoad();
   if(view === 'ivvoice') IvVoice.load();
   else if(typeof IvVoice !== 'undefined'){ IvVoice.stop(); IvVoice.closeDrawer(); }
+  if(view === 'qbank') QBankAdmin.load();   // 2026-11-05 면접 DB (엑셀)
   if(view === 'realset') loadRealSetView();
   if(view === 'hardq') loadHardQ();
   if(view === 'approvals') ApprovalAdmin.load(true);
@@ -24890,6 +24918,152 @@ const ExpCoach = {
     d.innerHTML = L.length ? `직접 입력한 경험 <b>${L.length}개</b>${n ? ` · 그중 <b>${n}개</b>는 1분 답변까지 정리했어요` : ''}. 말할 경험이 부족하면 <b>경험 정리 도우미</b>로 하나씩 만들어 보세요.`
       : '말할 경험이 없다고 느껴져도 괜찮아요. <b>경험 정리 도우미</b>가 수업·아르바이트·생활 속 일에서 면접 이야기를 함께 찾아 줘요.';
   },
+};
+/* ---------------- 2026-11-05 면접 DB (엑셀) — 관리자 ----------------
+   '한림대_모의면접_DB_프로그램용.xlsx' 7개 시트를 새 판으로 올림 → 숫자 검사 → [이 판으로 바꾸기]를 눌러야 학생 면접에 쓰임. 바로 전 판으로 되돌리기 가능
+   엑셀은 이 브라우저에서 필요한 시트 7개만 이름으로 골라 읽고(SheetJS), 줄을 나눠 서버 함수(qb_import_rows)로 보냄
+   DB: supabase/clone/015_interview_db.sql (관리자만 넣고 읽을 수 있음) */
+const QB_SHEETS = ['기업목록', '질문은행', '평가_공통기준', '평가_가중치', '평가_유형별기준', 'AI피드백규칙', 'AI면접관안전장치'];
+const QBankAdmin = {
+  rows: null, busy: false, result: null, err: '', prog: null,
+  STATUS: { loading:'넣다가 멈춤', checked:'검사 통과', problem:'검사에서 문제 발견', active:'사용 중', old:'지난 판', deleted:'지움' },
+  root(){ return document.getElementById('qb-root'); },
+  fmt(n){ return n == null ? '–' : Number(n).toLocaleString('ko-KR'); },
+  async load(){
+    if(!this.root()) return;
+    if(!this.rows && !this.busy) this.root().innerHTML = '<p class="ivv-load">불러오는 중…</p>';
+    const { data, error } = await sb.from('qb_imports').select('ver,file_name,status,counts,created_at,activated_at').order('ver', { ascending:false }).limit(12);
+    this.err = error ? friendlyErr(error) : ''; this.rows = data || [];
+    this.render();
+  },
+  active(){ return (this.rows || []).find(r=>r.status === 'active') || null; },
+  prev(){ return (this.rows || []).find(r=>r.status === 'old') || null; },
+  sum(o){ return Object.values(o || {}).reduce((a, b)=>a + (+b || 0), 0); },
+  render(){
+    const box = this.root(); if(!box) return;
+    const a = this.active(), c = (a && a.counts) || {}, pv = this.prev();
+    const blk = c['출제_안함_금지낱말'] || {};
+    box.innerHTML = `<div class="admin-view-head"><div><h2>면접 DB (엑셀)</h2>
+        <p>질문은행 · 기업목록 · 평가 기준 · AI 면접관 규칙을 엑셀 파일 하나로 관리해요. 엑셀을 고친 뒤 여기서 올리면 먼저 숫자를 검사하고, <b>[이 판으로 바꾸기]</b>를 눌러야 학생 면접에 쓰여요. 문제가 생기면 바로 전 판으로 되돌릴 수 있어요.</p></div>
+        <div class="beta-head-btns">${pv && !this.busy ? `<button type="button" class="btn-manage" onclick="QBankAdmin.rollback()">바로 전 판(${pv.ver}판)으로 되돌리기</button>` : ''}
+          <label class="btn-manage qb-up${this.busy ? ' off' : ''}">${this.busy ? '올리는 중…' : '엑셀 올리기'}<input type="file" accept=".xlsx" hidden ${this.busy ? 'disabled' : ''} onchange="QBankAdmin.pick(this)"></label></div></div>
+      ${this.err ? `<p class="qb-err">${escapeHtml(this.err)}</p>` : ''}
+      <section class="qb-card"><h3>지금 학생 면접에 쓰는 판</h3>
+        ${a ? `<p class="qb-sub"><b>${a.ver}판</b> · ${escapeHtml(a.file_name || '')} · ${a.activated_at ? formatDateFull(a.activated_at) + ' 바꿈' : ''}</p>
+          <div class="qb-stats">
+            <div><small>질문</small><b>${this.fmt(c['질문'])}</b><span>개</span></div>
+            <div><small>기업</small><b>${this.fmt(c['기업'])}</b><span>곳 (질문 있는 곳 ${this.fmt(c['질문있는_기업'])})</span></div>
+            <div><small>질문 유형</small><b>${this.fmt(c['질문_유형_수'])}</b><span>개</span></div>
+            <div><small>출제하지 않는 질문</small><b>${this.fmt(this.sum(blk) + (+c['출제_안함_기타유형'] || 0))}</b><span>개 (금지 낱말 ${this.fmt(this.sum(blk))} · 기타 유형 ${this.fmt(c['출제_안함_기타유형'])})</span></div>
+          </div>
+          ${Object.keys(blk).length ? `<p class="qb-blk"><b>금지 질문 분류에 걸려 출제하지 않는 질문</b> ${Object.entries(blk).sort((x, y)=>y[1] - x[1]).map(([k, v])=>`<span>${escapeHtml(k)} ${this.fmt(v)}</span>`).join('')}</p>` : ''}
+          ${(c['질문없는_기업'] || []).length ? `<p class="qb-note">질문이 없는 기업: ${c['질문없는_기업'].map(escapeHtml).join(', ')} — 같은 구분·직종 질문으로 채워요.</p>` : ''}`
+        : '<p class="qb-sub">아직 올린 엑셀이 없어요. 오른쪽 위 <b>엑셀 올리기</b>로 시작하세요.</p>'}
+      </section>
+      <div id="qb-run">${this.runHtml()}</div>
+      ${(this.rows || []).length ? `<section class="qb-card"><h3>올린 기록</h3><div class="qb-scroll"><table class="qb-table"><thead><tr><th>판</th><th>파일</th><th>올린 때</th><th>상태</th><th class="r">질문</th><th class="r">기업</th></tr></thead><tbody>
+        ${this.rows.map(r=>`<tr class="${r.status}"><td>${r.ver}판</td><td>${escapeHtml(r.file_name || '')}</td><td>${formatDateFull(r.created_at)}</td><td><span class="qb-st ${r.status}">${this.STATUS[r.status] || r.status}</span></td><td class="r">${this.fmt(r.counts && r.counts['질문'])}</td><td class="r">${this.fmt(r.counts && r.counts['기업'])}</td></tr>`).join('')}
+        </tbody></table></div></section>` : ''}`;
+  },
+  /** 진행 막대 또는 방금 올린 판의 검사 결과 */
+  runHtml(){
+    if(this.busy && this.prog) return `<section class="qb-card qb-prog" aria-live="polite"><h3>올리는 중 — 창을 닫지 마세요</h3><p>${escapeHtml(this.prog.t)}</p><div class="qb-bar"><i style="width:${this.prog.p}%"></i></div></section>`;
+    const r = this.result; if(!r) return '';
+    if(r.err) return `<section class="qb-card qb-bad"><h3>올리지 못했어요</h3><p>${escapeHtml(r.err)}</p><p class="qb-note">엑셀을 확인한 뒤 다시 올려 주세요. 학생 면접에는 지금 쓰는 판이 그대로 쓰여요.</p></section>`;
+    const c = r.res || {}, probs = c['문제'] || [], ok = !probs.length, blk = c['출제_안함_금지낱말'] || {};
+    const w = c['가중치_합계_틀린_줄'] || [];
+    const line = (t, v, good, note)=>`<tr><th>${t}</th><td>${v}</td><td class="${good ? 'ok' : 'no'}">${good ? '✓ 맞아요' : '✗ 확인 필요'}</td><td>${note || ''}</td></tr>`;
+    return `<section class="qb-card ${ok ? 'qb-good' : 'qb-bad'}"><h3>${r.ver}판 검사 결과 — ${escapeHtml(r.file || '')}</h3>
+      <div class="qb-scroll"><table class="qb-table qb-check"><thead><tr><th>확인한 것</th><th>숫자</th><th>결과</th><th>설명</th></tr></thead><tbody>
+        ${line('질문 수', `${this.fmt(c['질문'])}개`, c['질문'] > 0 && c['질문'] === c['기업목록_합계'], `기업목록 시트 합계 줄: ${this.fmt(c['기업목록_합계'])}개`)}
+        ${line('기업 수', `${this.fmt(c['기업'])}곳`, c['기업'] > 0 && !(c['질문수_다른_기업'] || []).length, `질문이 있는 기업 ${this.fmt(c['질문있는_기업'])}곳${(c['질문수_다른_기업'] || []).length ? ` · 질문 수가 목록과 다른 기업 ${c['질문수_다른_기업'].length}곳` : ''}`)}
+        ${line('질문 유형', `${this.fmt(c['질문_유형_수'])}개`, c['질문_유형_수'] > 0 && c['질문_유형_수'] === c['가중치_줄'], `평가_가중치 시트의 유형 ${this.fmt(c['가중치_줄'])}줄과 비교`)}
+        ${line('유형별 가중치 합계', w.length ? `${w.length}줄이 100이 아님` : `${this.fmt(c['가중치_줄'])}줄 모두 100`, !w.length, w.map(x=>`${escapeHtml(x['유형'])} ${x['합계']}`).join(', '))}
+        ${line('평가 항목', `${c['평가_항목']}개 (A~E)`, c['평가_항목'] === 5, `등급 ${c['등급']}개`)}
+        ${line('AI 피드백 규칙', `${c['피드백_단계']}단계 · 금지 ${c['피드백_금지']}개`, c['피드백_단계'] === 5)}
+        ${line('AI 면접관 안전장치', `지시문 ${c['면접관_지시문']}개 · 금지 분류 ${c['금지_분류']}개`, c['금지_분류'] === 9 && c['면접관_지시문'] > 0)}
+        <tr><th>출제하지 않는 질문</th><td>${this.fmt(this.sum(blk) + (+c['출제_안함_기타유형'] || 0))}개</td><td class="info">안내</td><td>'기타' 유형 ${this.fmt(c['출제_안함_기타유형'])}개 · 금지 낱말 ${this.fmt(this.sum(blk))}개${Object.keys(blk).length ? ` (${Object.entries(blk).map(([k, v])=>`${escapeHtml(k)} ${v}`).join(', ')})` : ''}</td></tr>
+      </tbody></table></div>
+      ${probs.length ? `<div class="qb-probs"><b>고칠 점</b><ul>${probs.map(p=>`<li>${escapeHtml(p)}</li>`).join('')}</ul><p class="qb-note">엑셀을 고친 뒤 다시 올려 주세요. 학생 면접에는 지금 쓰는 판이 그대로 쓰여요.</p></div>`
+        : r.done ? `<p class="qb-done">✓ ${r.ver}판으로 바꿨어요. ${r.link && (r.link['연결_없는_기업'] || []).length ? `사이트 기관 목록과 연결되지 않은 기업: ${r.link['연결_없는_기업'].map(escapeHtml).join(', ')}` : '127곳 모두 사이트 기관 목록과 연결돼 있어요.'}</p>`
+        : `<div class="qb-acts"><p>검사를 통과했어요. 바꾸면 다음 면접부터 이 판의 질문과 평가 기준이 쓰여요.</p><button type="button" class="pk-btn pri" onclick="QBankAdmin.activate(${r.ver})">이 판으로 바꾸기</button></div>`}
+    </section>`;
+  },
+  step(t, p){ this.prog = { t, p: Math.max(1, Math.min(100, Math.round(p))) }; const el = document.getElementById('qb-run'); if(el) el.innerHTML = this.runHtml(); },
+  lib(){
+    if(window.XLSX && XLSX.read) return Promise.resolve();
+    return new Promise((ok, no)=>{ const s = document.createElement('script');
+      s.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'; s.integrity = 'sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT'; s.crossOrigin = 'anonymous';
+      s.onload = ()=>ok(); s.onerror = ()=>no(new Error('엑셀 읽기 도구를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 다시 해 주세요.')); document.head.appendChild(s); });
+  },
+  /** 서버 함수 부르기: 인터넷이 잠깐 끊기면 세 번까지 다시 (권한·형식 문제는 바로 멈춤) */
+  async call(fn, args){
+    for(let t = 0; ; t++){
+      const { data, error } = await sb.rpc(fn, args);
+      if(!error) return data;
+      const m = String(error.message || error);
+      if(t >= 3 || /관리자|머리글|모르는 시트|끝난 판|검사를 통과|되돌릴/.test(m) || error.code === '42501') throw new Error(m);
+      await new Promise(r=>setTimeout(r, 1500 * (t + 1)));
+    }
+  },
+  async pick(input){
+    const f = input.files && input.files[0]; input.value = ''; if(!f || this.busy) return;
+    if(!/\.xlsx$/i.test(f.name)) return showToast('엑셀(.xlsx) 파일만 올릴 수 있어요');
+    if(!(state.currentUser && state.currentUser.isAdmin)) return showToast('관리자만 올릴 수 있어요');
+    this.busy = true; this.result = null; this.ver = null; this.render();
+    const wait = ()=>new Promise(r=>setTimeout(r, 30));
+    try{
+      this.step('엑셀 읽기 도구를 준비하는 중…', 2); await this.lib();
+      this.step(`"${f.name}"에서 필요한 시트 7개만 골라 읽는 중… (15MB 파일은 10~30초 걸려요)`, 4); await wait();
+      const wb = XLSX.read(await f.arrayBuffer(), { type:'array', dense:true, sheets: QB_SHEETS, cellFormula:false, cellHTML:false, cellText:false, cellStyles:false });
+      const miss = QB_SHEETS.filter(n=>!wb.Sheets[n]); if(miss.length) throw new Error('엑셀에 이 시트가 없어요: ' + miss.join(', ') + ' (시트 이름을 바꾸지 말아 주세요)');
+      const grid = n=>{ const ws = wb.Sheets[n]; const start = ws['!ref'] ? XLSX.utils.decode_range(ws['!ref']).s.r : 0;
+        return { start, rows: XLSX.utils.sheet_to_json(ws, { header:1, raw:true, defval:null, blankrows:true }) }; };
+      const filled = r=>Array.isArray(r) && r.some(v=>v !== null && v !== '');
+      this.ver = await this.call('qb_import_begin', { p_file: f.name });
+      for(const n of ['기업목록', '질문은행']){
+        const g = grid(n), hdr = g.rows[0] || [], body = g.rows.slice(1).filter(filled), CH = 1500;
+        if(!body.length) throw new Error(`${n} 시트에 내용이 없어요`);
+        for(let i = 0; i < body.length; i += CH){
+          await this.call('qb_import_rows', { p_ver: this.ver, p_sheet: n, p_header: hdr, p_rows: body.slice(i, i + CH) });
+          const done = Math.min(i + CH, body.length);
+          this.step(`${n} 넣는 중… ${this.fmt(done)} / ${this.fmt(body.length)}줄`, n === '기업목록' ? 7 : 8 + 84 * done / body.length);
+        }
+        delete wb.Sheets[n];   // 다 보낸 시트는 메모리에서 뺌
+      }
+      this.step('평가 기준과 AI 규칙을 넣는 중…', 93);
+      for(const n of QB_SHEETS.slice(2)){
+        const g = grid(n), rows = g.rows.map((r, i)=>[g.start + i + 1].concat(r || [])).filter(r=>filled(r.slice(1)));
+        await this.call('qb_import_rows', { p_ver: this.ver, p_sheet: n, p_header: null, p_rows: rows });
+      }
+      this.step('숫자를 검사하는 중…', 97);
+      const res = await this.call('qb_import_check', { p_ver: this.ver });
+      this.result = { ver: this.ver, file: f.name, res };
+      try{ Activity.log('qbank_upload', { ver: this.ver, ok: !(res['문제'] || []).length, n: res['질문'] }); }catch(_){}
+    }catch(e){
+      console.warn('[면접 DB 올리기]', e);
+      this.result = { err: (this.ver ? `${this.ver}판을 넣다가 멈췄어요. ` : '') + (e.message || String(e)), ver: this.ver };
+    }finally{ this.busy = false; this.prog = null; await this.load(); }
+  },
+  async activate(ver){
+    if(!confirm(`${ver}판으로 바꿀까요?\n다음 면접부터 이 판의 질문·평가 기준·AI 규칙이 쓰여요. 바로 전 판으로 되돌릴 수 있어요.`)) return;
+    try{
+      const link = await this.call('qb_import_activate', { p_ver: ver });
+      this.result = Object.assign({}, this.result, { done: true, link });
+      showToast(`${ver}판으로 바꿨어요`, 'ok');
+      this.purge();
+    }catch(e){ showToast('바꾸지 못했어요. ' + (e.message || e), 'warn'); }
+    await this.load();
+  },
+  async rollback(){
+    const pv = this.prev(); if(!pv) return;
+    if(!confirm(`바로 전 판(${pv.ver}판)으로 되돌릴까요?\n다음 면접부터 ${pv.ver}판의 질문·평가 기준이 쓰여요.`)) return;
+    try{ await this.call('qb_import_rollback', {}); this.result = null; showToast(`${pv.ver}판으로 되돌렸어요`, 'ok'); }
+    catch(e){ showToast('되돌리지 못했어요. ' + (e.message || e), 'warn'); }
+    await this.load();
+  },
+  /** 사용 중·바로 전 판 말고 오래된 판은 조금씩 지움 (뒤에서 조용히) */
+  async purge(){ try{ for(let k = 0; k < 30; k++){ const n = await this.call('qb_import_purge', { p_limit: 20000 }); if(!n) break; } }catch(e){ console.warn('[면접 DB 정리]', e); } },
 };
 const VoiceSet = {
   voices:null, loading:false, err:'', g:'', age:'', q:'', shown:40, cache:new Map(), used:0, _seq:0, _sample:null,
