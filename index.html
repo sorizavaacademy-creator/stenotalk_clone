@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05b';
+var APP_VERSION = '2026-11-05c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5653,6 +5653,8 @@ html.pk-open{overflow:hidden;}
 .fl-qb-row .fl-sub{font-size:12.5px;color:#6B7485;}
 .fl-eng{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14.5px;} .fl-eng input{margin-top:4px;width:18px;height:18px;accent-color:#C8441C;} .fl-eng small{display:block;color:#6B7485;font-size:12.5px;margin-top:2px;line-height:1.5;}
 .fl-qb-note{margin:0;font-size:13px;color:#4A5466;line-height:1.6;} .fl-qb-note b{color:#C8441C;}
+.fl-qb.off{background:#F7F8FA;border-style:dashed;} .fl-qb-off{margin:0;font-size:13.5px;color:#4A5466;line-height:1.6;} .fl-qb-go{display:flex;gap:8px;flex-wrap:wrap;}
+.fl-qb-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:#FFF1E8;color:#C8441C;font-style:normal;font-size:11px;font-weight:800;vertical-align:1px;}
 .qb-count-note{margin:0 0 10px;padding:10px 12px;border-radius:10px;background:#FFF6F1;color:#7A3A18;font-size:13.5px;line-height:1.55;}
 /* 2026-11-05 면접 DB (엑셀) — 관리자 */
 #qb-root{color:#172033;font-size:14.5px;}
@@ -12785,7 +12787,7 @@ const StartFlow = {
     this.s.step = 1; document.getElementById('modal-flow').classList.add('active'); this.render();
   },
   /** 2026-11-02p 홈 목적 카드: 누른 카드에 '선택됨' 표시를 잠깐 보여 준 뒤 준비 창을 엶 */
-  pickFromHome(kind){ this.markHome(kind); clearTimeout(this._pt); this._pt = setTimeout(()=>this.open(null, kind), 220); },
+  pickFromHome(kind){ this.markHome(kind); clearTimeout(this._pt); this._pt = setTimeout(()=>{ try{ AppUpdate.gateStart(()=>this.open(null, kind)); }catch(_){ this.open(null, kind); } }, 220); },   // 2026-11-05c 예전 화면으로 열려 있으면 새로고침부터
   markHome(kind){ document.querySelectorAll('[data-hm-kind]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.hmKind === kind))); },
   back(){ if(this.s.step > 0){ this.s.step--; this.render(); } else this.close(); },
   need(){ const s = this.s; if(s.step === 0) return s.kind ? '' : '면접 목적을 골라 주세요';
@@ -12938,7 +12940,7 @@ const StartFlow = {
     if(s.kind === 'major') return `<h2 class="fl-h">전공·경험 면접 준비</h2><p class="fl-lead">전공 시험이 아니라, 내 경험을 얼마나 깊이 이해하고 설명하는지 확인하는 면접이에요.</p>${this.vProfile()}${this.vExps('수강 과목·프로젝트·활동')}${this.vDocs()}${this.vSummary()}`;
     const j = s.job, f = this.field(j.field);
     return `<h2 class="fl-h">기업·직무 맞춤 면접 준비</h2><p class="fl-lead">기업 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vProfile()}
-    <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}</span><span class="d">${escapeHtml((hallymRoles(x.id).length ? hallymRoles(x.id) : (x.roles||[])).slice(0,3).join('·'))} 외</span></button>`).join('')}</div></div>
+    <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}${QBank.applies(x.id) ? '<em class="fl-qb-tag">후기 질문 8문항</em>' : ''}</span><span class="d">${escapeHtml((hallymRoles(x.id).length ? hallymRoles(x.id) : (x.roles||[])).slice(0,3).join('·'))} 외</span></button>`).join('')}</div></div>
     <div class="fl-grid"><div class="fl-f"><label for="fl-company">목표 기업·기관 <span class="fl-opt">(선택)</span></label><div class="fl-co"><input id="fl-company" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fl-co-list" autocomplete="off" value="${escapeHtml(j.company)}" placeholder="이름으로 검색하거나 아래 목록에서 고르세요"><ul id="fl-co-list" class="fl-co-list" role="listbox" hidden></ul></div></div>
     <div class="fl-f"><label for="fl-role">목표 직무 <span class="req">*</span></label><input id="fl-role" list="fl-role-list" value="${escapeHtml(j.role)}" placeholder="아래에서 고르거나 직접 입력 (예: ${escapeHtml(hallymRoles(j.field)[0] || '영업')})"><datalist id="fl-role-list">${hallymRoles(j.field).map(r=>`<option value="${escapeHtml(r)}">`).join('')}</datalist></div>
     <div class="fl-f wide" id="fl-co-browse"></div>
@@ -25152,7 +25154,9 @@ const QBank = {
   },
   /** 면접 준비 창 '맞춤 준비' 칸: 직종 고르기 + 영어 질문 */
   prepHtml(j){
-    if(!this.applies(j.field)) return '';
+    if(!this.applies(j.field)) return `<div class="fl-f wide fl-qb off" id="fl-qb">
+      <p class="fl-qb-off"><b>직종 고르기 · 영어 질문 1개 넣기</b>는 실제 면접 후기 질문(8문항)을 쓰는 <b>대기업·중견기업</b>, <b>공공기관·공기업</b> 분야에서 쓸 수 있어요. 지금 고른 분야는 지금까지처럼 분야별 기본 질문으로 진행해요.</p>
+      <div class="fl-qb-go"><button type="button" class="btn btn-outline" data-qbfield="corp">대기업·중견기업으로 바꾸기</button><button type="button" class="btn btn-outline" data-qbfield="pubcorp">공공기관·공기업으로 바꾸기</button></div></div>`;
     const cur = j.jobcat || this.guessJob(j.role);
     return `<div class="fl-f wide fl-qb" id="fl-qb">
       <div class="fl-qb-row"><label for="fl-jobcat" class="fl-lbl">직종</label>
@@ -25163,6 +25167,7 @@ const QBank = {
     </div>`;
   },
   bindPrep(s){
+    document.querySelectorAll('[data-qbfield]').forEach(b=>b.onclick = ()=>{ const f = document.querySelector(`.fl-field[data-field="${b.dataset.qbfield}"]`); if(f) f.click(); setTimeout(()=>{ const q = document.getElementById('fl-qb'); if(q) q.scrollIntoView({ block:'center', behavior:'smooth' }); }, 60); });
     const sel = document.getElementById('fl-jobcat'), eng = document.getElementById('fl-eng'), hint = document.getElementById('fl-jobcat-hint');
     if(sel) sel.onchange = ()=>{ s.job.jobcat = sel.value; s.job.jobPicked = true; if(hint) hint.textContent = '직접 고른 직종으로 질문을 골라요'; };
     if(eng) eng.onchange = ()=>{ s.job.eng = eng.checked; const n = document.querySelector('#fl-qb .fl-qb-note'); if(n) n.outerHTML = (this.prepHtml(s.job).match(/<p class="fl-qb-note">[\s\S]*?<\/p>/) || [''])[0]; };
