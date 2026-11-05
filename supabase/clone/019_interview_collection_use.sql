@@ -62,7 +62,8 @@ language sql stable security definer set search_path = public as $$
                       from public.interview_target_job j where j.target_key = g.key), '[]'::jsonb),
     'past', coalesce((select jsonb_agg(jsonb_build_object('no', q.orig_no, 'question', q.question, 'year', q.year, 'half', q.half,
                                                           'job_category', q.job_category) order by q.year desc, q.half desc nulls last, q.orig_no)
-                      from public.interview_past_question q where q.target_key = g.key), '[]'::jsonb))
+                      from public.interview_past_question q where q.target_key = g.key
+                        and public.qb_block_reason(q.question) is null), '[]'::jsonb))   -- 면접에서 묻지 않는 질문(병역 등, 015)은 빼고 줌
   from public.interview_target g where g.key = p_key;
 $$;
 revoke all on function public.ic_target_json(text) from public, anon, authenticated;
