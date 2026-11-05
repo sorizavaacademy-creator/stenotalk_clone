@@ -1,4 +1,9 @@
 // 운영 ZAVAPASS에서 읽어 온 원본 (2026-11-03, 읽기만). 클론(yiuraowvnadqdrnysdce)에만 배포
+// 2026-11-05 면접 DB 5단계: 엑셀(평가_공통기준·평가_유형별기준·평가_가중치·등급·AI피드백규칙)을 넣은 DB를 읽어 A~E 채점
+//   AI는 A~E 각 1~4점과 근거·피드백 재료만 냄 → 총점(점수÷4×가중치의 합)과 등급은 이 프로그램이 계산
+//   피드백은 AI피드백규칙 5단계 순서(점수 → 잘한 점 1 → 고칠 점 최대 2 → 바꿔 말하기 → 다음 꼬리질문)로 프로그램이 조립
+//   확인할 수 없는 회사·직무 사실은 감점하지 않고 '확인 필요'로 표시. 규칙을 못 읽으면 예전 채점 그대로
+//   추가 입력(선택): qb_type(엑셀 질문 유형 이름) · typed(글로 답함) · prior_scores({A..E}: 같은 질문 이전 점수 → 좋아진 항목부터)
 // 2026-11-03 한림대용: 속기사 채용 → 대학생 채용 면접으로 프롬프트 교체
 // 2026-10-23a: 안내 문구의 '교육팀' → '담당자' (부서 이름을 특정하지 않음)
 // 2026-10-22v: OpenAI 일시 오류(5xx·429)면 0.7초 뒤 한 번 더 (첫 응답이 9초 안에 왔을 때만)
@@ -23,6 +28,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.118.0";
 import { loadCompanyPack, buildCompanyBlock } from "../_shared/company_prompt.ts";
+import { activeVer, blockReason } from "../_shared/qbank.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";   // 사용자 선택: Luna (가장 저렴). Secrets의 OPENAI_MODEL로 변경 가능
@@ -224,6 +230,143 @@ async function companyBlockFor(req: Request, companyId: string, mode: "followup"
   } catch (e) { console.warn("[기업 자료 읽기 실패 → 일반 채점으로]", (e as Error).message); return ""; }
 }
 
+// ================= 2026-11-05 면접 DB 5단계: A~E 채점 =================
+const AXES = ["A", "B", "C", "D", "E"] as const;
+type Axis = typeof AXES[number];
+type AeRules = {
+  ver: number;
+  axes: { axis: Axis; name: string; looks: string; s: string[] }[];
+  weights: Record<string, { w: Record<Axis, number>; key: string }>;
+  grades: { grade: string; min: number }[];
+  typeRules: Record<string, string[]>;
+  common: string[];
+  fb: string[];
+};
+let AE_CACHE: { at: number; data: AeRules | null } = { at: 0, data: null };
+/** 엑셀 기준을 DB에서 읽음 (5분 보관). 못 읽으면 null → 예전 채점 */
+async function aeRules(): Promise<AeRules | null> {
+  if (Date.now() - AE_CACHE.at < 5 * 60 * 1000) return AE_CACHE.data;
+  try {
+    const sb = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+    const ver = await activeVer(sb);
+    if (!ver) { AE_CACHE = { at: Date.now(), data: null }; return null; }
+    const [ax, wt, gr, ru] = await Promise.all([
+      sb.from("qb_eval_axes").select("axis,name,looks,s1,s2,s3,s4").eq("ver", ver),
+      sb.from("qb_eval_weights").select("qtype,a,b,c,d,e,key_point").eq("ver", ver),
+      sb.from("qb_eval_grades").select("grade,min_score,ord").eq("ver", ver).order("min_score", { ascending: false }),
+      sb.from("qb_rules").select("sheet,ord,kind,section,label,content").eq("ver", ver).eq("for_prompt", true).in("sheet", ["평가_공통기준", "평가_유형별기준", "AI피드백규칙"]).order("ord"),
+    ]);
+    if (ax.error || wt.error || gr.error || ru.error || !(ax.data ?? []).length || !(wt.data ?? []).length || !(gr.data ?? []).length) throw new Error("기준 읽기 실패");
+    const weights: AeRules["weights"] = {};
+    for (const r of wt.data ?? []) weights[r.qtype] = { w: { A: Number(r.a), B: Number(r.b), C: Number(r.c), D: Number(r.d), E: Number(r.e) }, key: r.key_point ?? "" };
+    const typeRules: Record<string, string[]> = {}, common: string[] = [], fb: string[] = [];
+    for (const r of ru.data ?? []) {
+      if (r.sheet === "평가_유형별기준" && r.section) (typeRules[r.section] ??= []).push(`- ${r.label ?? ""}: ${r.content ?? ""}`);
+      else if (r.sheet === "평가_공통기준" && ["formula", "length"].includes(r.kind) && r.content) common.push(`- ${r.content}`);
+      else if (r.sheet === "AI피드백규칙" && r.content && ["intro", "step", "ban", "rule"].includes(r.kind)) fb.push(r.kind === "step" ? `- ${r.label}: ${r.content}` : r.kind === "ban" ? `- 금지: ${r.content}` : `- ${r.content}`);
+    }
+    const data: AeRules = {
+      ver,
+      axes: (ax.data ?? []).filter((r) => (AXES as readonly string[]).includes(r.axis)).sort((a, b) => a.axis.localeCompare(b.axis)).map((r) => ({ axis: r.axis as Axis, name: r.name, looks: r.looks ?? "", s: [r.s1, r.s2, r.s3, r.s4].map((x) => x ?? "") })),
+      weights, grades: (gr.data ?? []).map((g) => ({ grade: g.grade, min: Number(g.min_score) })), typeRules, common, fb,
+    };
+    if (data.axes.length !== 5) throw new Error("A~E 항목 수가 5개가 아님");
+    AE_CACHE = { at: Date.now(), data };
+    return data;
+  } catch (e) { console.warn("[A~E 기준 읽기 실패 → 예전 채점]", (e as Error).message); AE_CACHE = { at: Date.now() - 4 * 60 * 1000, data: null }; return null; }
+}
+/** 화면의 질문 유형(영문 키) → 엑셀 질문 유형 이름 */
+const AE_TYPE: Record<string, string> = { intro: "자기소개", motive: "지원동기", experience: "경험·역량", situation: "상황대처", knowledge: "직무·전공지식", general: "인성·가치관" };
+/** 총점 = A~E 각 (점수 ÷ 4 × 가중치)의 합, 소수 둘째 자리까지 */
+function aeTotal(sc: Record<Axis, number>, w: Record<Axis, number>): number {
+  return Math.round(AXES.reduce((t, k) => t + (sc[k] / 4) * w[k], 0) * 100) / 100;
+}
+function aeGrade(total: number, grades: AeRules["grades"]): string {
+  for (const g of grades) if (total >= g.min) return g.grade;
+  return grades.length ? grades[grades.length - 1].grade : "";
+}
+const fmtNum = (n: number) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100));
+const oneLine = (v: unknown, n: number) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, n);
+
+function aeSystem(R: AeRules): string {
+  const axisTxt = R.axes.map((a) => `${a.axis} ${a.name} (${a.looks})\n  4점: ${a.s[3]}\n  3점: ${a.s[2]}\n  2점: ${a.s[1]}\n  1점: ${a.s[0]}`).join("\n");
+  return `당신은 대학생 채용 모의면접의 채점관입니다. 지원자는 한림대학교 재학생·졸업예정자입니다. 아래 엑셀 기준 그대로, 답변 하나를 A~E 다섯 항목으로 각각 1~4점(정수) 매기고, 피드백 재료를 씁니다.
+
+[공통 평가 항목 A~E와 4단계 기준 — 엑셀 '평가_공통기준']
+${axisTxt}
+${R.common.join("\n")}
+- 중간 점수(2·3점)로 몰지 말고 기준 문장에 가장 가까운 단계를 고릅니다.
+- 총점과 등급은 계산하지 않습니다. 프로그램이 가중치로 계산합니다.
+
+[피드백 작성 규칙 — 엑셀 'AI피드백규칙']
+${R.fb.join("\n")}
+
+[반드시 지킬 것]
+- 회사·기관의 사업, 수치, 최근 소식처럼 지금 확인할 수 없는 사실은 맞다·틀리다로 감점하지 않습니다. 그 내용은 check 목록에 "확인 필요"로 적고, 점수는 나머지 근거로 매깁니다.
+- 실무 경력이 없다는 이유로 감점하지 않습니다. 수업·팀 프로젝트·동아리·아르바이트·봉사 경험도 같은 무게로 봅니다.
+- 음성 인식으로 받아쓴 답변이라 오탈자·띄어쓰기 오류는 감점하지도, 언급하지도 않습니다.
+- 지원자가 스스로 말한 가족·종교·건강·연애·병역 같은 개인 이야기는 피드백·예시·꼬리질문에 인용하지 않고 점수에도 반영하지 않습니다.
+- "모르겠다"·질문과 무관한 답변에서 칭찬할 점을 억지로 만들지 않습니다(good.text에 그대로 "질문에 맞는 내용이 아직 없어요"처럼 씀).
+- 모든 글은 한국어 존댓말(~요). good·fixes·rewrite·next_q 합쳐 400자 안팎.
+
+[응답 — JSON만]
+{"scores":{"A":1~4,"B":1~4,"C":1~4,"D":1~4,"E":1~4},
+ "reasons":{"A":"그 점수를 준 근거 한 문장(30자 안팎)","B":"…","C":"…","D":"…","E":"…"},
+ "good":{"axis":"점수가 가장 높은 항목 글자","quote":"학생이 한 말 짧게(20자 안팎, 그대로)","text":"잘한 점 한 문장"},
+ "fixes":[{"axis":"항목 글자","why":"왜 — 한 문장","how":"어떻게 — 한 문장"}],
+ "rewrite":"학생 답변의 한 부분을 고친 1~2문장. 학생이 말한 사실만 쓰고 없는 수치는 [수치]로 비워 둠",
+ "next_q":"가장 약한 항목을 다시 확인하는 꼬리질문 1개 (평서문, …말씀해 주세요.)",
+ "check":["확인 필요한 사실(없으면 빈 배열)"],
+ "strengths":["12자 이내 구절 1~2개"],"improvements":["18자 이내 행동형 구절 1~2개"]}`;
+}
+
+type AeOut = { qtype: string; lang_note: string; weights: Record<Axis, number>; scores: Record<Axis, number>; reasons: Record<string, string>; total: number; grade: string;
+  good: { axis: string; quote: string; text: string }; fixes: { axis: string; why: string; how: string }[]; rewrite: string; next_q: string; check: string[]; improved: string[] };
+
+/** AI 응답 → 프로그램이 총점·등급 계산 + 5단계 피드백 글 조립 */
+function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: string, prior: Record<string, number> | null): { ae: AeOut; feedback: string } | null {
+  const sc = {} as Record<Axis, number>;
+  for (const k of AXES) { const v = Math.round(Number(p?.scores?.[k])); if (!(v >= 1 && v <= 4)) return null; sc[k] = v; }
+  const w = R.weights[qtype].w;
+  const total = aeTotal(sc, w), grade = aeGrade(total, R.grades);
+  const label = (k: string) => { const a = R.axes.find((x) => x.axis === k); return a ? `${k} ${a.name}` : k; };
+  // 고칠 점: 가중치를 고려해 잃은 점수(가중치 × (4 − 점수))가 큰 순서, 최대 2개, 4점인 항목은 뺌
+  const lost = (k: string) => (AXES as readonly string[]).includes(k) ? w[k as Axis] * (4 - sc[k as Axis]) : -1;
+  let fixes = (Array.isArray(p.fixes) ? p.fixes : []).map((f: any) => ({ axis: oneLine(f?.axis, 1).toUpperCase(), why: oneLine(f?.why, 120), how: oneLine(f?.how, 140) }))
+    .filter((f: any) => f.why && lost(f.axis) > 0);
+  fixes = fixes.sort((a: any, b: any) => lost(b.axis) - lost(a.axis)).filter((f: any, i: number, arr: any[]) => arr.findIndex((x) => x.axis === f.axis) === i).slice(0, 2);
+  const best = [...AXES].sort((a, b) => (sc[b] - sc[a]) || (w[b] - w[a]))[0];
+  const g = p.good || {};
+  const good = { axis: (AXES as readonly string[]).includes(oneLine(g.axis, 1).toUpperCase()) ? oneLine(g.axis, 1).toUpperCase() : best, quote: oneLine(g.quote, 40), text: oneLine(g.text, 140) };
+  let rewrite = oneLine(p.rewrite, 220), nextQ = oneLine(p.next_q, 120);
+  if (rewrite && blockReason(rewrite)) rewrite = "";
+  const weakest = [...AXES].sort((a, b) => (lost(b) - lost(a)))[0];
+  const SAFE_NEXT: Record<Axis, string> = {
+    A: "질문에 대한 답을 첫 문장에 한 줄로 다시 말씀해 주세요.",
+    B: "방금 말씀하신 경험에서 본인이 직접 한 일과 그 결과를 숫자로 말씀해 주세요.",
+    C: "그 경험이 지원하신 직무에서 어떻게 쓰일지 말씀해 주세요.",
+    D: "결론을 먼저 말하고 근거 두 가지를 순서대로 말씀해 주세요.",
+    E: "같은 내용을 30초 안에 핵심만 다시 말씀해 주세요.",
+  };
+  if (!nextQ || blockReason(nextQ)) nextQ = SAFE_NEXT[weakest];
+  const check = (Array.isArray(p.check) ? p.check : []).map((x: unknown) => oneLine(x, 80)).filter(Boolean).slice(0, 3);
+  const reasons: Record<string, string> = {}; for (const k of AXES) reasons[k] = oneLine(p?.reasons?.[k], 80);
+  // 같은 질문을 다시 답했으면 좋아진 항목부터
+  const improved: string[] = [];
+  if (prior) for (const k of AXES) { const a = Number(prior[k]); if (a >= 1 && a <= 4 && sc[k] > a) improved.push(`${label(k)} ${a}→${sc[k]}`); }
+  const L: string[] = [];
+  L.push(`총점 ${fmtNum(total)}점 · ${grade} (${AXES.map((k) => `${k} ${sc[k]}`).join(" · ")})`);
+  if (langNote) L.push(langNote);
+  if (prior) L.push(improved.length ? `좋아진 항목: ${improved.join(", ")}` : "지난번보다 좋아진 항목은 아직 없어요. 아래 고칠 점부터 해 보세요.");
+  L.push(`잘한 점(${label(good.axis)}): ${good.quote ? `"${good.quote}" — ` : ""}${good.text || "질문에 맞는 내용이 아직 없어요."}`);
+  if (fixes.length) L.push("고칠 점\n" + fixes.map((f: any, i: number) => `${i + 1}. ${f.why} (${label(f.axis)}) ${f.how}`).join("\n"));
+  if (rewrite) L.push(`바꿔 말하기: "${rewrite}"`);
+  L.push(`다음 꼬리질문: ${nextQ}`);
+  if (check.length) L.push(`확인 필요: ${check.join(" / ")} — 확인할 수 없는 사실이라 점수에는 넣지 않았어요.`);
+  const ae: AeOut = { qtype, lang_note: langNote, weights: w, scores: sc, reasons, total, grade, good, fixes, rewrite, next_q: nextQ, check, improved };
+  return { ae, feedback: L.join("\n\n") };
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -257,6 +400,9 @@ Deno.serve(async (req: Request) => {
     purpose?: string | null;
     job_role?: string | null;
     major_dept?: string | null;
+    qb_type?: string | null;       // 2026-11-05 면접 DB 5단계 (선택)
+    typed?: boolean;
+    prior_scores?: Record<string, number> | null;
   };
   try {
     payload = await req.json();
@@ -310,6 +456,59 @@ Deno.serve(async (req: Request) => {
     resumeSummary ? `[지원자 자기소개서 요약 (참고용)]\n${resumeSummary}` : null,
     `[지원자 답변]\n${answer.slice(0, 3000)}`,
   ].filter(Boolean).join("\n\n");
+
+  // ---- 2026-11-05 면접 DB 5단계: 엑셀 기준을 읽을 수 있으면 A~E 채점 ----
+  const R = await aeRules();
+  if (R) {
+    const koCount = (answer.match(/[가-힣]/g) ?? []).length, enCount = (answer.match(/[A-Za-z]/g) ?? []).length;
+    let qbType = cleanText(payload.qb_type, 12);
+    if (!qbType) qbType = pick(AE_TYPE, isFollowup ? "" : qtype) ?? "";
+    let langNote = "";
+    if (qbType === "영어" && koCount > enCount) { qbType = "기타"; langNote = "한국어로 답한 영어 질문이라 영어 말하기는 평가하지 않고, 내용만 공통 기준으로 채점했어요."; }
+    if (!R.weights[qbType]) qbType = R.weights["기타"] ? "기타" : Object.keys(R.weights)[0];
+    const W = R.weights[qbType];
+    const priorRaw = payload.prior_scores && typeof payload.prior_scores === "object" ? payload.prior_scores : null;
+    const prior = priorRaw && AXES.every((k) => Number(priorRaw[k]) >= 1 && Number(priorRaw[k]) <= 4) ? priorRaw as Record<string, number> : null;
+    const aeUser = [
+      context ? `[지원 분야와 직무 맥락]\n${context}` : null,
+      `[질문 유형: ${qbType}] 가중치 ${AXES.map((k) => `${k} ${W.w[k]}%`).join(" · ")} · 핵심: ${W.key}`,
+      (R.typeRules[qbType] ?? []).length ? `[이 유형의 기준 — 엑셀 '평가_유형별기준']\n${R.typeRules[qbType].join("\n")}` : null,
+      langNote ? `[주의] ${langNote} 한국어로 답했다는 이유로 감점하지 않습니다.` : null,
+      `[면접 질문]${isFollowup ? " (꼬리질문)" : ""}\n${question}`,
+      reference ? `[모범 답안 요지]\n${reference}` : null,
+      isFollowup && priorAnswer ? `[이 꼬리질문 직전의 지원자 답변 (일관성 확인용)]\n${priorAnswer}` : null,
+      resumeSummary ? `[지원자 자기소개서 요약 (참고용 · 답변에 없던 내용을 있던 것처럼 보지 않음)]\n${resumeSummary}` : null,
+      `[답변 방식] ${payload.typed ? "글로 답함 — E는 길이와 문장 정리만 봄" : "말로 답함(음성 인식) — E에 말 속도·군말·길이 포함"}`,
+      `[지원자 답변]\n${answer.slice(0, 3000)}`,
+    ].filter(Boolean).join("\n\n");
+    const msgs = [
+      { role: "system", content: aeSystem(R) + (companyBlock ? `\n\n[기업 맞춤 면접 참고 — 인재상·평가 포인트만 참고. 확인할 수 없는 회사 사실은 감점하지 않고 check에]\n${companyBlock}` : "") },
+      { role: "user", content: aeUser },
+    ];
+    try {
+      let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.2, 2500);
+      if (res.ok) {
+        let data = await res.json();
+        let content: string = data?.choices?.[0]?.message?.content ?? "";
+        let parsed: any = null; try { parsed = JSON.parse(content); } catch { parsed = null; }
+        let built = parsed ? aeBuild(parsed, R, qbType, langNote, prior) : null;
+        if (!built) {
+          console.warn("[A~E 응답 형식 오류 → 한 번 더]", content.slice(0, 120));
+          const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.2, 4000);
+          if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; try { parsed = JSON.parse(content); } catch { parsed = null; } built = parsed ? aeBuild(parsed, R, qbType, langNote, prior) : null; }
+        }
+        if (built) {
+          return json({
+            score: Math.round(built.ae.total), feedback: built.feedback,
+            strengths: (Array.isArray(parsed.strengths) ? parsed.strengths : []).map((x: unknown) => oneLine(x, 20)).filter(Boolean).slice(0, 3),
+            improvements: (Array.isArray(parsed.improvements) ? parsed.improvements : []).map((x: unknown) => oneLine(x, 24)).filter(Boolean).slice(0, 3),
+            rewrite: "", ae: built.ae, rules_ver: R.ver, limit: lim.status ?? null, model: modelUsed, usage: data?.usage ?? null,
+          });
+        }
+        console.warn("[A~E 채점 실패 → 예전 채점으로]");
+      } else console.warn("[A~E 채점 OpenAI 오류 → 예전 채점으로]", res.status, (await res.text()).slice(0, 200));
+    } catch (e) { console.warn("[A~E 채점 예외 → 예전 채점으로]", (e as Error).message); }
+  }
 
   try {
     // 2026-10-19e: 추론형 모델(GPT-5 계열)은 생각에 토큰을 먼저 써서 700이면 답이 비는 경우가 있었음 → 2000으로 올리고, 그래도 비면 3500으로 한 번 더

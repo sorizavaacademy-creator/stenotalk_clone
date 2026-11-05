@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05f';
+var APP_VERSION = '2026-11-05g';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5963,6 +5963,26 @@ html.ivv-dr-open{overflow:hidden;}
 .iv-co summary::-webkit-details-marker{display:none;}
 .iv-co summary::after{content:'회사 정보 펼치기';margin-left:auto;font-size:12px;color:#8a8a90;font-weight:500;} .iv-co[open] summary::after{content:'접기';}
 .iv-co .cc{margin:0 10px 10px;}
+/* 2026-11-05 면접 DB 5단계 A~E 채점 */
+.ae-box{margin:4px 0 12px;padding:14px 16px;border:1px solid #e6e2dc;border-radius:12px;background:#fbfaf8;}
+.ae-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;} .ae-total{font-size:20px;font-weight:800;color:#1d1d22;} .ae-type{font-size:13px;color:#6b6b74;}
+.ae-grade{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;line-height:1.4;vertical-align:middle;} .ae-grade.g0{background:#e5f4ea;color:#17683a;} .ae-grade.g1{background:#e7effa;color:#1f4f8f;} .ae-grade.g2{background:#fdf1dc;color:#8a5a00;} .ae-grade.g3{background:#fbe6e1;color:#a2361b;}
+.q-grade.ae{font-size:13px !important;width:auto !important;min-width:0;height:auto !important;padding:3px 9px;border-radius:999px;line-height:1.3;} .q-grade.ae.g0{background:#e5f4ea;color:#17683a;} .q-grade.ae.g1{background:#e7effa;color:#1f4f8f;} .q-grade.ae.g2{background:#fdf1dc;color:#8a5a00;} .q-grade.ae.g3{background:#fbe6e1;color:#a2361b;}
+.ae-rows{display:flex;flex-direction:column;gap:6px;} .ae-row{display:grid;grid-template-columns:22px 104px 74px 34px 62px 1fr;align-items:center;gap:6px;font-size:13.5px;}
+.ae-k{color:#c8441c;} .ae-n{color:#2b2b31;font-weight:600;} .ae-s{font-weight:700;} .ae-w{color:#8a8a93;font-size:12.5px;} .ae-r{color:#4a4a52;line-height:1.45;}
+.ae-dots{display:inline-flex;gap:3px;} .ae-dots i{width:12px;height:12px;border-radius:3px;background:#e4e1dc;} .ae-dots i.on{background:#e0582c;}
+.ae-note{margin:0 0 8px;padding:7px 10px;border-radius:8px;background:#eef3fb;color:#33415c;font-size:13px;}
+.ae-check{margin:10px 0 0;padding:8px 10px;border-radius:8px;background:#fff7e6;color:#5c4400;font-size:13px;line-height:1.5;} .ae-check b{margin-right:6px;} .ae-check small{color:#8a7440;}
+.ae-how{margin:8px 0 0;font-size:12px;color:#8a8a93;}
+.ae-rep{margin:16px 0 18px;padding:18px 20px;border:1px solid #e6e2dc;border-radius:14px;background:#fff;}
+.ae-rep-kicker{margin:0;font-size:12.5px;color:#c8441c;font-weight:700;} .ae-rep h3{margin:4px 0 2px;font-size:22px;display:flex;align-items:center;gap:10px;} .ae-rep-sub{margin:0;color:#6b6b74;font-size:13px;}
+.ae-rep-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;margin-top:14px;} .ae-rep-t{display:block;font-size:13.5px;margin-bottom:8px;color:#2b2b31;}
+.ae-bar{display:grid;grid-template-columns:132px 1fr 52px;align-items:center;gap:8px;margin-bottom:8px;font-size:13.5px;} .ae-bl b{color:#c8441c;margin-right:2px;}
+.ae-bt{height:10px;border-radius:6px;background:#efece7;overflow:hidden;} .ae-bf{height:100%;border-radius:6px;background:#9fb3d6;} .ae-bar.weak .ae-bf{background:#e0582c;} .ae-bar.weak .ae-bl{font-weight:700;} .ae-bv{text-align:right;color:#4a4a52;}
+.ae-weak{padding:10px 12px;border-radius:10px;background:#fbede7;margin-bottom:10px;} .ae-weak p{margin:0;font-size:13.5px;line-height:1.5;color:#4a4a52;} .ae-weak .ae-weak-k{font-size:16px;font-weight:800;color:#a2361b;margin-bottom:4px;} .ae-weak-k small{font-weight:600;color:#8a5a4a;font-size:12.5px;margin-left:4px;}
+.ae-next ol{margin:0;padding-left:18px;} .ae-next li{margin-bottom:6px;font-size:13.5px;line-height:1.5;} .ae-next li b{display:block;color:#1d1d22;} .ae-next li span{color:#5a5a62;}
+.rhg-grade.ae-word{font-size:26px;letter-spacing:-0.5px;}
+@media (max-width:720px){ .ae-rep-grid{grid-template-columns:1fr;} .ae-row{grid-template-columns:20px 1fr 60px 30px;} .ae-row .ae-w{display:none;} .ae-row .ae-r{grid-column:2 / -1;} .ae-bar{grid-template-columns:110px 1fr 46px;} }
 .iv-lang-row{order:9;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 0;padding:8px 10px 8px 12px;border-radius:10px;background:#EEF3FB;color:#33415c;font-size:13.5px;line-height:1.5;} .iv-lang-row[hidden]{display:none;} .iv-lang-note{flex:1 1 180px;}
 .iv-lang-btn{flex:0 0 auto;border:1px solid #9fb3d6;background:#fff;color:#24406e;border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:600;cursor:pointer;} .iv-lang-btn:hover{background:#f4f7fd;} .iv-lang-btn.on{background:#24406e;color:#fff;border-color:#24406e;}
 .iv-co-hint{order:9;margin:10px 0 0;padding:9px 12px;border-radius:10px;background:#FBEDE7;color:#4a4a52;font-size:13.5px;line-height:1.55;} .iv-co-hint b{color:#c8441c;}
@@ -7873,6 +7893,7 @@ html.ivv-dr-open{overflow:hidden;}
       <div class="sr-next"><b>다음 연습</b><ol id="sr-next"></ol></div>
     </div>
 
+    <div id="ae-rep-top" hidden></div><!-- 2026-11-05 면접 DB 5단계 A~E 종합 리포트 (접히지 않게 문항별 평가 위에) -->
     <div class="r4-mid">
       <div class="panel r4-delivery" id="r4-delivery" hidden></div>
       <div class="panel qa-result-panel">
@@ -8801,7 +8822,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  * false : Edge Function을 아예 호출하지 않고 로컬 채점만 사용 (배포 전/비용 절감 시).
  */
 const AI_GRADING_ENABLED = true;    // grade-answer 배포 완료(2026-09-22) → 켬. 끄려면 false
-const AI_GRADING_TIMEOUT_MS = 20000;
+const AI_GRADING_TIMEOUT_MS = 35000;   // 2026-11-05 A~E 채점(엑셀 기준)은 11~14초 걸려 넉넉히
 
 function formatDateFull(iso){
   const d = new Date(iso);
@@ -17153,6 +17174,7 @@ async function gradeAnswerWithAI(question, refText, answerText, fieldName, extra
       body: { question, reference: refForAi(refText), answer: answerText, field: fieldName || '',
               field_id: state.selectedField ? state.selectedField.id : undefined, qtype: qtype || undefined,
               is_followup: !!extra.isFollowup, prior_answer: extra.priorAnswer || null,
+              qb_type: extra.qbType || undefined, typed: !!extra.typed, prior_scores: extra.priorScores || undefined,   // 2026-11-05 면접 DB 5단계 A~E 채점
               resume_summary: state.resumeText ? state.resumeText.slice(0, 1200) : null,
               interview_id: state.demoResult ? null : String(state.startTime || ''), ...aiCtx() },
     });
@@ -17183,6 +17205,7 @@ async function gradeAnswerWithAI(question, refText, answerText, fieldName, extra
       improvements: Array.isArray(data.improvements) ? data.improvements : [],
       rewrite: data.rewrite || '',
       model: data.model || '',
+      ae: data.ae && data.ae.scores ? data.ae : null,   // 2026-11-05 A~E 점수·총점·등급 (서버 프로그램이 가중치로 계산)
     };
   }catch(e){
     console.warn('[AI 채점 실패 → 로컬 채점으로 대체]', e);
@@ -19503,10 +19526,10 @@ async function finishDialogInterview(asks, transcript){
     asks.forEach((a,i)=>{
       const ans = (a.answer||'').trim(); if(!ans) return;
       const prev = i>0 ? (asks[i-1].answer||'') : '';
-      const p = gradeAnswerWithAI(a.q, a.ref, ans, state.selectedField ? state.selectedField.name : '', { isFollowup: !!a.followup, priorAnswer: a.followup ? prev : null }).then(ai=>{
+      const p = gradeAnswerWithAI(a.q, a.ref, ans, state.selectedField ? state.selectedField.name : '', { isFollowup: !!a.followup, priorAnswer: a.followup ? prev : null, qbType: AeReport.qtypeAt(asks, i), typed: a.endReason === 'typed' }).then(ai=>{
         if(!ai || state.startTime !== interviewId) return;
         state.answerScores[i] = ai.score;
-        state.answerFeedback[i] = Object.assign({}, state.answerFeedback[i] || {}, { score: ai.score, ai:true, aiFeedback: ai.feedback, strengths: ai.strengths, improvements: ai.improvements, rewrite: ai.rewrite, model: ai.model });
+        state.answerFeedback[i] = Object.assign({}, state.answerFeedback[i] || {}, { score: ai.score, ai:true, aiFeedback: ai.feedback, strengths: ai.strengths, improvements: ai.improvements, rewrite: ai.rewrite, model: ai.model, ae: ai.ae });
       });
       state.pendingGrades.push(p);
     });
@@ -20363,7 +20386,7 @@ function completeAnswer(){
         state.answerScores[idx] = ai.score;
         state.answerFeedback[idx] = Object.assign({}, analysis, {
           score: ai.score, ai: true, aiFeedback: ai.feedback,
-          strengths: ai.strengths, improvements: ai.improvements, rewrite: ai.rewrite, model: ai.model,
+          strengths: ai.strengths, improvements: ai.improvements, rewrite: ai.rewrite, model: ai.model, ae: ai.ae,
         });
       });
     state.pendingGrades.push(p);
@@ -20496,6 +20519,7 @@ async function endInterview(){
     await Promise.allSettled(state.pendingGrades);
     state.pendingGrades = [];
   }
+  try{ await Promise.race([AeReport.load(), new Promise(r=>setTimeout(r, 3000))]); }catch(_){}   // 2026-11-05 A~E 항목 이름·등급표
   renderResultBars();
   renderResultSummary();
   try{ renderResultFocus(); }catch(e){ console.warn('[결과 요약]', e); }
@@ -20586,6 +20610,7 @@ function buildSavePayload(durationLabel){
     mode: state.interviewMode === 'dialog' ? 'dialog' : 'classic',
   };
   if(state.nonverbal) rec.nonverbal = state.nonverbal;
+  if(state.aeReport) rec.ae_report = AeReport.compact(state.aeReport);   // 2026-11-05 면접 DB 5단계 종합 리포트
   { const cp = (typeof CompanyData !== 'undefined') ? CompanyData.active() : null; if(cp){ rec.company_id = cp.talent.id; rec.company_name = cp.talent.name; } }   // 2026-11-02z 기업 맞춤 면접이면 회사도 저장
   if(state.interviewMode === 'dialog' && state.dialogRealSet){ rec.set_kind = (state.selectedField && canRealSet(state.selectedField.id) ? state.selectedField.id : 'assembly') + '_real'; rec.set_overtime = !!state.setOvertime; if(state.setReview) rec.set_review = state.setReview; }
   const answers = state.interviewQuestions.slice(0, state.currentQ).map((item,i)=>({
@@ -20602,6 +20627,7 @@ function buildSavePayload(durationLabel){
 function answerFbString(i){
   const a = state.answerFeedback && state.answerFeedback[i], d = state.answerDelivery && state.answerDelivery[i];
   return ((a ? buildFeedbackText(a) : '')
+    + ((a && a.ae) ? '\n' + AeReport.tag(a.ae) : '')
     + ((a && a.rubric && !a.rubric.empty) ? '\n[리포트 '+a.rubric.grade+' · '+['content','structure','detail','length','attitude'].map(k=>Rubric.AXIS_LABELS[k]+' '+a.rubric.axes[k].score).join(' · ')+']' : '')
     + ((d && d.measured) ? '\n[전달력 '+d.score+'점] '+d.summary : '')) || null;
 }
@@ -20610,6 +20636,7 @@ async function insertRecordRow(row){
   const recRow = Object.assign({}, row);
   let { data, error } = await sb.from('interview_records').insert(recRow).select().single();
   if(error && /company_(id|name)/i.test(error.message||'')){ delete recRow.company_id; delete recRow.company_name; ({ data, error } = await sb.from('interview_records').insert(recRow).select().single()); }
+  if(error && /ae_report/i.test(error.message||'')){ delete recRow.ae_report; ({ data, error } = await sb.from('interview_records').insert(recRow).select().single()); }
   if(error && /nonverbal/i.test(error.message||'')){ delete recRow.nonverbal; ({ data, error } = await sb.from('interview_records').insert(recRow).select().single()); }
   if(error && /set_(kind|overtime|review)/i.test(error.message||'')){
     console.warn('[interview_records 실전 세트 칸 없음 → 빼고 저장] SQL: supabase/sql/step16_set_review.sql');
@@ -20745,6 +20772,8 @@ function ensureRubrics(){
       }
     }catch(e){ console.warn('[서류 대조 실패]', e); }
     state.answerScores[i] = rb.total;
+    // 2026-11-05 면접 DB 5단계: A~E 채점이 있으면 그 총점(가중치 합)을 문항 점수로
+    if(analysis.ae){ const t = Math.round(analysis.ae.total); rb.total = t; rb.grade = Rubric.grade(t); rb.ae = analysis.ae; state.answerScores[i] = t; }
   }
 }
 function axisChipsHtml(rb){
@@ -20773,7 +20802,8 @@ function renderResultBars(){
     const rb = analysis && analysis.rubric;
     const feedbackText = analysis ? escapeHtml(buildFeedbackText(analysis)) : '답변 기록이 없어 피드백을 생성할 수 없습니다.';
     const isAI = !!(analysis && analysis.ai);
-    const feedbackLabel = isAI ? 'AI 피드백 (OpenAI 채점)' : '피드백 (기본 채점)';
+    const ae = analysis && analysis.ae;
+    const feedbackLabel = ae ? 'AI 피드백 (면접 DB 채점 기준 A~E)' : isAI ? 'AI 피드백 (OpenAI 채점)' : '피드백 (기본 채점)';
     let extraHtml = '';
     if(analysis && (isAI || analysis.localFb)){
       const s = (analysis.strengths||[]).filter(Boolean).map(escapeHtml);
@@ -20787,7 +20817,8 @@ function renderResultBars(){
     const qLabel = item ? ((item.followup ? '<span class="qcard-source-badge followup" style="margin-right:6px;">꼬리질문</span>' : '') + (item.co && !item.followup ? '<span class="q-co-chip">기업 맞춤</span>' : '') + escapeHtml(item.q)) : `질문 ${i}`;
     const answerText = texts[i-1] ? escapeHtml(texts[i-1]) : '<span style="color:var(--slate-400);">기록된 답변이 없습니다.</span>';
     let rubricHtml = '';
-    if(rb && !rb.empty){
+    if(ae){ rubricHtml = AeReport.answerHtml(ae) + (rb && rb.modelSummary ? `<details class="q-model"><summary>모범답안 요지 보기</summary><p>${escapeHtml(rb.modelSummary)}</p></details>` : ''); }
+    else if(rb && !rb.empty){
       const checks = rb.checklist.map(c=>`<span class="ck ${c.ok?'ok':'no'}">${c.ok?'✓':'✗'} ${escapeHtml(c.label)}</span>`).join('');
       const missing = rb.missing.length ? `<div class="q-missing"><b>빠진 내용</b><ul>${rb.missing.map(m=>`<li>${escapeHtml(m)}</li>`).join('')}</ul></div>` : '';
       const model = rb.modelSummary ? `<details class="q-model"><summary>모범답안 요지 보기</summary><p>${escapeHtml(rb.modelSummary)}</p></details>` : '';
@@ -20800,10 +20831,10 @@ function renderResultBars(){
           ${rb.real && !DEMO_HALLYM_FIELDS ? `<p class="q-real-note"><b>실제 면접 후기에도 나온 질문이에요</b>${rb.real.y ? ` (${escapeHtml(rb.real.y)}년 후기)` : ''}${rb.real.n > 1 ? ` · 후기 ${rb.real.n}건` : ''}</p>` : ''}
         </div>`;
     }
-    const gradeTxt = rb && !rb.empty ? rb.grade : '–';
-    const gradeCls = rb && !rb.empty ? rb.grade.replace('+','p') : '';
-    const scoreTxt = rb && !rb.empty ? rb.total+'점' : (texts[i-1] ? content+'점' : '답변 없음');
-    const typeTxt = rb && !rb.empty ? rb.typeLabel : '';
+    const gradeTxt = ae ? ae.grade : rb && !rb.empty ? rb.grade : '–';
+    const gradeCls = ae ? 'ae ' + AeReport.gradeCls(ae.grade) : rb && !rb.empty ? rb.grade.replace('+','p') : '';
+    const scoreTxt = ae ? AeReport.num(ae.total)+'점' : rb && !rb.empty ? rb.total+'점' : (texts[i-1] ? content+'점' : '답변 없음');
+    const typeTxt = ae ? ae.qtype : rb && !rb.empty ? rb.typeLabel : '';
     const realChip = rb && rb.real && !DEMO_HALLYM_FIELDS ? `<span class="q-real-chip" title="실제 면접 후기에 나온 질문: ${escapeHtml(rb.real.q)}">실제 기출</span>` : '';
     rows += `
       <div class="q-result-group" data-qi="${i-1}">
@@ -20938,12 +20969,102 @@ function radarSvg(avg){
   return `<svg class="rd-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="6축 평가 레이더 차트"><defs><linearGradient id="rdFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3B8BFF" stop-opacity=".55"/><stop offset="1" stop-color="#1F5FD6" stop-opacity=".25"/></linearGradient></defs>${rings}${spokes}<polygon points="${poly}" class="rd-area"/>${dots}${labels}</svg>`;
 }
 /* 종합 리포트: 6축 평균 막대 + 등급 + 강점/보완 + 추천 질문 */
+/* ---------------- 2026-11-05 면접 DB 5단계: A~E 채점 결과 보이기 · 종합 리포트 ----------------
+   AI는 답변마다 A~E 각 1~4점만 매김 → 총점(점수÷4×가중치의 합)·등급은 서버 프로그램이 엑셀 '평가_가중치'·등급표로 계산(ae.total·ae.grade)
+   여기서는 그 결과를 보여 주고, 면접이 끝나면 엑셀 'AI피드백규칙'대로 종합 리포트(항목별 평균 · 가장 약한 항목 1개 · 다음에 연습할 질문 유형 2개)를 만듦.
+   항목 이름·기준 문장·가중치·등급 기준점은 DB(사용 중인 판)에서 읽고, 못 읽으면 아래 기본값 */
+const AeReport = {
+  AX: ['A','B','C','D','E'],
+  ref: { axes: { A:{ name:'질문 적합성', looks:'묻는 것에 답했는가', s4:'첫 문장에 답이 있고 끝까지 초점 유지' }, B:{ name:'구체성·정확성', looks:'근거가 있는가, 내용이 맞는가', s4:'본인 행동·수치·결과가 담긴 사례, 지식은 정확' }, C:{ name:'직무·기업 연결', looks:'지원 직무와 회사에 맞는가', s4:'직무 역량과 회사 사업에 구체적으로 연결' }, D:{ name:'논리 구조', looks:'유형에 맞는 틀로 말했는가', s4:'결론→근거→사례→마무리가 분명' }, E:{ name:'전달력·태도', looks:'듣기 쉽고 적절한가', s4:'권장 시간 안, 군말 없이 명확' } },
+         grades: [{ grade:'우수', min:85 }, { grade:'양호', min:70 }, { grade:'보완 필요', min:55 }, { grade:'재연습', min:0 }], weights: null },
+  loaded: false,
+  /** 사용 중인 판의 항목·가중치·등급표 읽기 (학생은 사용 중인 판만 읽을 수 있음) */
+  async load(){
+    if(this.loaded) return; this.loaded = true;
+    try{
+      let ver = null; try{ const r = await sb.rpc('qb_active_ver'); if(!r.error) ver = r.data; }catch(_){}
+      const q = t=>{ let x = sb.from(t).select('*'); return ver != null ? x.eq('ver', ver) : x; };
+      const [ax, gr, wt] = await Promise.all([q('qb_eval_axes'), q('qb_eval_grades'), q('qb_eval_weights')]);
+      if(!ax.error && (ax.data||[]).length >= 5) (ax.data||[]).forEach(r=>{ if(this.ref.axes[r.axis]) this.ref.axes[r.axis] = { name:r.name, looks:r.looks||'', s4:r.s4||'' }; });
+      if(!gr.error && (gr.data||[]).length) this.ref.grades = gr.data.map(g=>({ grade:g.grade, min:Number(g.min_score) })).sort((a,b)=>b.min-a.min);
+      if(!wt.error && (wt.data||[]).length){ const w = {}; wt.data.forEach(r=>{ w[r.qtype] = { A:+r.a, B:+r.b, C:+r.c, D:+r.d, E:+r.e, key:r.key_point||'' }; }); this.ref.weights = w; }
+    }catch(e){ console.warn('[A~E 기준 읽기 실패 → 기본값]', e); }
+  },
+  name(k){ return (this.ref.axes[k] || {}).name || k; },
+  num(n){ n = Number(n); return Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100); },
+  grade(total){ for(const g of this.ref.grades) if(total >= g.min) return g.grade; return this.ref.grades.length ? this.ref.grades[this.ref.grades.length-1].grade : ''; },
+  gradeCls(g){ const i = this.ref.grades.findIndex(x=>x.grade === g); return 'g' + (i < 0 ? 3 : i); },
+  /** 꼬리질문은 바로 앞 본 질문의 유형으로 채점 (질문은행 면접만 유형 이름이 있음 · 없으면 서버가 질문 문장으로 판단) */
+  qtypeAt(list, i){ for(let k = i; k >= 0; k--){ const it = list[k]; if(it && !it.followup) return it.qtype || undefined; } return undefined; },
+  /** 저장용 한 줄: 기록을 다시 열거나 '다시 답하기'에서 이전 점수를 읽을 때 씀 */
+  tag(ae){ return `[A~E ${this.num(ae.total)}점 · ${ae.grade} · ${ae.qtype} · ${this.AX.map(k=>k+' '+ae.scores[k]).join(' · ')}]`; },
+  fromTag(text){
+    const m = String(text||'').match(/\[A~E ([\d.]+)점 · ([^·\]]+?) · ([^\]]+?) · A (\d) · B (\d) · C (\d) · D (\d) · E (\d)\]/); if(!m) return null;
+    return { total:+m[1], grade:m[2].trim(), qtype:m[3].trim(), scores:{ A:+m[4], B:+m[5], C:+m[6], D:+m[7], E:+m[8] } };
+  },
+  dots(n){ return '<span class="ae-dots" aria-label="'+n+'점">' + [1,2,3,4].map(x=>`<i class="${x <= n ? 'on' : ''}"></i>`).join('') + '</span>'; },
+  /** 문항 카드 안: 총점·등급·유형 + A~E 다섯 줄(점수·가중치·근거) + 확인 필요 */
+  answerHtml(ae){
+    const rows = this.AX.map(k=>`<div class="ae-row"><b class="ae-k">${k}</b><span class="ae-n">${escapeHtml(this.name(k))}</span>${this.dots(ae.scores[k])}<span class="ae-s">${ae.scores[k]}점</span><span class="ae-w">비중 ${ae.weights ? ae.weights[k] : '–'}%</span><span class="ae-r">${escapeHtml((ae.reasons && ae.reasons[k]) || '')}</span></div>`).join('');
+    return `<div class="ae-box">
+      <div class="ae-top"><span class="ae-grade ${this.gradeCls(ae.grade)}">${escapeHtml(ae.grade)}</span><span class="ae-total">${this.num(ae.total)}점</span><span class="ae-type">${escapeHtml(ae.qtype)} 유형 기준</span></div>
+      ${ae.lang_note ? `<p class="ae-note">${escapeHtml(ae.lang_note)}</p>` : ''}
+      <div class="ae-rows">${rows}</div>
+      ${(ae.check||[]).length ? `<p class="ae-check"><b>확인 필요</b> ${ae.check.map(escapeHtml).join(' / ')} <small>— 지금 확인할 수 없는 사실이라 점수에 넣지 않았어요. 면접 전에 회사 자료로 확인해 보세요.</small></p>` : ''}
+      <p class="ae-how">총점은 AI가 매긴 A~E 점수(1~4점)를 이 유형의 비중대로 계산한 값이에요.</p>
+    </div>`;
+  },
+  /** 종합 리포트 계산: 항목별 평균, 가장 약한 항목 1개, 다음에 연습할 질문 유형 2개 */
+  build(){
+    const list = (state.answerFeedback || []).slice(0, state.currentQ).map((a, i)=>a && a.ae ? Object.assign({ i }, a.ae) : null).filter(Boolean);
+    if(!list.length){ state.aeReport = null; return null; }
+    const avg = {}; this.AX.forEach(k=>{ avg[k] = Math.round(list.reduce((t, a)=>t + a.scores[k], 0) / list.length * 100) / 100; });
+    const total = Math.round(list.reduce((t, a)=>t + a.total, 0) / list.length * 100) / 100;
+    // 가장 약한 항목: 평균이 가장 낮은 것 (같으면 이번 면접에서 비중이 더 컸던 항목)
+    const wAvg = k=>list.reduce((t, a)=>t + ((a.weights && a.weights[k]) || 0), 0) / list.length;
+    const weakest = this.AX.slice().sort((a, b)=>(avg[a] - avg[b]) || (wAvg(b) - wAvg(a)))[0];
+    // 다음 연습 유형 ① 이번에 답한 유형 중 평균 총점이 가장 낮은 유형 ② 가장 약한 항목의 비중이 가장 큰 유형
+    const skip = new Set(['마무리','기타','영어','근무조건','PT·토론']);
+    const byType = {}; list.forEach(a=>{ if(skip.has(a.qtype)) return; (byType[a.qtype] = byType[a.qtype] || []).push(a.total); });
+    const types = [];
+    const low = Object.keys(byType).map(t=>({ t, v: byType[t].reduce((x, y)=>x + y, 0) / byType[t].length })).sort((a, b)=>a.v - b.v)[0];
+    if(low) types.push({ t: low.t, why: `이번 면접에서 이 유형의 평균 점수가 ${this.num(Math.round(low.v * 100) / 100)}점으로 가장 낮았어요.` });
+    const W = this.ref.weights || {};
+    const cand = Object.keys(W).filter(t=>!skip.has(t) && !types.some(x=>x.t === t)).sort((a, b)=>(W[b][weakest] - W[a][weakest]));
+    if(cand.length) types.push({ t: cand[0], why: `가장 약한 ${weakest} ${this.name(weakest)}의 비중이 ${W[cand[0]][weakest]}%로 가장 큰 유형이라, 이 항목을 집중해서 연습하기 좋아요.` });
+    else if(Object.keys(byType).length > 1){ const second = Object.keys(byType).find(t=>!types.some(x=>x.t === t)); if(second) types.push({ t: second, why: '이번 면접에서 점수가 낮았던 다른 유형이에요.' }); }
+    const checks = [...new Set(list.flatMap(a=>a.check || []))].slice(0, 4);
+    const rep = { n: list.length, of: state.currentQ, avg, total, grade: this.grade(total), weakest, types: types.slice(0, 2), checks };
+    state.aeReport = rep;
+    return rep;
+  },
+  compact(r){ return { n:r.n, avg:r.avg, total:r.total, grade:r.grade, weakest:r.weakest, types:r.types.map(x=>x.t) }; },
+  html(r){
+    const ax = this.ref.axes[r.weakest] || {};
+    const bars = this.AX.map(k=>{ const v = r.avg[k], pct = Math.round(v / 4 * 100);
+      return `<div class="ae-bar${k === r.weakest ? ' weak' : ''}"><span class="ae-bl"><b>${k}</b> ${escapeHtml(this.name(k))}</span><div class="ae-bt"><div class="ae-bf" style="width:${pct}%"></div></div><span class="ae-bv">${this.num(v)} / 4</span></div>`; }).join('');
+    return `<section class="ae-rep" aria-label="종합 리포트">
+      <div class="ae-rep-head"><div><p class="ae-rep-kicker">종합 리포트 · 면접 DB 채점 기준</p><h3>답변 평균 ${this.num(r.total)}점 <span class="ae-grade ${this.gradeCls(r.grade)}">${escapeHtml(r.grade)}</span></h3><p class="ae-rep-sub">A~E로 채점된 답변 ${r.n}개의 평균이에요${r.n < r.of ? ` (전체 ${r.of}개 중 · 나머지는 기본 채점)` : ''}. 위의 종합 점수는 여기에 표정·시선(10%)을 더한 값이에요.</p></div></div>
+      <div class="ae-rep-grid">
+        <div class="ae-rep-bars"><b class="ae-rep-t">항목별 평균 점수</b>${bars}</div>
+        <div class="ae-rep-side">
+          <div class="ae-weak"><b class="ae-rep-t">가장 약한 항목</b><p class="ae-weak-k">${r.weakest} ${escapeHtml(this.name(r.weakest))} <small>평균 ${this.num(r.avg[r.weakest])}점</small></p><p>${escapeHtml(ax.looks || '')}${ax.s4 ? ` — 4점 답변은 "${escapeHtml(ax.s4)}"예요.` : ''}</p></div>
+          <div class="ae-next"><b class="ae-rep-t">다음에 연습할 질문 유형</b><ol>${r.types.map(x=>`<li><b>${escapeHtml(x.t)}</b><span>${escapeHtml(x.why)}</span></li>`).join('') || '<li>이번 면접만으로는 고르기 어려워요. 다른 유형도 연습해 보세요.</li>'}</ol></div>
+        </div>
+      </div>
+      ${r.checks.length ? `<p class="ae-check"><b>확인 필요</b> ${r.checks.map(escapeHtml).join(' / ')} <small>— 점수에는 넣지 않았어요.</small></p>` : ''}
+    </section>`;
+  },
+};
 function renderResultReport(){
   const box = document.getElementById('result-report'); if(!box) return;
   const rbs = (state.answerFeedback||[]).slice(0, state.currentQ).map(a=>a && a.rubric);
   const sum = Rubric.summarize(rbs);
   state.lastReport = sum;
-  const gradeEl = document.getElementById('rs-grade'); if(gradeEl) gradeEl.textContent = sum.count ? sum.grade : '–';
+  const aeRep = AeReport.build();   // 2026-11-05 면접 DB 5단계: A~E 종합 리포트 (A~E로 채점된 답변이 있을 때)
+  // 종합 등급: A~E 채점이 있으면 화면의 종합 점수(답변 평균 90% + 표정·시선 10%)에 엑셀 등급 기준점을 그대로 적용
+  if(aeRep) state.aeReport.overall = AeReport.grade(state.lastAverageScore || 0);
+  const gradeEl = document.getElementById('rs-grade'); if(gradeEl){ gradeEl.textContent = aeRep ? aeRep.overall : sum.count ? sum.grade : '–'; gradeEl.classList.toggle('ae-word', !!aeRep); }
   const keys = ['content','structure','detail','length','attitude','delivery'];
   const bars = keys.map(k=>{
     const v = sum.avg[k];
@@ -20978,6 +21099,7 @@ function renderResultReport(){
       <div class="rp-col warn"><b>보완할 점</b><ul>${li(sum.improvements.concat(sum.topMiss.length ? ['자주 빠진 항목: '+sum.topMiss.join(', ')] : []))}</ul></div>
     </div>
     <div class="rp-reco"><b>다음 연습 추천 질문</b>${recoHtml}</div>${realIvCardHtml()}`;
+  { const top = document.getElementById('ae-rep-top'); if(top){ top.innerHTML = aeRep ? AeReport.html(aeRep) : ''; top.hidden = !aeRep; } }
 }
 /** 결과 리포트: 실제 면접 후기로 본 이 분야 면접 (형식 2줄 + 면접관이 본 것 2줄) */
 function realIvCardHtml(){
@@ -21229,11 +21351,11 @@ function renderResultSummary(){
   const el = document.getElementById('result-summary-line');
   const avg = state.lastAverageScore || 0;
   const rp = state.lastReport;
-  const grade = rp && rp.count ? rp.grade : Rubric.grade(avg);
+  const grade = state.aeReport ? (state.aeReport.overall || state.aeReport.grade) : rp && rp.count ? rp.grade : Rubric.grade(avg);
   let text, low=false;
   if(avg >= 85){ text = `종합 ${grade} (${avg}점) — 내용과 구조가 모두 안정적이에요. 이 정도면 실전에서도 자신 있게 답하실 수 있겠어요.`; }
   else if(avg >= 70){ text = `종합 ${grade} (${avg}점) — 전반적으로 잘 정리된 답변이에요. 아래 "보완할 점"의 한두 가지만 챙기면 더 좋아질 거예요.`; }
-  else if(avg >= 50){ text = `종합 ${grade} (${avg}점) — 답변 방향은 맞지만 빠진 요소가 있어요. 문항별 "빠진 내용"과 체크리스트를 확인해 보세요.`; low = true; }
+  else if(avg >= 50){ text = `종합 ${grade} (${avg}점) — 답변 방향은 맞지만 빠진 요소가 있어요. ` + (state.aeReport ? '아래 종합 리포트의 가장 약한 항목과 문항별 "고칠 점"을 확인해 보세요.' : '문항별 "빠진 내용"과 체크리스트를 확인해 보세요.'); low = true; }
   else { text = `종합 ${grade} (${avg}점) — 핵심 내용과 구조를 더 보강해야 해요. 모범답안 요지를 읽고 추천 질문으로 다시 연습해 보세요.`; low = true; }
   el.textContent = text;
   el.classList.toggle('low', low);
@@ -24532,11 +24654,13 @@ const PracticeKit = {
     if(!(await this.aiOn())) return null;
     let qtype = null; try{ qtype = Rubric.edgeType(Rubric.detectType(o.q)); }catch(_){}
     const ctx = (()=>{ try{ return aiCtx() || {}; }catch(_){ return {}; } })();
+    const prevAe = o.ae || AeReport.fromTag(o.feedback);
     const call = sb.functions.invoke('grade-answer', { body: { question: o.q, reference: o.ref ? refForAi(o.ref) : '', answer: ans, field: o.fieldName || '', field_id: o.fieldId || undefined,
-      qtype: qtype || undefined, is_followup: !!o.followup, interview_id: 'retry-' + this.today(), company_id: o.companyId || undefined, company_seq: o.companySeq || undefined, major_dept: ctx.major_dept || undefined } });
+      qtype: qtype || undefined, is_followup: !!o.followup, interview_id: 'retry-' + this.today(), company_id: o.companyId || undefined, company_seq: o.companySeq || undefined, major_dept: ctx.major_dept || undefined,
+      qb_type: o.qbType || (prevAe && prevAe.qtype) || undefined, prior_scores: prevAe ? prevAe.scores : undefined } });   // 2026-11-05 A~E: 같은 질문을 다시 답하면 이전 점수와 비교해 좋아진 항목부터
     const { data, error } = await Promise.race([call, new Promise((_, rej)=>setTimeout(()=>rej(new Error('AI 채점 응답이 늦어요')), 45000))]);
     if(error || !data || typeof data.score !== 'number') return null;
-    return { score: Math.max(0, Math.min(100, Math.round(data.score))), feedback: data.feedback || '', strengths: data.strengths || [], improvements: data.improvements || [] };
+    return { score: Math.max(0, Math.min(100, Math.round(data.score))), feedback: data.feedback || '', strengths: data.strengths || [], improvements: data.improvements || [], ae: data.ae && data.ae.scores ? data.ae : null };
   },
   async grade(){
     const o = this.cur, ta = document.getElementById('pk-ans'), btn = document.getElementById('pk-grade'), res = document.getElementById('pk-res'); if(!o || !ta) return;
@@ -24549,7 +24673,11 @@ const PracticeKit = {
     const fb = ai ? ai.feedback : (rb ? Rubric.feedbackText(rb, {}) : '');
     const prevAxes = o.axes || axesFromFeedback(o.feedback) || null;
     const d = o.score != null ? score - o.score : null;
-    const rows = axes ? Object.keys(axes).map(k=>{ const a = prevAxes && prevAxes[k] != null ? prevAxes[k] : null, b = axes[k]; const dd = a != null && b != null ? b - a : null;
+    // 2026-11-05 A~E로 채점됐으면 비교 표도 A~E(1~4점)로
+    const prevAe = o.ae || AeReport.fromTag(o.feedback);
+    const cmpNow = ai && ai.ae ? Object.fromEntries(AeReport.AX.map(k=>[k + ' ' + AeReport.name(k), ai.ae.scores[k]])) : axes;
+    const cmpPrev = ai && ai.ae ? (prevAe ? Object.fromEntries(AeReport.AX.map(k=>[k + ' ' + AeReport.name(k), prevAe.scores[k]])) : null) : prevAxes;
+    const rows = cmpNow ? Object.keys(cmpNow).map(k=>{ const a = cmpPrev && cmpPrev[k] != null ? cmpPrev[k] : null, b = cmpNow[k]; const dd = a != null && b != null ? b - a : null;
       return `<tr><th>${escapeHtml(k)}</th><td>${a != null ? a : '–'}</td><td><b>${b != null ? b : '–'}</b></td><td class="${dd > 0 ? 'up' : dd < 0 ? 'down' : ''}">${dd == null ? '' : dd > 0 ? '▲' + dd : dd < 0 ? '▼' + (-dd) : '='}</td></tr>`; }).join('') : '';
     res.innerHTML = `<div class="pk-cmp">
         <div class="pk-big"><div><small>이전</small><b>${o.score != null ? o.score : '–'}</b></div><i>→</i><div><small>이번</small><b class="now">${score}</b></div>${d != null ? `<span class="pk-delta ${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d > 0 ? '+' + d + '점 올랐어요' : d < 0 ? d + '점' : '그대로예요'}</span>` : ''}</div>
@@ -24612,7 +24740,7 @@ const PracticeKit = {
     return { q: item.q, ref: item.ref || null, followup: !!item.followup, answer: (state.answerTexts || [])[i] || '', score: (rb && !rb.empty) ? rb.total : (sc != null ? sc : null),
       feedback: a ? buildFeedbackText(a) : '', axes: (rb && !rb.empty) ? Object.fromEntries(['content','structure','detail','length','attitude'].map(k=>[Rubric.AXIS_LABELS[k], rb.axes[k].score])) : null,
       fieldId: state.selectedField && state.selectedField.id, fieldName: state.selectedField && state.selectedField.name, companyId: item.co ? item.co.id : null, companySeq: item.co ? item.co.seq : null, companyName: item.co ? item.co.name : null,
-      recordId: state.savedRecordId || null, src: 'result', qi: i };
+      recordId: state.savedRecordId || null, src: 'result', qi: i, ae: a && a.ae ? a.ae : null, qbType: AeReport.qtypeAt(state.interviewQuestions, i) };
   },
   NEXT_TIP: {
     content:   { t:'질문이 묻는 핵심을 빠짐없이 말하기', ex:'답하기 전에 "이 질문이 묻는 것이 무엇인지"를 떠올리고, 첫 문장에서 그 물음에 바로 답해 보세요.' },
@@ -24697,9 +24825,9 @@ const PracticeKit = {
       if(item.followup){ analysis.followup = true; analysis.evaluation = item.evaluation || prevA.evaluation || ''; }
       let ai = null;
       if(typeof AI_GRADING_ENABLED !== 'undefined' && AI_GRADING_ENABLED && AiSwitch.on('ai_grading')){
-        ai = await gradeAnswerWithAI(item.q, item.ref, text, state.selectedField ? state.selectedField.name : '', { isFollowup: !!item.followup, priorAnswer: item.followup && i > 0 ? (state.answerTexts[i - 1] || '') : null });
+        ai = await gradeAnswerWithAI(item.q, item.ref, text, state.selectedField ? state.selectedField.name : '', { isFollowup: !!item.followup, priorAnswer: item.followup && i > 0 ? (state.answerTexts[i - 1] || '') : null, qbType: AeReport.qtypeAt(state.interviewQuestions, i), priorScores: prevA.ae ? prevA.ae.scores : undefined });
       }
-      if(ai) Object.assign(analysis, { score: ai.score, ai:true, aiFeedback: ai.feedback, strengths: ai.strengths, improvements: ai.improvements, rewrite: ai.rewrite, model: ai.model });
+      if(ai) Object.assign(analysis, { score: ai.score, ai:true, aiFeedback: ai.feedback, strengths: ai.strengths, improvements: ai.improvements, rewrite: ai.rewrite, model: ai.model, ae: ai.ae });
       analysis.fixed = true;
       state.answerTexts[i] = text; state.answerScores[i] = analysis.score; state.answerFeedback[i] = analysis;
       this.rerenderResult(i);
