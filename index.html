@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05i';
+var APP_VERSION = '2026-11-05j';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -25528,13 +25528,34 @@ const QBank = {
   _p: null,
   applies(fieldId){ return !!this.FIELDS[fieldId]; },
   /** 목표 직무 글로 직종을 짐작 (학생이 바꿀 수 있음) */
-  guessJob(role){
-    const r = String(role || '');
-    const M = [[/데이터|분석/, '데이터'], [/개발|소프트웨어|\bIT\b|SW|프로그래|웹|앱/i, '개발'], [/연구|R&D/i, '연구개발'], [/품질|생산관리|공정관리/, '생산관리/품질관리'], [/생산|제조/, '생산/제조'],
-      [/설비|전기|기계|전자|엔지니어|시공|토목|건축|플랜트|기술/, '엔지니어링'], [/영업|세일즈|제휴/, '영업/제휴'], [/마케팅|시장조사|브랜드|광고/, '마케팅/시장조사'], [/인사|총무|노무|HR/i, '인사/총무'],
-      [/재무|회계|금융|은행|증권|보험|세무|자금/, '금융/재무'], [/디자인/, '디자인'], [/홍보|미디어|콘텐츠|PR\b/i, '미디어/홍보'], [/고객|서비스|상담|CS\b|승무|안내/i, '서비스/고객지원'],
-      [/유통|무역|물류|구매|MD\b|SCM/i, '유통/무역'], [/법무|법률/, '법률/법무'], [/간호|약사|의료|보건|임상|제약/, '의약'], [/교육|강사|교사/, '교육'], [/기획|경영|전략|사무|행정|관리/, '기획/경영']];
-    for(const [re, j] of M) if(re.test(r)) return j;
+  guessJob(role){   // 2026-11-05j 회사 채용 직무 이름(영어·줄임말·여러 직무 함께)도 맞게 짐작
+    const r = String(role || '').trim();
+    // 이름에 '개발'·'데이터'가 들어가도 다른 직종인 것 (글 전체로 먼저 확인)
+    const X = [[/사업개발|상품개발|부동산개발/, '기획/경영'], [/구매개발/, '유통/무역'], [/데이터센터/, '엔지니어링'], [/HRD/i, '인사/총무']];
+    // 영어 줄임말은 단어 단위로만 봄 (Retail 안의 ai 같은 잘못 짚기 막기)
+    const M = [[/연구|R&D|R&I|Research/i, '연구개발'],
+      [/데이터|\bData\b|분석|Analytics|통계|\bAI\b|인공지능|머신러닝/i, '데이터'],
+      [/영업|세일즈|Sales|제휴|Trading|트레이딩|딜러|\bB2[BC]\b|컨설팅|Wholesale|리테일|Retail/i, '영업/제휴'],
+      [/개발|Develop|Programm|프로그래|소프트웨어|\bS\/?W\b|\bIT\b|\bICT\b|전산|클라우드|Cloud|플랫폼|서버|Backend|Android|Engineer\b|정보보안|정보보호|사이버|정보통신|\bTech\b|테크|웹|앱/i, '개발'],
+      [/품질|\bQA\b|생산관리|공정관리|안전|\bEHS\b|\bSHE\b|환경/i, '생산관리/품질관리'],
+      [/생산|제조/, '생산/제조'],
+      [/설비|전기|기계|전자|엔지니어|Engineering|시공|토목|건축|건설|플랜트|기술|설계|회로|공정|반도체|\bHW\b|로봇|통신|Infra|인프라|항공|선박|함정/i, '엔지니어링'],
+      [/마케팅|마케터|Marketing|시장조사|브랜드|Brand|광고|상품기획/i, '마케팅/시장조사'],
+      [/인사|총무|노무|\bHR\b|Staff|스태프|스탭/i, '인사/총무'],
+      [/재무|재경|회계|금융|은행|행원|증권|보험|세무|자금|\bIB\b|\bPB\b|\bWM\b|\bPF\b|\bIR\b|S&T|운용|자산|투자|계리|리스크|퇴직연금|U\/W|Finance/i, '금융/재무'],
+      [/디지털|Digital|\b[ADR]X\b/i, '개발'],
+      [/디자인|Design/i, '디자인'],
+      [/홍보|미디어|콘텐츠|\bPR\b|방송|편성|\bPD\b|Communication/i, '미디어/홍보'],
+      [/고객|서비스|Service|상담|\bCS\b|승무|객실|안내|호텔/i, '서비스/고객지원'],
+      [/유통|무역|물류|구매|\bMD\b|\bSCM\b|해운|커머스|편의점|백화점/i, '유통/무역'],
+      [/법무|법률|변호사|Legal/i, '법률/법무'],
+      [/간호|약사|의료|보건|임상|제약|바이오|신약|수의/, '의약'],
+      [/교육|강사|교사/, '교육'],
+      [/기획|경영|전략|Strategy|사무|행정|관리|사업|Business|\bBiz\b|Corporate/i, '기획/경영']];
+    for(const [re, j] of X) if(re.test(r)) return j;
+    // 여러 직무가 같이 적힌 공고("회로개발·S/W개발·해외영업")는 맨 앞 직무로 먼저 짐작, 못 찾으면 글 전체로
+    const first = r.split(/\s*[,·]\s*|\s+[\/-]\s+/)[0];
+    for(const t of [first, r]) for(const [re, j] of M) if(re.test(t)) return j;
     return '기획/경영';
   },
   /** 지금 시작하는 면접이 질문은행을 쓰는지 */
