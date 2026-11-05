@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05j';
+var APP_VERSION = '2026-11-05k';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5368,6 +5368,9 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 .d3-org{display:inline-flex !important;align-items:baseline;gap:8px;font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--c-ink,#1c1c1e);white-space:nowrap;}
 .d3-org .d3-x{font-style:normal;font-weight:400;color:var(--c-ink-3,#8a8a90);}
 @media(max-width:560px){ .d3-org{font-size:16px;gap:6px;} }
+/* 2026-11-05k 휴대폰 결과 화면: 맨 위 '한림대학교'와 버튼이 겹치지 않게 (홈 버튼은 로고를 누르면 되니 숨김, 아주 좁으면 학교 이름 숨김) */
+@media(max-width:560px){ #screen-result.v3 .r3-actions .r3-home{display:none;} #screen-result.v3 .r3-actions{gap:6px;} #screen-result.v3 .r3-actions .r3-btn{padding:0 8px;} }
+@media(max-width:359px){ .d3-hdr-inner .d3-org{display:none !important;} }
 /* 2026-11-02g 한림대 데모 홈: 연습형·실전형 버튼, 내 경험·데이터 확인, 보완점|최근 기록, 성장 추이 */
 .hm-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
 .hm-mode{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:18px 20px;border-radius:14px;border:1px solid #E6E6EA;background:#fff;color:var(--c-ink,#1c1c1e);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s, box-shadow .15s;}
@@ -11996,8 +11999,10 @@ const PastQ = {
     if(names.some(n=>s.includes(n)) || /에\s*대해\s*알고/.test(s)) return '기업·산업';
     if(/경험|사례|해결했|극복|갈등|충돌|협업|팀원|프로젝트|성과|힘들었던|활동|대응했/.test(s)) return '경험·역량';
     if(/회사|기업|당사|기관|산업|사업|제품|경쟁사|업계|시장|브랜드|전략|비전|고객/.test(s)) return '기업·산업';
-    if(/직무|기술|원리|정규화|설계|공정|전공|분석|데이터|차이|다른가|비교/.test(s)) return '직무·전공지식';
-    return '인성·가치관'; },
+    if(/직무|기술|원리|정규화|설계|공정|전공|분석|데이터|차이|다른가|비교|업무|도구|활용|툴|프로그램|방법론|개념|RPA|엑셀|코딩|알고리즘/i.test(s)) return '직무·전공지식';
+    // 2026-11-05k 어느 유형인지 모르면 넣지 않음 (전에는 모두 '인성·가치관' 칸에 들어가 "RPA 장단점" 같은 질문이 인성 칸에 나옴)
+    if(/성격|장점|단점|강점|약점|가치관|좌우명|신념|스트레스|존경|롤\s*모델|원칙|태도|습관|취미|어떤\s*사람|중요하게\s*생각|동료|조직\s*생활|윤리|청렴|책임감/.test(s)) return '인성·가치관';
+    return ''; },
   /** 기출 n개 고르기: 고른 직종과 직무 구분이 겹치는 것을 먼저, 나머지는 무작위 */
   pick(pack, jobcat, n){
     const L = this.list(pack).slice(); for(let i = L.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [L[i], L[j]] = [L[j], L[i]]; }
@@ -12011,7 +12016,7 @@ const PastQ = {
   /** 질문은행 8문항 중 한 칸을 이 회사 기출로 바꿈 (같은 유형 칸만, 자기소개·마무리·영어 칸은 그대로) */
   mixIntoQBank(list, pack, jobcat){
     for(const p of this.pick(pack, jobcat, 8)){
-      const t = this.qtype(p.question, pack); if(t === '자기소개' || t === '마무리') continue;
+      const t = this.qtype(p.question, pack); if(!t || t === '자기소개' || t === '마무리') continue;
       let idx = -1; list.forEach((x, i)=>{ if(x && x.qtype === t && x.lang !== 'en') idx = i; });   // 같은 유형이 둘이면 뒤 칸 (경험·역량 두 번째)
       if(idx < 0) continue;
       const out = list.slice(); out[idx] = this.item(pack, p, t); return out;
@@ -19658,7 +19663,8 @@ async function finishDialogInterview(asks, transcript){
   state.answerTimeLimit = asks.map(a=>{
     if(!a.limitMs) return null;
     const t = a.timing; const used = t && t.listenStart ? Math.max(0, ((t.lastSpeech || t.endAt || Date.now()) - t.listenStart)) : 0;
-    return { limitMs: a.limitMs, usedMs: Math.min(used, a.limitMs), reason: a.endReason || '' };
+    // 2026-11-05k '답변 없음'은 말이 멈춰 넘어갔고 받아쓴 답도 없을 때만 (말을 마친 뒤 멈춰서 넘어간 답은 시간 안에 마친 답)
+    return { limitMs: a.limitMs, usedMs: Math.min(used, a.limitMs), reason: a.endReason || '', none: a.endReason === 'silence' && String(a.answer || '').replace(/\s/g, '').length < 5 };
   });
   if(!state.answerTimeLimit.some(Boolean)) state.answerTimeLimit = null;
   await AnswerAudio.collect(asks);
@@ -21047,7 +21053,7 @@ function timeLimitInfo(i){ const a = state.answerTimeLimit; return a && a[i] ? a
 function timeLimitHtml(i){
   const t = timeLimitInfo(i); if(!t) return '';
   const lim = Math.round(t.limitMs/1000), used = Math.round(t.usedMs/1000);
-  if(t.reason === 'silence') return `<div class="tl-row bad"><b>실전 시간</b>답변 없음 · 10초 동안 말이 없어 다음 질문으로 넘어갔어요</div>`;
+  if(t.none) return `<div class="tl-row bad"><b>실전 시간</b>답변 없음 · 10초 동안 말이 없어 다음 질문으로 넘어갔어요</div>`;
   if(t.reason === 'max') return `<div class="tl-row warn"><b>실전 시간</b>${lim}초를 모두 써서 답변이 끊겼어요 · 핵심부터 말하고 ${Math.round(lim*0.8)}초 안에 마무리해 보세요</div>`;
   const short = used < lim*0.3;
   return `<div class="tl-row ${short?'warn':'ok'}"><b>실전 시간</b>${used}초 / ${lim}초 · ${short ? '시간 안에 마쳤지만 너무 짧아요' : '시간 안에 마쳤어요'}</div>`;
@@ -21055,8 +21061,8 @@ function timeLimitHtml(i){
 function timeLimitSummaryHtml(){
   const a = state.answerTimeLimit; if(!a) return '';
   const list = a.filter(Boolean); if(!list.length) return '';
-  const ok = list.filter(t=>t.reason!=='max' && t.reason!=='silence').length;
-  const cut = list.filter(t=>t.reason==='max').length, none = list.filter(t=>t.reason==='silence').length;
+  const ok = list.filter(t=>t.reason!=='max' && !t.none).length;
+  const cut = list.filter(t=>t.reason==='max').length, none = list.filter(t=>t.none).length;
   return `<div class="tl-sum"><span class="tl-badge">실전 모드</span><b>시간 안에 마친 답변 ${ok} / ${list.length}개</b>${cut?` · 시간 초과로 끊김 ${cut}개`:''}${none?` · 답변 없음 ${none}개`:''}</div>`;
 }
 /* ---------- 내 답변 다시 듣기 (2026-10-07) ----------
