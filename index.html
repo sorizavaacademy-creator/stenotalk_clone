@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-05a';
+var APP_VERSION = '2026-11-05b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5647,6 +5647,13 @@ html.pk-open{overflow:hidden;}
 .pk-chk{margin-top:10px;border:1px solid #E6EAF0;border-radius:12px;padding:0 12px;} .pk-chk summary{display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;font-size:14px;list-style:none;} .pk-chk summary::-webkit-details-marker{display:none;}
 .pk-prog{flex:1;height:8px;border-radius:999px;background:#EEF1F5;overflow:hidden;} .pk-prog i{display:block;height:100%;background:#2E7D4F;border-radius:999px;}
 .pk-chk ul{list-style:none;margin:0 0 10px;padding:0;} .pk-chk li{padding:5px 0;font-size:14px;} .pk-chk label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;} .pk-chk input{margin-top:3px;accent-color:#2E7D4F;} .pk-chk label span{flex:1;min-width:0;} .pk-chk small{display:block;color:#6B7485;font-size:12.5px;margin-top:2px;}
+/* 2026-11-05 면접 DB 3단계: 직종·영어 질문 */
+.fl-qb{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:1px solid #E3E1DB;border-radius:12px;background:#FBFAF7;}
+.fl-qb-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;} .fl-qb-row select{min-height:40px;padding:0 10px;border:1.5px solid #CFD7E3;border-radius:10px;font:inherit;font-size:15px;background:#fff;}
+.fl-qb-row .fl-sub{font-size:12.5px;color:#6B7485;}
+.fl-eng{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14.5px;} .fl-eng input{margin-top:4px;width:18px;height:18px;accent-color:#C8441C;} .fl-eng small{display:block;color:#6B7485;font-size:12.5px;margin-top:2px;line-height:1.5;}
+.fl-qb-note{margin:0;font-size:13px;color:#4A5466;line-height:1.6;} .fl-qb-note b{color:#C8441C;}
+.qb-count-note{margin:0 0 10px;padding:10px 12px;border-radius:10px;background:#FFF6F1;color:#7A3A18;font-size:13.5px;line-height:1.55;}
 /* 2026-11-05 면접 DB (엑셀) — 관리자 */
 #qb-root{color:#172033;font-size:14.5px;}
 .qb-up{cursor:pointer;} .qb-up.off{opacity:.6;cursor:wait;}
@@ -12762,7 +12769,7 @@ const StartFlow = {
     const prev = this.s || {};
     this.s = { step: kind ? 1 : 0, kind: kind || null, mode: mode || null, count:2, people:['hr','lead'], spk:0, diff: first ? '하' : '중', showSet:true,
       major:{ dept: (prev.major && prev.major.dept) || dept, grade: (prev.major && prev.major.grade) || '' }, use: (prev.use || this.exps.map(e=>e.id)),
-      job:{ field:f.id, company:'', companyId:'', role:'', post:'' } };
+      job:{ field:f.id, company:'', companyId:'', role:'', post:'', jobcat:'', jobPicked:false, eng: !!(prev.job && prev.job.eng) } };
     document.getElementById('modal-flow').classList.add('active'); this.render();
     // 2026-11-03a ⑥ 저장해 둔 경험·학년을 불러와 채움
     const applySaved = ()=>{ if(!this.s) return; const p = PrepSync.profile || {}; if(!this.s.major.grade && p.grade) this.s.major.grade = p.grade; if(!String(this.s.major.dept || '').trim() && p.dept) this.s.major.dept = p.dept;
@@ -12795,6 +12802,9 @@ const StartFlow = {
     state.flowCtx = { purpose: s.kind, mode: s.mode, interviewers: s.people.slice(), interviewerCount: s.count, pressure, diff: s.diff, major: { dept: s.major.dept, grade: s.major.grade },
       experiences: this.usedExps().map(e=>({ type: e.type, text: e.text, source: '직접 입력' })),
       job: s.kind === 'job' ? { field: fid, company: s.job.company || null, companyId: s.job.companyId || null, role: s.job.role, post: s.job.post || null } : null };
+    // 2026-11-05 면접 DB: 대기업·공기업 분야 기업·직무 맞춤 면접은 질문은행 8문항 → 장치 점검하는 동안 미리 뽑아 둠
+    state.flowCtx.qbank = (s.kind === 'job' && QBank.applies(fid)) ? { talentId: s.job.companyId || null, companyName: s.job.company || null, grp: QBank.FIELDS[fid], job: s.job.jobcat || QBank.guessJob(s.job.role), eng: !!s.job.eng } : null;
+    if(state.flowCtx.qbank) try{ QBank.prefetch(state.flowCtx.qbank); }catch(e){ console.warn('[면접 질문 미리 뽑기]', e); }
     CompanyData.cur = null; state.companyPackP = null; try{ PrepSync.save(); }catch(_){}
     if(s.kind === 'job' && s.job.companyId){ state.companyPackP = CompanyData.pack(s.job.companyId).then(p=>{ CompanyData.cur = p; return p; }); }
     this.close();
@@ -12843,6 +12853,7 @@ const StartFlow = {
     const bind = (id, obj, key, re)=>{ const el = document.getElementById(id); if(!el) return; el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', ()=>{ obj[key] = el.value; if(re) this.render(); const h = document.getElementById('fl-need'); if(h) h.textContent = ''; }); };
     bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade', true); bind('fl-role', s.job, 'role'); { const ri = document.getElementById('fl-role'); if(ri) ri.addEventListener('input', ()=>{ s.job.roleGroup = ''; clearTimeout(this._rt); this._rt = setTimeout(()=>this.renderRoles(), 250); }); } bind('fl-post', s.job, 'post');
     this.bindCompany(); this.renderRoles();
+    if(s.kind === 'job') try{ QBank.bindPrep(s); }catch(e){ console.warn('[직종 고르기]', e); }   // 2026-11-05 면접 DB
   },
   /** 2026-11-02y 목표 직무 고르기: 직군 탭 + 직무 버튼. 누르면 목표 직무 칸에 들어가고, 칸에 직접 적어도 됨 */
   renderRoles(){
@@ -12933,6 +12944,7 @@ const StartFlow = {
     <div class="fl-f wide" id="fl-co-browse"></div>
     <div class="fl-f wide" id="fl-co-card">${j.companyId ? '<p class="cc-load">회사 정보를 불러오는 중…</p>' : '<p class="cc-load">회사를 고르면 인재상과 면접 전형이 보여요. 목록에 없으면 이름만 적어도 돼요.</p>'}</div>
     <div class="fl-f wide" id="fl-role-pick"></div>
+    ${QBank.prepHtml(j)}
     <div class="fl-f wide"><label for="fl-post">채용공고 <span class="fl-opt">(선택)</span></label><textarea id="fl-post" placeholder="자격 요건·우대 사항을 붙여 넣으면 관련 경험을 확인하는 질문이 나와요.">${escapeHtml(j.post)}</textarea></div></div>
     ${this.vExps('활용할 내 경험')}${this.vDocs()}${this.vSummary()}`; },
   vDocs(){ return '<div class="fl-f wide fl-docs" id="fl-docs">' + DocBox.html() + '</div>'; },
@@ -12969,9 +12981,12 @@ const StartFlow = {
     ${s.count>1?'<p class="fl-sub">화면에는 지금 말하는 면접관 한 명과 나만 보여요. 본 질문은 진행 면접관이, 꼬리질문은 다른 면접관이 이어서 하고 화면이 그 면접관으로 바뀌어요. 면접관 구성은 면접 분위기(부드럽게·보통·압박)에도 반영돼요.</p>':''}</div>`; },
   vStart(){ const s = this.s, u = this.usedExps();
     const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${s.major.grade}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.role)}${s.job.post ? ' · 채용공고 반영' : ''}`;
-    const co = s.kind === 'job' ? (s.job.companyId ? `<b>${escapeHtml(s.job.company)}</b> · 기업 맞춤 질문 2개 포함 (2·3번)` : escapeHtml(s.job.company ? s.job.company + ' (목록에 없어 직무 일반 질문)' : '선택 안 함 (직무 일반 질문)')) : '';
+    const qbOn = s.kind === 'job' && QBank.applies(s.job.field);
+    const co = s.kind === 'job' ? (qbOn ? (s.job.companyId ? `<b>${escapeHtml(s.job.company)}</b> · 이 회사 면접 후기 질문으로 출제 (부족하면 같은 ${QBank.FIELDS[s.job.field]} 질문)` : `선택 안 함 · ${QBank.FIELDS[s.job.field]} 전체 면접 후기 질문으로 출제`)
+      : (s.job.companyId ? `<b>${escapeHtml(s.job.company)}</b> · 기업 맞춤 질문 2개 포함 (2·3번)` : escapeHtml(s.job.company ? s.job.company + ' (목록에 없어 직무 일반 질문)' : '선택 안 함 (직무 일반 질문)'))) : '';
+    const qbLine = qbOn ? `<dt>질문</dt><dd>8개 · 직종 ${escapeHtml(s.job.jobcat || QBank.guessJob(s.job.role))}${s.job.eng ? ' · 영어 질문 1개 포함' : ''}</dd>` : '';
     return `<h2 class="fl-h">이렇게 면접을 준비했어요</h2><p class="fl-lead">'다음'을 누르면 카메라·마이크를 점검하는 창으로 넘어가요.</p>
-    <dl class="fl-sum"><dt>면접 목적</dt><dd>${s.kind === 'major' ? '전공·경험 면접' : '기업·직무 맞춤 면접'}</dd>${co ? `<dt>목표 기업</dt><dd>${co}</dd>` : ''}<dt>내 정보</dt><dd>${info}</dd>
+    <dl class="fl-sum"><dt>면접 목적</dt><dd>${s.kind === 'major' ? '전공·경험 면접' : '기업·직무 맞춤 면접'}</dd>${co ? `<dt>목표 기업</dt><dd>${co}</dd>` : ''}<dt>내 정보</dt><dd>${info}</dd>${qbLine}
     <dt>활용할 경험</dt><dd>${u.length ? u.map(e=>escapeHtml(e.text)).join(', ') : '선택 안 함 (일반 질문)'}</dd>
     <dt>질문 연습</dt><dd>${(()=>{ const m = PrepRoom.summary(); return m ? `${m.total}개 중 ${m.done}개 연습${m.done ? '' : ' (건너뜀)'}` : '건너뜀'; })()}</dd>
     <dt>진행 방식</dt><dd>${s.mode === 'real' ? '실전형 · 힌트·중간 피드백 없음, 마친 뒤 종합 리포트' : '연습형 · 힌트·즉시 피드백, 멈추고 이어 하기'}</dd>
@@ -14242,6 +14257,13 @@ function openSetup(fieldId){   // 2026-10-22v: 새 버전 확인 뒤 준비 창 
     const selChip = document.querySelector('#chip-count .chip.sel');
     state.questionCount = selChip ? parseInt(selChip.dataset.val,10) : 5;
   }
+  // 2026-11-05 면접 DB: 질문은행 면접은 8문항으로 정해져 있어 '기본 질문 수'를 숨김
+  { const qbOn = !isReview && typeof QBank !== 'undefined' && state.flowCtx && state.flowCtx.qbank && state.flowCtx.job && state.flowCtx.job.field === fieldId;
+    if(qbOn) state.questionCount = 8;
+    const cr = document.getElementById('chip-count'), box = cr && cr.closest('.opt'); if(box) box.hidden = !!qbOn;
+    let note = document.getElementById('qb-count-note');
+    if(qbOn && !note && box){ note = document.createElement('p'); note.id = 'qb-count-note'; note.className = 'qb-count-note'; box.parentNode.insertBefore(note, box); }
+    if(note){ note.hidden = !qbOn; note.textContent = qbOn ? '이 면접은 질문 8개로 진행해요 (자기소개 → 지원동기 → 경험·역량 2 → ' + (state.flowCtx.qbank.eng ? '영어' : '인성·가치관') + ' → 직무·전공지식 → ' + (state.flowCtx.qbank.talentId ? '기업·산업' : '직무·전공지식') + ' → 마무리).' : ''; } }
   state.customQuestions = [];
   document.getElementById('setup-title').textContent = state.selectedField.name+' 면접 준비';
   try{ const ic=document.getElementById('setup-head-ic'); if(ic && state.selectedField.icon){ ic.innerHTML = svg(state.selectedField.icon); } }catch(e){}
@@ -19278,6 +19300,13 @@ async function runDialogInterview(){
   if(state.selectedField.id === 'review' && state.reviewQuestions){ opt.questions = state.reviewQuestions.map(x=>Object.assign({}, x)); try{ await ReviewAudio.enrich(opt.questions, 3000); }catch(_){} }   // 2026-10-26a 문항표의 녹음본·말할 문장 붙이기
   else if(realSet){ if(state.customQuestions && state.customQuestions.length) opt.docQuestion = Object.assign({}, state.customQuestions[0]); }
   else if(state.customQuestions && state.customQuestions.length){ opt.extraQuestions = state.customQuestions.map(x=>Object.assign({}, x)); }
+  // 2026-11-05 면접 DB: 대기업·공기업 기업·직무 맞춤 면접은 질문은행 8문항 (미리 뽑아 둔 것, 없으면 지금 뽑음)
+  state.qbPick = null;
+  if(!resume && !realSet && !opt.questions && QBank.on()){
+    FirstQWait.start();
+    const qbq = await QBank.questions(state.flowCtx.qbank, state.selectedField.id);
+    if(qbq && qbq.length){ opt.questions = qbq; opt.count = qbq.length; delete opt.extraQuestions; }
+  }
   // 2026-11-02q 기업·직무 맞춤으로 회사를 골랐으면 그 회사 예상 질문 2개(6문항 이상이면 3개)를 2·3번 자리에
   if(!resume && !realSet && !opt.questions && state.flowCtx && state.flowCtx.purpose === 'job'){
     try{ if(state.companyPackP) await Promise.race([state.companyPackP, new Promise(r=>setTimeout(r, 4000))]); }catch(_){}
@@ -19296,10 +19325,11 @@ async function runDialogInterview(){
       curQIndex = d.index;
       state.currentQ = d.index; document.getElementById('iv-progress').textContent = `질문 ${d.index} / ${d.total}`;
       Activity.setPresence('interview', { field: state.selectedField.name, mode:'dialog', q:d.index });
-      pendingAsk = { q: d.q.q, ref: d.q.ref, hint: d.q.hint || '', qid: (d.q.id != null ? d.q.id : d.q.dbId), kind:'question', custom: !!d.q.custom, spoken: spokenOf(d.q), slot: d.q.slot || null, slotName: d.q.slotName || '', doc: d.q.doc || '', src: d.q.src || '', co: d.q.co || null, speaker: 0 };
+      pendingAsk = { q: d.q.q, ref: d.q.ref, hint: d.q.hint || '', qid: (d.q.id != null ? d.q.id : d.q.dbId), kind:'question', custom: !!d.q.custom, spoken: spokenOf(d.q), slot: d.q.slot || null, slotName: d.q.slotName || '', doc: d.q.doc || '', src: d.q.src || '', co: d.q.co || null, speaker: 0, qtype: d.q.qtype || null, lang: d.q.lang || null, qb: d.q.qb || null };
       curSlotName = d.q.slotName || '';
       qEl.textContent = d.q.q; { const qn=document.getElementById('rh-qnum'); if(qn) qn.textContent = String(d.index).padStart(2,'0'); }
       if(d.q.custom){ const dn = d.q.doc === 'cv' ? '이력서' : '자기소개서'; badge.textContent = d.q.slotName ? `실전 세트 · ${dn} 기반` : `${dn} 기반`; badge.className='qcard-source-badge resume'; }
+      else if(d.q.qb){ badge.textContent = `${d.q.qb.company || (d.q.qb.grp ? d.q.qb.grp : '기업')} 면접 질문 · ${d.q.qtype || ''}${d.q.lang === 'en' ? ' · 영어로 답해 주세요' : ''}`; badge.className='qcard-source-badge resume'; }   // 2026-11-05 면접 DB
       else if(d.q.co){ badge.textContent = '기업 맞춤 질문'; badge.className='qcard-source-badge resume'; }
       else { badge.textContent = d.q.slotName ? `실전 세트 · ${d.q.slotName}` : state.selectedField.id==='review' ? '복습 문항' : '문제은행 출제'; badge.className='qcard-source-badge bank'; }
       try{ IvPanel.onQuestion(d.q); }catch(_){}
@@ -19407,7 +19437,7 @@ function maybeOpenDemoFromUrl(){
 async function finishDialogInterview(asks, transcript){
   // 결과 화면·저장 코드가 기대하는 형태로 옮겨 담기 (기존 채점·전달력 측정 재사용)
   state.dialogTranscript = transcript || [];
-  state.interviewQuestions = asks.map(a=>({ q: a.q, ref: a.ref, hint: a.hint || '', qid: a.qid, followup: !!a.followup, custom: !!a.custom, evaluation: a.evaluation||'', slotName: a.slotName||'', doc: a.doc||'', src: a.src||'', co: a.co || null, speaker: a.speaker != null ? a.speaker : null }));
+  state.interviewQuestions = asks.map(a=>({ q: a.q, ref: a.ref, hint: a.hint || '', qid: a.qid, followup: !!a.followup, custom: !!a.custom, evaluation: a.evaluation||'', slotName: a.slotName||'', doc: a.doc||'', src: a.src||'', co: a.co || null, speaker: a.speaker != null ? a.speaker : null, qtype: a.qtype || null, lang: a.lang || null, qb: a.qb || null }));
   state.setOvertime = !!(state.dialogRealSet && StenoLoop.stats && StenoLoop.stats.setTimeUp);
   state.answerTexts = asks.map(a=>a.answer || '');
   state.answerScores = []; state.answerFeedback = []; state.answerDelivery = [];
@@ -22094,12 +22124,13 @@ const StenoListener = {
     // 2) 음성 인식
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const rec = new SR(); rec.lang = this.opt.lang; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 3;
-    applySttPhrases(rec);
+    const ko = /^ko/i.test(this.opt.lang || 'ko'), fx = t=>ko ? fixSpeech(t) : t;   // 2026-11-05 영어 답변에는 한국어 바로잡기·용어 힌트를 쓰지 않음
+    if(ko) applySttPhrases(rec);
     rec.onresult = (e)=>{
       let interim='';
       for(let i=e.resultIndex;i<e.results.length;i++){
-        const t = fixSpeech((e.results[i].isFinal ? sttBestAlt(e.results[i]) : (e.results[i][0].transcript||'')).trim()); if(!t) continue;
-        if(e.results[i].isFinal) this.transcript = fixSpeech(joinSpeech(this.transcript, t)); else interim = joinSpeech(interim, t);
+        const t = fx((e.results[i].isFinal && ko ? sttBestAlt(e.results[i]) : (e.results[i][0].transcript||'')).trim()); if(!t) continue;
+        if(e.results[i].isFinal) this.transcript = fx(joinSpeech(this.transcript, t)); else interim = joinSpeech(interim, t);
       }
       this.interim = interim;
       const now = Date.now(); this.spokeAt = now; if(!this.firstSpeechAt) this.firstSpeechAt = now; this.lastVoiceAt = Math.max(this.lastVoiceAt, now); this.timers.netErr = 0;
@@ -23121,7 +23152,7 @@ const StenoLoop = {
           if(p && p.audioParts && p.audioParts.length) r.audioParts = p.audioParts.concat(r.audioParts||[]);
           this._resumeListen=null; this._pendingListen=null; this._startListen=null; res(r);
         },
-      }, { silenceMs:this.opt.silenceMs, maxMs:(this._curLimit || this.opt.maxAnswerMs), noSpeechMs:(this.opt.realMode ? 10000 : undefined), manualEnd: !!this.opt.manualEnd, noSpeechHard: !!this.opt.realMode, record: !!this.opt.recordAnswers });
+      }, { silenceMs:this.opt.silenceMs, maxMs:(this._curLimit || this.opt.maxAnswerMs), noSpeechMs:(this.opt.realMode ? 10000 : undefined), manualEnd: !!this.opt.manualEnd, noSpeechHard: !!this.opt.realMode, record: !!this.opt.recordAnswers, lang: this._curLang || 'ko-KR' });
       this._startListen = startOnce;
       if(!this.micEnabled){ waitTyped('mic-off', ''); return; }   // 마이크를 꺼 둔 상태면 바로 직접 입력
       emit('listening');
@@ -23184,6 +23215,7 @@ const StenoLoop = {
         const fuCap = fuPlan ? (fuPlan.has(qi) ? 1 : 0) : this.opt.maxFollowups;
         for(let f=0; f<=fuCap && !this.aborted; f++){
           this._curLimit = this.opt.realMode ? realLimitMs(f===0 ? q.q : lastAsk, f>0) : this.opt.maxAnswerMs;
+          this._curLang = (f === 0 && q.lang === 'en') ? 'en-US' : 'ko-KR';   // 2026-11-05 영어 질문은 영어로 받아 적음 (꼬리질문은 한국어)
           const r = await listen();
           if(this.aborted){
             // 답변 도중 종료 → 지금까지 인식된 말이 있으면 답변으로 남겨 결과에 반영
@@ -25064,6 +25096,79 @@ const QBankAdmin = {
   },
   /** 사용 중·바로 전 판 말고 오래된 판은 조금씩 지움 (뒤에서 조용히) */
   async purge(){ try{ for(let k = 0; k < 30; k++){ const n = await this.call('qb_import_purge', { p_limit: 20000 }); if(!n) break; } }catch(e){ console.warn('[면접 DB 정리]', e); } },
+};
+/* ---------------- 2026-11-05 면접 DB 3단계: 기업·직무 맞춤 면접 8문항 (질문은행) ----------------
+   대기업·중견기업 / 공공기관·공기업 분야의 기업·직무 맞춤 면접은 서버 함수 pick-questions가 질문은행에서 8문항을 뽑고
+   AI가 다듬은 문장만 받아 옴 (원문은 화면에 오지 않음). 면접 준비 창을 마칠 때 미리 뽑아 두고, 면접 시작 때 씀
+   순서: 자기소개 → 지원동기 → 경험·역량 2 → 인성·가치관(영어를 고르면 영어) → 직무·전공지식 → 기업·산업(기업이 없으면 직무·전공지식) → 마무리 */
+const QB_JOBS = ['기획/경영','생산/제조','엔지니어링','개발','연구개발','생산관리/품질관리','영업/제휴','금융/재무','서비스/고객지원','마케팅/시장조사','인사/총무','유통/무역','디자인','데이터','미디어/홍보','전문직','특수계층/공공','교육','법률/법무','의약','공채','기타'];
+const QBank = {
+  FIELDS: { corp:'대기업', pubcorp:'공기업' },
+  _p: null,
+  applies(fieldId){ return !!this.FIELDS[fieldId]; },
+  /** 목표 직무 글로 직종을 짐작 (학생이 바꿀 수 있음) */
+  guessJob(role){
+    const r = String(role || '');
+    const M = [[/데이터|분석/, '데이터'], [/개발|소프트웨어|\bIT\b|SW|프로그래|웹|앱/i, '개발'], [/연구|R&D/i, '연구개발'], [/품질|생산관리|공정관리/, '생산관리/품질관리'], [/생산|제조/, '생산/제조'],
+      [/설비|전기|기계|전자|엔지니어|시공|토목|건축|플랜트|기술/, '엔지니어링'], [/영업|세일즈|제휴/, '영업/제휴'], [/마케팅|시장조사|브랜드|광고/, '마케팅/시장조사'], [/인사|총무|노무|HR/i, '인사/총무'],
+      [/재무|회계|금융|은행|증권|보험|세무|자금/, '금융/재무'], [/디자인/, '디자인'], [/홍보|미디어|콘텐츠|PR\b/i, '미디어/홍보'], [/고객|서비스|상담|CS\b|승무|안내/i, '서비스/고객지원'],
+      [/유통|무역|물류|구매|MD\b|SCM/i, '유통/무역'], [/법무|법률/, '법률/법무'], [/간호|약사|의료|보건|임상|제약/, '의약'], [/교육|강사|교사/, '교육'], [/기획|경영|전략|사무|행정|관리/, '기획/경영']];
+    for(const [re, j] of M) if(re.test(r)) return j;
+    return '기획/경영';
+  },
+  /** 지금 시작하는 면접이 질문은행을 쓰는지 */
+  on(){ const c = state.flowCtx; return !!(c && c.purpose === 'job' && c.qbank && c.job && state.selectedField && state.selectedField.id === c.job.field); },
+  async pick(ctx){
+    const call = sb.functions.invoke('pick-questions', { body: { talent_id: ctx.talentId || undefined, company_name: ctx.companyName || undefined, grp: ctx.grp, job: ctx.job, english: !!ctx.eng } });
+    const { data, error } = await Promise.race([call, new Promise((_, rej)=>setTimeout(()=>rej(new Error('면접 질문 준비가 늦어요')), 50000))]);
+    if(error){ let m = error.message || String(error); try{ const b = await error.context.json(); m = b.message || b.error || m; }catch(_){} throw new Error(m); }
+    return data;
+  },
+  /** 면접 준비 창을 마칠 때 미리 뽑기 (장치 점검하는 동안 AI가 질문을 다듬음) */
+  prefetch(ctx){ const key = JSON.stringify(ctx); this._p = { key, p: this.pick(ctx).catch(e=>({ error: e.message || String(e) })) }; return this._p.p; },
+  /** 면접 시작 때: 미리 뽑아 둔 것을 한 번만 쓰고, 없으면 새로 뽑음. 못 받으면 null (→ 예전 방식으로 진행) */
+  async questions(ctx, fieldId){
+    let e = this._p; this._p = null;
+    if(!e || e.key !== JSON.stringify(ctx)) e = { p: this.pick(ctx).catch(err=>({ error: err.message || String(err) })) };
+    const data = await e.p;
+    const items = data && Array.isArray(data.items) ? data.items : [];
+    if(!items.some(it=>it.text)){ console.warn('[면접 DB 질문 못 받음]', data && data.error); showToast('기업 면접 질문을 불러오지 못해 기본 질문으로 진행해요. ' + ((data && data.error) || ''), 'info'); return null; }
+    const fb = this.fallback(fieldId), co = data.company;
+    state.qbPick = { id: data.pick_id, ver: data.ver, company: co, grp: data.grp, job: data.job };
+    return items.map(it=>it.text
+      ? { q: it.text, spoken: it.text, ref: '', diff: '중', qtype: it.qtype, lang: it.lang === 'en' ? 'en' : 'ko', qb: { qid: it.qid, tier: it.tier, pick: data.pick_id, company: co ? co.name : '', grp: data.grp || '' } }
+      : fb(it.qtype));
+  },
+  /** AI가 다듬지 못한 칸은 한림대 기본 질문으로 (질문은행 원문은 쓰지 않음) */
+  fallback(fieldId){
+    const used = new Set(); let pool = [];
+    try{ pool = buildQuestionPool(FIELDS.find(f=>f.id === fieldId) || FIELDS[0], '중').filter(x=>x && x.q); }catch(_){}
+    return qtype=>{
+      if(qtype === '자기소개') return { q: HALLYM_QA.first.q, ref: '', diff: '하', qtype };
+      if(qtype === '마무리') return { q: HALLYM_QA.last.q, ref: '', diff: '하', qtype };
+      const x = pool.find(y=>!used.has(y.q)) || { q: '지원하신 직무와 관련해 가장 자신 있는 경험을 말씀해 주세요.', ref: '' }; used.add(x.q);
+      return Object.assign({}, x, { qtype });
+    };
+  },
+  /** 면접 준비 창 '맞춤 준비' 칸: 직종 고르기 + 영어 질문 */
+  prepHtml(j){
+    if(!this.applies(j.field)) return '';
+    const cur = j.jobcat || this.guessJob(j.role);
+    return `<div class="fl-f wide fl-qb" id="fl-qb">
+      <div class="fl-qb-row"><label for="fl-jobcat" class="fl-lbl">직종</label>
+        <select id="fl-jobcat">${QB_JOBS.map(x=>`<option value="${escapeHtml(x)}" ${x === cur ? 'selected' : ''}>${escapeHtml(x)}</option>`).join('')}</select>
+        <span class="fl-sub" id="fl-jobcat-hint">${j.jobPicked ? '직접 고른 직종으로 질문을 골라요' : '목표 직무에 맞춰 골라 두었어요. 바꿔도 돼요'}</span></div>
+      <label class="fl-eng"><input type="checkbox" id="fl-eng" ${j.eng ? 'checked' : ''}><span><b>영어 질문 1개 넣기</b><small>실제 면접처럼 영어로 묻는 질문이 1개 나와요. 그 질문은 영어로 답하고, 음성 인식도 영어로 바뀌어요.</small></span></label>
+      <p class="fl-qb-note"><b>질문 8개</b> · 자기소개 → 지원동기 → 경험·역량 2 → ${j.eng ? '영어' : '인성·가치관'} → 직무·전공지식 → ${j.companyId ? '기업·산업' : '직무·전공지식'} → 마무리. 실제 면접 후기에서 모은 질문을 AI가 다듬어서 물어요.</p>
+    </div>`;
+  },
+  bindPrep(s){
+    const sel = document.getElementById('fl-jobcat'), eng = document.getElementById('fl-eng'), hint = document.getElementById('fl-jobcat-hint');
+    if(sel) sel.onchange = ()=>{ s.job.jobcat = sel.value; s.job.jobPicked = true; if(hint) hint.textContent = '직접 고른 직종으로 질문을 골라요'; };
+    if(eng) eng.onchange = ()=>{ s.job.eng = eng.checked; const n = document.querySelector('#fl-qb .fl-qb-note'); if(n) n.outerHTML = (this.prepHtml(s.job).match(/<p class="fl-qb-note">[\s\S]*?<\/p>/) || [''])[0]; };
+    const role = document.getElementById('fl-role');
+    if(role && sel) role.addEventListener('input', ()=>{ if(!s.job.jobPicked){ s.job.jobcat = this.guessJob(role.value); sel.value = s.job.jobcat; } });
+  },
 };
 const VoiceSet = {
   voices:null, loading:false, err:'', g:'', age:'', q:'', shown:40, cache:new Map(), used:0, _seq:0, _sample:null,
